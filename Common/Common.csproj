@@ -30,11 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="micfort.GHL.PCL">
-      <HintPath>..\..\library\micfort.GHL.PCL.dll</HintPath>
+    <Reference Include="micfort.GHL.PCL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\micfort.GHL.PCL.0.115\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
     </Reference>
-    <Reference Include="micfort.GHL.Windows">
-      <HintPath>..\..\library\micfort.GHL.Windows.dll</HintPath>
+    <Reference Include="micfort.GHL.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\micfort.GHL.Windows.0.115\lib\net40\micfort.GHL.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,6 +51,9 @@
     <Compile Include="NodeData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tree.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
