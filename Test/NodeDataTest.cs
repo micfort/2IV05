@@ -115,7 +115,7 @@ namespace CG_2IV05.Test
 				Assert.AreEqual(data.Indexes[i], data2.Indexes[i]);
 			}
 
-			//File.Delete("test_data");
+			File.Delete("test_data");
 		}
     }
 }

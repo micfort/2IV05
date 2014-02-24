@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace CG_2IV05.Common
 {
     public class Node
     {
-	    public Node[] Children { get; set; }
+	    public List<Node> Children { get; set; }
 	    public Node Parent { get; set; }
 	    public string NodeDataFile { get; set; }
 
