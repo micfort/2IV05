@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using CG_2IV05.Common;
 using micfort.GHL.Math2;
 using micfort.GHL.Serialization;
@@ -14,6 +16,7 @@ namespace CG_2IV05.TreeBuilding
 		private static int FileCount = 0;
 		private static readonly string NodeFilenameFormat = "output\\data_{0}";
 		private static readonly string TreeOutputFileFormat = "output\\tree";
+		private static string InputFilename = "buildings.xml";
 
 		static void Main(string[] args)
 		{
@@ -24,8 +27,8 @@ namespace CG_2IV05.TreeBuilding
 				Directory.CreateDirectory("output");
 			}
 
-			Console.Out.WriteLine("Generating");
-			List<Building> buildings = CreateData();
+			Console.Out.WriteLine("Generating/Reading Buildings");
+			List<Building> buildings = ReadBuildings();
 
 			Console.Out.WriteLine("Create Nodes");
 			Node root = CreateNode(buildings, null);
@@ -300,5 +303,70 @@ namespace CG_2IV05.TreeBuilding
 			}
 			return output;
 		} 
+
+		public static List<Building> ReadBuildings()
+		{
+			List<Building> output = new List<Building>(); 
+			XmlReader reader = XmlReader.Create(InputFilename);
+			while (reader.Read())
+			{
+				if(reader.NodeType == XmlNodeType.Element)
+				{
+					if (reader.Name == "Building")
+					{
+						output.Add(ReadBuilding(reader));
+					}
+				}
+			}
+			return output;
+		}
+
+		public static Building ReadBuilding(XmlReader reader)
+		{
+			Building output = new Building();
+			while (reader.Read())
+			{
+				if (reader.NodeType == XmlNodeType.Element)
+				{
+					if (reader.Name == "height")
+					{
+						output.Height = reader.ReadElementContentAsFloat();
+					}
+					else if(reader.Name == "gmlbase64")
+					{
+						output.Polygon = ReadGML(reader.ReadElementContentAsString());
+					}
+				}
+				else if(reader.NodeType == XmlNodeType.EndElement)
+				{
+					if(reader.Name == "Building")
+					{
+						return output;
+					}
+				}
+			}
+			return null;
+		}
+
+		public static List<HyperPoint<float>> ReadGML(string gml64)
+		{
+			List<HyperPoint<float>> output = new List<HyperPoint<float>>();
+
+			string gml = System.Text.Encoding.UTF8.GetString(micfort.GHL.Base64.DecodeS(gml64));
+			gml = gml.Replace("gml:", "");
+			XmlDocument dom = new XmlDocument();
+			dom.LoadXml(gml);
+			XmlNodeList nodes = dom.DocumentElement.SelectNodes("/Polygon/outerBoundaryIs/LinearRing/coordinates");
+			string coordinates = nodes[0].InnerText;
+			string[][] coordinatesSplit = Array.ConvertAll(coordinates.Split(' '), x => x.Split(','));
+			for (int i = 0; i < coordinatesSplit.Length; i++)
+			{
+				output.Add(new HyperPoint<float>(float.Parse(coordinatesSplit[i][0], CultureInfo.InvariantCulture),
+												 float.Parse(coordinatesSplit[i][1], CultureInfo.InvariantCulture),
+												 float.Parse(coordinatesSplit[i][2], CultureInfo.InvariantCulture)));
+			}
+			return output;
+		}
+
 	}
 }
