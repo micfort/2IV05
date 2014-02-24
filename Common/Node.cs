@@ -8,6 +8,7 @@ namespace CG_2IV05.Common
 	    public List<Node> Children { get; set; }
 	    public Node Parent { get; set; }
 	    public string NodeDataFile { get; set; }
+	    public object Tag { get; set; }
 
 		public NodeData ReadData()
 		{
