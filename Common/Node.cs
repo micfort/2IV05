@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace CG_2IV05.Common
 {
+	[Serializable]
     public class Node
     {
 	    public List<Node> Children { get; set; }

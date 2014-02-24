@@ -7,7 +7,8 @@ using micfort.GHL.Serialization;
 
 namespace CG_2IV05.Common
 {
-	public class Tree: SerializableType<Tree>
+	[Serializable]
+	public class Tree
 	{
 		public Node Root { get; set; }
 	}

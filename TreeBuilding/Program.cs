@@ -12,19 +12,30 @@ namespace CG_2IV05.TreeBuilding
 	{
 		private static readonly int MaxTriangleCount = 10000;
 		private static int FileCount = 0;
-		private static readonly string FilenameFormat = "data_{0}";
+		private static readonly string NodeFilenameFormat = "output\\data_{0}";
+		private static readonly string TreeOutputFileFormat = "output\\tree";
 
 		static void Main(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
 
-			Node root = CreateNode(null, null);
+			if(!Directory.Exists("output"))
+			{
+				Directory.CreateDirectory("output");
+			}
+
+			Console.Out.WriteLine("Generating");
+			List<Building> buildings = CreateData();
+
+			Console.Out.WriteLine("Create Nodes");
+			Node root = CreateNode(buildings, null);
 			CleanTag(root);
 			Tree tree = new Tree();
 			tree.Root = root;
-			using (FileStream file = File.Open("tree", FileMode.Create, FileAccess.ReadWrite))
+			Console.Out.WriteLine("Writing Tree");
+			using (FileStream file = File.Open(TreeOutputFileFormat, FileMode.Create, FileAccess.ReadWrite))
 			{
-				tree.SerializeToStream(file, BinarySerializableTypeEngine.BinairSerializer);
+				SerializableType<Tree>.SerializeToStream(tree, file, BinarySerializableTypeEngine.BinairSerializer);
 			}
 		}
 
@@ -37,43 +48,36 @@ namespace CG_2IV05.TreeBuilding
 		/// <remarks>O(B^2*P)</remarks>
 		public static Node CreateNode(List<Building> buildings, Node parent)
 		{
+			string dataFilename = CreateFilename();
+			Node node = new Node
+				            {
+					            Children = new List<Node>(),
+					            NodeDataFile = dataFilename,
+					            Parent = parent,
+					            Tag = buildings
+				            };
 			//for leaves this is O(B^2*P)
-			if(buildings.Count == 1 || TriangleCount(buildings) < MaxTriangleCount) 
+			if(buildings.Count <= 1 || TriangleCount(buildings) < MaxTriangleCount) 
 			{
 				//Leave
-				string dataFilename = CreateFilename();
 				NodeData data = CreateData(buildings); //O(B*P)
 				using (FileStream file = File.Open(dataFilename, FileMode.Create, FileAccess.ReadWrite))
 				{
 					data.SaveToStream(file);
 				}
-				Node node = new Node
-					            {
-						            Children = new List<Node>(), 
-									NodeDataFile = dataFilename, 
-									Parent = parent,
-									Tag = buildings
-					            };
+
 				return node;
 			}
 			else
 			//for non leaves this is O(log_4(B)*B)
 			{
 				//Not a leave
-
-				string dataFilename = CreateFilename();
-
-				Node node = new Node();
-
 				List<Building>[] split = SplitList(buildings); //O(B)
 				for (int i = 0; i < 4; i++)
 				{
 					Node child = CreateNode(split[i], node);
 					node.Children.Add(child);
 				}
-				node.NodeDataFile = dataFilename;
-				node.Parent = parent;
-				node.Tag = buildings;
 				
 				NodeData data = CreateDataFromChildren(buildings);//O(B)
 				using (FileStream file = File.Open(dataFilename, FileMode.Create, FileAccess.ReadWrite))
@@ -116,8 +120,8 @@ namespace CG_2IV05.TreeBuilding
 				{
 					nodeDataList[i].Indexes[j] += verticesI;
 				}
-				Array.Copy(nodeDataList[i].Vertices, verticesI, output.Vertices, 0, nodeDataList[i].Vertices.Length);
-				Array.Copy(nodeDataList[i].Indexes, indexI, output.Indexes, 0, nodeDataList[i].Indexes.Length);
+				Array.Copy(nodeDataList[i].Vertices, 0, output.Vertices, verticesI, nodeDataList[i].Vertices.Length);
+				Array.Copy(nodeDataList[i].Indexes, 0, output.Indexes, indexI, nodeDataList[i].Indexes.Length);
 				verticesI += nodeDataList[i].Vertices.Length;
 				indexI += nodeDataList[i].Indexes.Length;
 			}
@@ -192,7 +196,7 @@ namespace CG_2IV05.TreeBuilding
 
 		public static string CreateFilename()
 		{
-			return string.Format(FilenameFormat, FileCount++);
+			return string.Format(NodeFilenameFormat, FileCount++);
 		}
 
 		/// <summary>
@@ -206,7 +210,9 @@ namespace CG_2IV05.TreeBuilding
 			HyperPoint<float> min = GetMinPoint(buildings);
 			HyperPoint<float> max = GetMaxPoint(buildings);
 
-			HyperPoint<float> center = (max - min)*(1/2) + min;
+			HyperPoint<float> center = (max - min);
+			center = center*(1f/2f);
+			center = center + min;
 
 			List<Building>[] output = new List<Building>[4];
 			for (int i = 0; i < 4; i++)
@@ -272,5 +278,27 @@ namespace CG_2IV05.TreeBuilding
 			node.Tag = null;
 			node.Children.ForEach(CleanTag);
 		}
+
+		public static List<Building> CreateData()
+		{
+			List<Building> output = new List<Building>();
+			for (int i = 0; i < 10000; i++)
+			{
+				for (int j = 0; j < 1000; j++)
+				{
+					Building b = new Building();
+					int x = i*2;
+					int y = j*2;
+					b.Polygon = new List<HyperPoint<float>>();
+					b.Polygon.Add(new HyperPoint<float>(x, y, 0));
+					b.Polygon.Add(new HyperPoint<float>(x, y+1, 0));
+					b.Polygon.Add(new HyperPoint<float>(x+1, y+1, 0));
+					b.Polygon.Add(new HyperPoint<float>(x+1, y, 0));
+					b.Height = 1;
+					output.Add(b);
+				}
+			}
+			return output;
+		} 
 	}
 }
