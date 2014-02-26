@@ -193,7 +193,7 @@ namespace CG_2IV05.TreeBuilding
 
 				HyperPoint<float> sizeX = data.Vertices[currentHigh] - data.Vertices[currentLow];
 				HyperPoint<float> sizeY = data.Vertices[LastLow] - data.Vertices[currentLow];
-				HyperPoint<float> normal = Cross3D(sizeX.Normilize(), sizeY.Normilize());
+				HyperPoint<float> normal = Cross3D(sizeX.Normilize(), sizeY.Normilize()).Normilize();
 
 				data.Normals[currentLow] = normal;
 				data.Normals[currentHigh] = normal;
