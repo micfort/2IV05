@@ -16,7 +16,15 @@ namespace CG_2IV05.Common
 		{
 			using (FileStream file = File.Open(NodeDataFile, FileMode.Open, FileAccess.Read))
 			{
-				return Common.NodeData.ReadFromStream(file);
+				return NodeData.ReadFromStream(file);
+			}
+		}
+
+		public NodeDataRaw ReadRawData()
+		{
+			using (FileStream file = File.Open(NodeDataFile, FileMode.Open, FileAccess.Read))
+			{
+				return NodeDataRaw.ReadFromStream(file);
 			}
 		}
     }
