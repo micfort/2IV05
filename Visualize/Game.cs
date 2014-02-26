@@ -43,11 +43,12 @@ namespace CG_2IV05.Visualize
 
 		void game_Load(object sender, EventArgs e)
 		{
-			CameraPos = new Vector3(-10, 0, 0);
+			CameraPos = new Vector3(161013.141f, 379918.625f, 10f);
 			Mouse = new Vector2(0, 0);
 			
 			// setup settings, load textures, sounds
 			game.VSync = VSyncMode.On;
+			game.WindowState = WindowState.Fullscreen;
 
 			using (FileStream file = File.OpenRead(@"D:\S120397\School\2IV05 ACCG\2IV05\TreeBuilding\bin\Debug\output\data_0"))
 			{
@@ -55,7 +56,7 @@ namespace CG_2IV05.Visualize
 				vbo = new VBO(data);
 			}
 
-			GL.Enable(EnableCap.CullFace);
+			GL.Disable(EnableCap.CullFace);
 			GL.Enable(EnableCap.DepthTest);
 			GL.CullFace(CullFaceMode.Front);
 
@@ -75,15 +76,26 @@ namespace CG_2IV05.Visualize
 
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
-			Matrix4 projMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1920f / 1080f, 0.1f, 100f);
+			Matrix4 projMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1920f / 1080f, 0.1f, 10000000f);
 			GL.LoadMatrix(ref projMatrix);
 			
 			GL.MatrixMode(MatrixMode.Modelview);
 			GL.LoadIdentity();
 			GL.LoadMatrix(ref viewMatrix);
 
-			GL.Color3(Color.SpringGreen);
 			vbo.Draw();
+			//GL.Begin(PrimitiveType.Triangles);
+
+			//GL.Color3(Color.SpringGreen);
+			//GL.Vertex3(0, 0, 0);
+			//GL.Vertex3(0, 1000000, 0);
+			//GL.Vertex3(1000000, 1000000, 0);
+
+			//GL.Vertex3(0, 0, 0);
+			//GL.Vertex3(1000000, 1000000, 0);
+			//GL.Vertex3(1000000, 0, 0);
+
+			//GL.End();
 
 			game.SwapBuffers();
 		}
@@ -97,7 +109,7 @@ namespace CG_2IV05.Visualize
 			Matrix4 Rotation = Matrix4.CreateRotationY(Mouse.Y) * Matrix4.CreateRotationZ(-Mouse.X);
 			Vector3 Direction = Vector3.Transform(Vector3.UnitX, Rotation);
 			Vector3 SideStep = Vector3.Cross(Direction, Vector3.UnitZ);
-			float speed = 1/10f;
+			float speed = 10;
 
 			// add game logic, input handling
 			if (game.Keyboard[Key.Escape])
