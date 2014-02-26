@@ -29,6 +29,7 @@ namespace CG_2IV05.TreeBuilding
 
 			Console.Out.WriteLine("Generating/Reading Buildings");
 			List<Building> buildings = ReadBuildings();
+			//List<Building> buildings = CreateData();
 
 			Console.Out.WriteLine("Create Nodes");
 			Node root = CreateNode(buildings, null);
@@ -112,6 +113,7 @@ namespace CG_2IV05.TreeBuilding
 			int indexesCount = nodeDataList.ConvertAll(x => x.Indexes.Length).Sum();
 
 			output.Vertices = new HyperPoint<float>[verticesCount];
+			output.Normals = new HyperPoint<float>[verticesCount];
 			output.Indexes = new int[indexesCount];
 
 			int verticesI = 0;
@@ -124,6 +126,7 @@ namespace CG_2IV05.TreeBuilding
 					nodeDataList[i].Indexes[j] += verticesI;
 				}
 				Array.Copy(nodeDataList[i].Vertices, 0, output.Vertices, verticesI, nodeDataList[i].Vertices.Length);
+				Array.Copy(nodeDataList[i].Normals, 0, output.Normals, verticesI, nodeDataList[i].Normals.Length);
 				Array.Copy(nodeDataList[i].Indexes, 0, output.Indexes, indexI, nodeDataList[i].Indexes.Length);
 				verticesI += nodeDataList[i].Vertices.Length;
 				indexI += nodeDataList[i].Indexes.Length;
@@ -141,23 +144,38 @@ namespace CG_2IV05.TreeBuilding
 		public static NodeData CreateData(Building building)
 		{
 			NodeData data = new NodeData();
-			data.Vertices = new HyperPoint<float>[building.Polygon.Count*2]; //high and low point
+			data.Vertices = new HyperPoint<float>[building.Polygon.Count * 4]; //high and low point
+			data.Normals = new HyperPoint<float>[building.Polygon.Count * 4]; //high and low point
 			data.Indexes = new int[building.Polygon.Count * 2 * 3]; //2 triangles per square, 3 points per triangle
 			for (int i = 0; i < building.Polygon.Count; i++)
 			{
-				int currentLow = i*2 + 0;
-				int currentHigh = i*2 + 1;
-
-				int LastLow = (i-1)*2 + 0;
-				int LastHigh = (i-1)*2 + 1;
-				if(LastLow < 0)
+				int j = i;
+				if (i == 0)
 				{
-					LastLow = (building.Polygon.Count - 1)*2 + 0;
-					LastHigh = (building.Polygon.Count - 1)*2 + 1;
+					j = building.Polygon.Count - 1;
 				}
+				
+				int currentLow = i*4 + 0;
+				int currentHigh = i*4 + 1;
 
-				data.Vertices[i*2+0] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, 0);
-				data.Vertices[i*2+1] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, building.Height);
+				int LastLow = i*4 + 2;
+				int LastHigh = i*4 + 3;
+
+				data.Vertices[currentLow] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, 0);
+				data.Vertices[currentHigh] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, building.Height);
+				
+				data.Vertices[LastLow] = new HyperPoint<float>(building.Polygon[j - 1].X, building.Polygon[j - 1].Y, 0);
+				data.Vertices[LastHigh] = new HyperPoint<float>(building.Polygon[j - 1].X, building.Polygon[j - 1].Y, building.Height);
+
+				HyperPoint<float> sizeX = data.Vertices[currentHigh] - data.Vertices[currentLow];
+				HyperPoint<float> sizeY = data.Vertices[LastLow] - data.Vertices[currentLow];
+				HyperPoint<float> normal = Cross3D(sizeX.Normilize(), sizeY.Normilize());
+
+				data.Normals[currentLow] = normal;
+				data.Normals[currentHigh] = normal;
+
+				data.Normals[LastLow] = normal;
+				data.Normals[LastHigh] = normal;
 
 				data.Indexes[i*2*3 + 3*0 + 0] = currentLow;
 				data.Indexes[i*2*3 + 3*0 + 1] = currentHigh;
@@ -285,9 +303,9 @@ namespace CG_2IV05.TreeBuilding
 		public static List<Building> CreateData()
 		{
 			List<Building> output = new List<Building>();
-			for (int i = 0; i < 10000; i++)
+			for (int i = 0; i < 100; i++)
 			{
-				for (int j = 0; j < 1000; j++)
+				for (int j = 0; j < 100; j++)
 				{
 					Building b = new Building();
 					int x = i*2;
@@ -334,7 +352,7 @@ namespace CG_2IV05.TreeBuilding
 					}
 					else if(reader.Name == "gmlbase64")
 					{
-						output.Polygon = ReadGML(reader.ReadElementContentAsString());
+						output.Polygon = RemoveRepeatition(ReadGML(reader.ReadElementContentAsString()));
 					}
 				}
 				else if(reader.NodeType == XmlNodeType.EndElement)
@@ -346,6 +364,22 @@ namespace CG_2IV05.TreeBuilding
 				}
 			}
 			return null;
+		}
+
+		public static List<HyperPoint<float>> RemoveRepeatition(List<HyperPoint<float>> polygon)
+		{
+			for (int i = polygon.Count - 1; i >= 1; i--)
+			{
+				if (polygon[i] == polygon[i - 1])
+				{
+					polygon.RemoveAt(i);
+				}
+			}
+			if(polygon[0] == polygon[polygon.Count-1])
+			{
+				polygon.RemoveAt(polygon.Count - 1);
+			}
+			return polygon;
 		}
 
 		public static List<HyperPoint<float>> ReadGML(string gml64)
@@ -366,6 +400,19 @@ namespace CG_2IV05.TreeBuilding
 												 float.Parse(coordinatesSplit[i][2], CultureInfo.InvariantCulture)));
 			}
 			return output;
+		}
+
+		public static HyperPoint<float> Cross3D(HyperPoint<float> a, HyperPoint<float> b)
+		{
+			if (a.Dim == 3 && b.Dim == 3)
+			{
+				return
+					new HyperPoint<float>(a.Y*b.Z - a.Z*b.Y, a.Z*b.X - a.X*b.Z, a.X*b.Y - a.Y*b.X);
+			}
+			else
+			{
+				throw new ArgumentException("For the cross product to work it needs 3D vectors");
+			}
 		}
 
 	}

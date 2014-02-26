@@ -36,6 +36,21 @@ namespace CG_2IV05.Test
 
 			#endregion
 
+			data.Normals = new HyperPoint<float>[8];
+
+			#region vertices
+
+			data.Normals[0] = new HyperPoint<float>(1, 1, 1, 1);
+			data.Normals[1] = new HyperPoint<float>(1, 1, -1, 1);
+			data.Normals[2] = new HyperPoint<float>(1, -1, 1, 1);
+			data.Normals[3] = new HyperPoint<float>(1, -1, -1, 1);
+			data.Normals[4] = new HyperPoint<float>(-1, 1, 1, 1);
+			data.Normals[5] = new HyperPoint<float>(-1, 1, -1, 1);
+			data.Normals[6] = new HyperPoint<float>(-1, -1, 1, 1);
+			data.Normals[7] = new HyperPoint<float>(-1, -1, -1, 1);
+
+			#endregion
+
 			data.Indexes = new int[12 * 3];
 
 			#region indexes
@@ -108,6 +123,11 @@ namespace CG_2IV05.Test
 			for (int i = 0; i < data.Vertices.Length; i++)
 			{
 				Assert.AreEqual(data.Vertices[i], data2.Vertices[i]);
+			}
+
+			for (int i = 0; i < data.Vertices.Length; i++)
+			{
+				Assert.AreEqual(data.Normals[i], data2.Normals[i]);
 			}
 
 			for (int i = 0; i < data.Indexes.Length; i++)
