@@ -12,19 +12,43 @@ namespace CG_2IV05.TreeBuilding
 {
 	class Program
 	{
-		private static readonly int MaxTriangleCount = 10000;
+		private static int MaxTriangleCount = 10000;
 		private static int FileCount = 0;
-		private static readonly string NodeFilenameFormat = "output\\data_{0}";
-		private static readonly string TreeOutputFileFormat = "output\\tree";
+		private static string NodeFilenameFormat = "{0}\\data_{1}";
+		private static string TreeOutputFileFormat = "{0}\\tree";
+		private static string DirectoryOutput = "output";
 		private static string InputFilename = "buildings.xml";
 
 		static void Main(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
 
-			if(!Directory.Exists("output"))
+			for (int i = 0; i < args.Length; i++)
 			{
-				Directory.CreateDirectory("output");
+				if(args[i] == "--triangles" || args[i] == "-t")
+				{
+					i++;
+					MaxTriangleCount = int.Parse(args[i]);
+				}
+				else if (args[i] == "--max-triangles" || args[i] == "-m")
+				{
+					MaxTriangleCount = int.MaxValue;
+				}
+				else if (args[i] == "--output" || args[i] == "-o")
+				{
+					i++;
+					DirectoryOutput = args[i];
+				}
+				else if (args[i] == "--input" || args[i] == "-i")
+				{
+					i++;
+					InputFilename = args[i];
+				}
+			}
+
+			if (!Directory.Exists(DirectoryOutput))
+			{
+				Directory.CreateDirectory(DirectoryOutput);
 			}
 
 			Console.Out.WriteLine("Generating/Reading Buildings");
@@ -37,7 +61,7 @@ namespace CG_2IV05.TreeBuilding
 			Tree tree = new Tree();
 			tree.Root = root;
 			Console.Out.WriteLine("Writing Tree");
-			using (FileStream file = File.Open(TreeOutputFileFormat, FileMode.Create, FileAccess.ReadWrite))
+			using (FileStream file = File.Open(string.Format(TreeOutputFileFormat, DirectoryOutput), FileMode.Create, FileAccess.ReadWrite))
 			{
 				SerializableType<Tree>.SerializeToStream(tree, file, BinarySerializableTypeEngine.BinairSerializer);
 			}
@@ -217,7 +241,7 @@ namespace CG_2IV05.TreeBuilding
 
 		public static string CreateFilename()
 		{
-			return string.Format(NodeFilenameFormat, FileCount++);
+			return string.Format(NodeFilenameFormat, DirectoryOutput, FileCount++);
 		}
 
 		/// <summary>
