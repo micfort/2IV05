@@ -176,7 +176,7 @@ namespace CG_2IV05.TreeBuilding
 				int j = i;
 				if (i == 0)
 				{
-					j = building.Polygon.Count - 1;
+					j = building.Polygon.Count;
 				}
 				
 				int currentLow = i*4 + 0;
@@ -209,6 +209,7 @@ namespace CG_2IV05.TreeBuilding
 				data.Indexes[i*2*3 + 3*1 + 1] = currentHigh;
 				data.Indexes[i*2*3 + 3*1 + 2] = LastHigh;
 			}
+
 			return data;
 		}
 
