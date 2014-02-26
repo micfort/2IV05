@@ -118,6 +118,7 @@ namespace CG_2IV05.Test
 			}
 
 			Assert.AreEqual(data.Vertices.Length, data2.Vertices.Length);
+			Assert.AreEqual(data.Normals.Length, data2.Normals.Length);
 			Assert.AreEqual(data.Indexes.Length, data2.Indexes.Length);
 
 			for (int i = 0; i < data.Vertices.Length; i++)
@@ -128,6 +129,133 @@ namespace CG_2IV05.Test
 			for (int i = 0; i < data.Vertices.Length; i++)
 			{
 				Assert.AreEqual(data.Normals[i], data2.Normals[i]);
+			}
+
+			for (int i = 0; i < data.Indexes.Length; i++)
+			{
+				Assert.AreEqual(data.Indexes[i], data2.Indexes[i]);
+			}
+
+			File.Delete("test_data");
+		}
+
+		[Test]
+		public void TestRaw()
+		{
+			NodeData data = new NodeData();
+
+			data.Vertices = new HyperPoint<float>[8];
+
+			#region vertices
+
+			data.Vertices[0] = new HyperPoint<float>(1, 1, 1, 1);
+			data.Vertices[1] = new HyperPoint<float>(1, 1, -1, 1);
+			data.Vertices[2] = new HyperPoint<float>(1, -1, 1, 1);
+			data.Vertices[3] = new HyperPoint<float>(1, -1, -1, 1);
+			data.Vertices[4] = new HyperPoint<float>(-1, 1, 1, 1);
+			data.Vertices[5] = new HyperPoint<float>(-1, 1, -1, 1);
+			data.Vertices[6] = new HyperPoint<float>(-1, -1, 1, 1);
+			data.Vertices[7] = new HyperPoint<float>(-1, -1, -1, 1);
+
+			#endregion
+
+			data.Normals = new HyperPoint<float>[8];
+
+			#region vertices
+
+			data.Normals[0] = new HyperPoint<float>(1, 1, 1, 1);
+			data.Normals[1] = new HyperPoint<float>(1, 1, -1, 1);
+			data.Normals[2] = new HyperPoint<float>(1, -1, 1, 1);
+			data.Normals[3] = new HyperPoint<float>(1, -1, -1, 1);
+			data.Normals[4] = new HyperPoint<float>(-1, 1, 1, 1);
+			data.Normals[5] = new HyperPoint<float>(-1, 1, -1, 1);
+			data.Normals[6] = new HyperPoint<float>(-1, -1, 1, 1);
+			data.Normals[7] = new HyperPoint<float>(-1, -1, -1, 1);
+
+			#endregion
+
+			data.Indexes = new int[12 * 3];
+
+			#region indexes
+
+			int j = 0;
+			data.Indexes[j++] = 0;
+			data.Indexes[j++] = 1;
+			data.Indexes[j++] = 2;
+
+			data.Indexes[j++] = 3;
+			data.Indexes[j++] = 4;
+			data.Indexes[j++] = 6;
+
+			data.Indexes[j++] = 7;
+			data.Indexes[j++] = 8;
+			data.Indexes[j++] = 0;
+
+			data.Indexes[j++] = 1;
+			data.Indexes[j++] = 2;
+			data.Indexes[j++] = 3;
+
+			data.Indexes[j++] = 4;
+			data.Indexes[j++] = 5;
+			data.Indexes[j++] = 6;
+
+			data.Indexes[j++] = 7;
+			data.Indexes[j++] = 8;
+			data.Indexes[j++] = 0;
+
+			data.Indexes[j++] = 1;
+			data.Indexes[j++] = 2;
+			data.Indexes[j++] = 3;
+
+			data.Indexes[j++] = 4;
+			data.Indexes[j++] = 5;
+			data.Indexes[j++] = 6;
+
+			data.Indexes[j++] = 7;
+			data.Indexes[j++] = 8;
+			data.Indexes[j++] = 0;
+
+			data.Indexes[j++] = 1;
+			data.Indexes[j++] = 2;
+			data.Indexes[j++] = 3;
+
+			data.Indexes[j++] = 4;
+			data.Indexes[j++] = 5;
+			data.Indexes[j++] = 6;
+
+			data.Indexes[j++] = 7;
+			data.Indexes[j++] = 8;
+			data.Indexes[j++] = 0;
+			#endregion
+
+			using (FileStream stream = File.Open("test_data", FileMode.Create, FileAccess.Write))
+			{
+				data.SaveToStream(stream);
+			}
+
+			NodeDataRaw data2;
+
+			using (FileStream stream = File.Open("test_data", FileMode.Open, FileAccess.Read))
+			{
+				data2 = NodeDataRaw.ReadFromStream(stream);
+			}
+
+			Assert.AreEqual(data.Vertices.Length*3, data2.Vertices.Length);
+			Assert.AreEqual(data.Normals.Length*3, data2.Normals.Length);
+			Assert.AreEqual(data.Indexes.Length, data2.Indexes.Length);
+
+			for (int i = 0; i < data.Vertices.Length; i++)
+			{
+				Assert.AreEqual(data.Vertices[i][0], data2.Vertices[i*3 + 0]);
+				Assert.AreEqual(data.Vertices[i][1], data2.Vertices[i * 3 + 1]);
+				Assert.AreEqual(data.Vertices[i][2], data2.Vertices[i * 3 + 2]);
+			}
+
+			for (int i = 0; i < data.Normals.Length; i++)
+			{
+				Assert.AreEqual(data.Vertices[i][0], data2.Normals[i * 3 + 0]);
+				Assert.AreEqual(data.Vertices[i][1], data2.Normals[i * 3 + 1]);
+				Assert.AreEqual(data.Vertices[i][2], data2.Normals[i * 3 + 2]);
 			}
 
 			for (int i = 0; i < data.Indexes.Length; i++)

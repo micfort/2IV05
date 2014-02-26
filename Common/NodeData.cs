@@ -18,6 +18,7 @@ namespace CG_2IV05.Common
 
 			output.Vertices = new float[VertexCount * 3];
 			output.Normals = new float[VertexCount * 3];
+			output.Indexes = new int[TriangleCount * 3];
 
 			byte[] vertexPointsByteBuffer = new byte[VertexCount * 3 * sizeof(float)];
 			stream.Read(vertexPointsByteBuffer, 0, vertexPointsByteBuffer.Length);
