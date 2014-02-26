@@ -8,11 +8,13 @@ namespace CG_2IV05.Common
 	{
 		public float[] Vertices { get; set; }
 		public float[] Normals { get; set; }
+		public int[] Indexes { get; set; }
 
 		public static NodeDataRaw ReadFromStream(Stream stream)
 		{
 			NodeDataRaw output = new NodeDataRaw();
 			int VertexCount = ReadInt32(stream);
+			int TriangleCount = ReadInt32(stream);
 
 			output.Vertices = new float[VertexCount * 3];
 			output.Normals = new float[VertexCount * 3];
@@ -28,6 +30,13 @@ namespace CG_2IV05.Common
 			for (int i = 0; i < VertexCount * 3; i++)
 			{
 				output.Normals[i] = BitConverter.ToSingle(vertexPointsByteBuffer, i * sizeof(float));
+			}
+
+			byte[] indexByteBuffer = new byte[TriangleCount * 3 * sizeof(int)];
+			stream.Read(indexByteBuffer, 0, indexByteBuffer.Length);
+			for (int i = 0; i < TriangleCount * 3; i++)
+			{
+				output.Indexes[i] = BitConverter.ToInt32(indexByteBuffer, i * sizeof(int));
 			}
 
 			return output;
@@ -46,11 +55,13 @@ namespace CG_2IV05.Common
 	{
 		public HyperPoint<float>[] Vertices { get; set; }
 		public HyperPoint<float>[] Normals { get; set; }
+		public int[] Indexes { get; set; }
 
 		public static NodeData ReadFromStream(Stream stream)
 		{
 			NodeData output = new NodeData();
 			int VertexCount = ReadInt32(stream);
+			int TriangleCount = ReadInt32(stream);
 
 			output.Vertices = new HyperPoint<float>[VertexCount];
 			output.Normals = new HyperPoint<float>[VertexCount];
@@ -76,6 +87,13 @@ namespace CG_2IV05.Common
 					1);
 			}
 
+			byte[] indexByteBuffer = new byte[TriangleCount * 3 * sizeof(int)];
+			stream.Read(indexByteBuffer, 0, indexByteBuffer.Length);
+			for (int i = 0; i < TriangleCount * 3; i++)
+			{
+				output.Indexes[i] = BitConverter.ToInt32(indexByteBuffer, i * sizeof(int));
+			}
+
 			return output;
 		}
 
@@ -84,6 +102,7 @@ namespace CG_2IV05.Common
 		public void SaveToStream(Stream stream)
 		{
 			WriteInt32(Vertices.Length, stream);
+			WriteInt32(Indexes.Length / 3, stream);
 
 			for (int i = 0; i < Vertices.Length; i++)
 			{
@@ -97,6 +116,11 @@ namespace CG_2IV05.Common
 				WriteFloat(Normals[i].X, stream);
 				WriteFloat(Normals[i].Y, stream);
 				WriteFloat(Normals[i].Z, stream);
+			}
+
+			for (int i = 0; i < Indexes.Length; i++)
+			{
+				WriteInt32(Indexes[i], stream);
 			}
 		}
 
