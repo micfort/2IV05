@@ -193,7 +193,7 @@ namespace CG_2IV05.TreeBuilding
 
 				HyperPoint<float> sizeX = data.Vertices[currentHigh] - data.Vertices[currentLow];
 				HyperPoint<float> sizeY = data.Vertices[LastLow] - data.Vertices[currentLow];
-				HyperPoint<float> normal = Cross3D(sizeX.Normilize(), sizeY.Normilize()).Normilize();
+				HyperPoint<float> normal = HyperPoint<float>.Cross3D(sizeX.Normilize(), sizeY.Normilize()).Normilize();
 
 				data.Normals[currentLow] = normal;
 				data.Normals[currentHigh] = normal;
@@ -426,19 +426,5 @@ namespace CG_2IV05.TreeBuilding
 			}
 			return output;
 		}
-
-		public static HyperPoint<float> Cross3D(HyperPoint<float> a, HyperPoint<float> b)
-		{
-			if (a.Dim == 3 && b.Dim == 3)
-			{
-				return
-					new HyperPoint<float>(a.Y*b.Z - a.Z*b.Y, a.Z*b.X - a.X*b.Z, a.X*b.Y - a.Y*b.X);
-			}
-			else
-			{
-				throw new ArgumentException("For the cross product to work it needs 3D vectors");
-			}
-		}
-
 	}
 }
