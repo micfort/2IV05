@@ -8,19 +8,25 @@ using OpenTK.Graphics.OpenGL;
 
 namespace CG_2IV05.Visualize
 {
-	class VBO
+	class VBO: IDisposable
 	{
 		public uint Indexes { get; private set; }
 		public uint Vertices { get; private set; }
 		public uint Normals { get; private set; }
 		public int NumElements { get; private set; }
+		public bool DataLoaded { get; private set; }
 
-		public VBO(NodeDataRaw data)
+		public VBO()
 		{
+			DataLoaded = false;
+
 			Indexes = CreateBuffer();
 			Vertices = CreateBuffer();
 			Normals = CreateBuffer();
+		}
 
+		public void LoadData(NodeDataRaw data)
+		{
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, Indexes);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(data.Indexes.Length * sizeof(int)), data.Indexes, BufferUsageHint.DynamicDraw);
 
@@ -33,10 +39,15 @@ namespace CG_2IV05.Visualize
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
 			NumElements = data.Indexes.Length;
+
+			DataLoaded = true;
 		}
 
 		public void Draw()
 		{
+			if (!DataLoaded)
+				throw new ArgumentException("There should be data loaded.");
+
 			GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
 
 			{
@@ -83,5 +94,20 @@ namespace CG_2IV05.Visualize
 			GL.GenBuffers(1, out i);
 			return i;
 		}
+
+		#region Implementation of IDisposable
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		/// <filterpriority>2</filterpriority>
+		public void Dispose()
+		{
+			GL.DeleteBuffer(Indexes);
+			GL.DeleteBuffer(Vertices);
+			GL.DeleteBuffer(Normals);
+		}
+
+		#endregion
 	}
 }

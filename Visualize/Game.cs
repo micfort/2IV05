@@ -53,7 +53,8 @@ namespace CG_2IV05.Visualize
 			using (FileStream file = File.OpenRead(@"D:\S120397\School\2IV05 ACCG\2IV05\TreeBuilding\bin\Debug\output\data_0"))
 			{
 				NodeDataRaw data = NodeDataRaw.ReadFromStream(file);
-				vbo = new VBO(data);
+				vbo = new VBO();
+				vbo.LoadData(data);
 			}
 
 			GL.Enable(EnableCap.ColorMaterial);
