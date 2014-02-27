@@ -18,33 +18,17 @@ namespace CG_2IV05.TreeBuilding
 		private static string TreeOutputFileFormat = "{0}\\tree";
 		private static string DirectoryOutput = "output";
 		private static string InputFilename = "buildings.xml";
+		private static bool Generate = false;
+		private static int generateSizeX = 100;
+		private static int generateSizeY = 100;
+		private static HyperPoint<float> CenterDataSet;
+		private static bool FindCenterDataSet = true;
 
 		static void Main(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
 
-			for (int i = 0; i < args.Length; i++)
-			{
-				if(args[i] == "--triangles" || args[i] == "-t")
-				{
-					i++;
-					MaxTriangleCount = int.Parse(args[i]);
-				}
-				else if (args[i] == "--max-triangles" || args[i] == "-m")
-				{
-					MaxTriangleCount = int.MaxValue;
-				}
-				else if (args[i] == "--output" || args[i] == "-o")
-				{
-					i++;
-					DirectoryOutput = args[i];
-				}
-				else if (args[i] == "--input" || args[i] == "-i")
-				{
-					i++;
-					InputFilename = args[i];
-				}
-			}
+			ParseCommandLine(args);
 
 			if (!Directory.Exists(DirectoryOutput))
 			{
@@ -52,8 +36,17 @@ namespace CG_2IV05.TreeBuilding
 			}
 
 			Console.Out.WriteLine("Generating/Reading Buildings");
-			List<Building> buildings = ReadBuildings();
-			//List<Building> buildings = CreateData();
+			List<Building> buildings;
+			if(Generate)
+			{
+				buildings = CreateData();
+			}
+			else
+			{
+				buildings = ReadBuildings();
+			}
+
+			SetCenterDateSet(buildings);
 
 			Console.Out.WriteLine("Create Nodes");
 			Node root = CreateNode(buildings, null);
@@ -168,8 +161,8 @@ namespace CG_2IV05.TreeBuilding
 		public static NodeData CreateData(Building building)
 		{
 			NodeData data = new NodeData();
-			data.Vertices = new HyperPoint<float>[building.Polygon.Count * 4]; //high and low point
-			data.Normals = new HyperPoint<float>[building.Polygon.Count * 4]; //high and low point
+			data.Vertices = new HyperPoint<float>[building.Polygon.Count * 4]; //high and low point for both points
+			data.Normals = new HyperPoint<float>[building.Polygon.Count * 4]; //high and low point for both points
 			data.Indexes = new int[building.Polygon.Count * 2 * 3]; //2 triangles per square, 3 points per triangle
 			for (int i = 0; i < building.Polygon.Count; i++)
 			{
@@ -190,6 +183,11 @@ namespace CG_2IV05.TreeBuilding
 				
 				data.Vertices[LastLow] = new HyperPoint<float>(building.Polygon[j - 1].X, building.Polygon[j - 1].Y, 0);
 				data.Vertices[LastHigh] = new HyperPoint<float>(building.Polygon[j - 1].X, building.Polygon[j - 1].Y, building.Height);
+
+				data.Vertices[currentLow] = data.Vertices[currentLow] - CenterDataSet;
+				data.Vertices[currentHigh] = data.Vertices[currentHigh] - CenterDataSet;
+				data.Vertices[LastLow] = data.Vertices[LastLow] - CenterDataSet;
+				data.Vertices[LastHigh] = data.Vertices[LastHigh] - CenterDataSet;
 
 				HyperPoint<float> sizeX = data.Vertices[currentHigh] - data.Vertices[currentLow];
 				HyperPoint<float> sizeY = data.Vertices[LastLow] - data.Vertices[currentLow];
@@ -328,9 +326,9 @@ namespace CG_2IV05.TreeBuilding
 		public static List<Building> CreateData()
 		{
 			List<Building> output = new List<Building>();
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < generateSizeX; i++)
 			{
-				for (int j = 0; j < 100; j++)
+				for (int j = 0; j < generateSizeY; j++)
 				{
 					Building b = new Building();
 					int x = i*2;
@@ -425,6 +423,61 @@ namespace CG_2IV05.TreeBuilding
 												 float.Parse(coordinatesSplit[i][2], CultureInfo.InvariantCulture)));
 			}
 			return output;
+		}
+
+		public static void SetCenterDateSet(List<Building> buildings)
+		{
+			if (FindCenterDataSet)
+			{
+				HyperPoint<float> min = GetMinPoint(buildings);
+				HyperPoint<float> max = GetMaxPoint(buildings);
+
+				CenterDataSet = (max - min);
+				CenterDataSet = CenterDataSet * (1f / 2f);
+				CenterDataSet = CenterDataSet + min;
+			}
+			else
+			{
+				CenterDataSet = new HyperPoint<float>(0, 0, 0);
+			}
+		}
+
+		public static void ParseCommandLine(string[] args)
+		{
+			for (int i = 0; i < args.Length; i++)
+			{
+				if (args[i] == "--triangles" || args[i] == "-t")
+				{
+					i++;
+					MaxTriangleCount = int.Parse(args[i]);
+				}
+				else if (args[i] == "--max-triangles" || args[i] == "-m")
+				{
+					MaxTriangleCount = int.MaxValue;
+				}
+				else if (args[i] == "--output" || args[i] == "-o")
+				{
+					i++;
+					DirectoryOutput = args[i];
+				}
+				else if (args[i] == "--input" || args[i] == "-i")
+				{
+					i++;
+					InputFilename = args[i];
+				}
+				else if (args[i] == "--generate-data" || args[i] == "-g")
+				{
+					Generate = true;
+					i++;
+					generateSizeX = int.Parse(args[i]);
+					i++;
+					generateSizeY = int.Parse(args[i]);
+				}
+				else if(args[i] == "--center-data" || args[i] == "-c")
+				{
+					FindCenterDataSet = true;
+				}
+			}
 		}
 	}
 }
