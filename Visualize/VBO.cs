@@ -31,6 +31,7 @@ namespace CG_2IV05.Visualize
 			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(data.Indexes.Length * sizeof(int)), data.Indexes, BufferUsageHint.DynamicDraw);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, Vertices);
+            // Crash here with 60k buildings
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(data.Vertices.Length * Vector3.SizeInBytes), data.Vertices, BufferUsageHint.DynamicDraw);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, Normals);
