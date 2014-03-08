@@ -46,11 +46,11 @@ namespace CG_2IV05.TreeBuilding
                 buildings = ReadBuildings();
                 
                 // TEST CODE FOR CRASH VBO, 56K works 60K does not work
-                Console.Out.WriteLine(buildings.Count());
-                Console.ReadKey();
-                List<Building> buildingList = buildings.GetRange(0, 56000);
+                //Console.Out.WriteLine(buildings.Count());
+                //Console.ReadKey();
+                //List<Building> buildingList = buildings.GetRange(0, 56000);
 
-                buildings = buildingList;
+                //buildings = buildingList;
             }
 
             SetCenterDateSet(buildings);
@@ -211,22 +211,21 @@ namespace CG_2IV05.TreeBuilding
                 data.Normals[LastLow] = normal;
                 data.Normals[LastHigh] = normal;
 
-                data.Indexes[i * 2 * 3 + 3 * 0 + 0] = currentLow;
-                data.Indexes[i * 2 * 3 + 3 * 0 + 1] = currentHigh;
-                data.Indexes[i * 2 * 3 + 3 * 0 + 2] = LastLow;
+	            data.Indexes[i*2*3 + 3*0 + 0] = currentLow;
+	            data.Indexes[i*2*3 + 3*0 + 1] = currentHigh;
+	            data.Indexes[i*2*3 + 3*0 + 2] = LastLow;
 
-                data.Indexes[i * 2 * 3 + 3 * 1 + 0] = LastLow;
-                data.Indexes[i * 2 * 3 + 3 * 1 + 1] = currentHigh;
-                data.Indexes[i * 2 * 3 + 3 * 1 + 2] = LastHigh;
+	            data.Indexes[i*2*3 + 3*1 + 0] = LastLow;
+	            data.Indexes[i*2*3 + 3*1 + 1] = currentHigh;
+	            data.Indexes[i*2*3 + 3*1 + 2] = LastHigh;
 
                 roofVertices[i] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, building.Height) - CenterDataSet;
-                data.Vertices[building.Polygon.Count * 4 + i] = roofVertices[i];
-                data.Normals[building.Polygon.Count * 4 + i] = normalRoof;
-
+	            data.Vertices[building.Polygon.Count*4 + i] = roofVertices[i];
+	            data.Normals[building.Polygon.Count*4 + i] = normalRoof;
             }
 
             int[] roofIndexes = EarClippingTriangulator.triangulatePolygon(roofVertices, building.Polygon.Count * 4);
-            data.Indexes = data.Indexes.Concat(roofIndexes).ToArray();
+			Array.Copy(roofIndexes, 0, data.Indexes, building.Polygon.Count*6, roofIndexes.Length);
 
             return data;
         }
