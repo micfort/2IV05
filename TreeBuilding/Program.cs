@@ -44,13 +44,6 @@ namespace CG_2IV05.TreeBuilding
             else
             {
                 buildings = ReadBuildings();
-                
-                // TEST CODE FOR CRASH VBO, 56K works 60K does not work
-                //Console.Out.WriteLine(buildings.Count());
-                //Console.ReadKey();
-                //List<Building> buildingList = buildings.GetRange(0, 56000);
-
-                //buildings = buildingList;
             }
 
             SetCenterDateSet(buildings);
@@ -376,7 +369,7 @@ namespace CG_2IV05.TreeBuilding
                     if (reader.Name == "Building")
                     {
                         output.Add(ReadBuilding(reader));
-                    }
+                    } 
                 }
             }
             return output;
