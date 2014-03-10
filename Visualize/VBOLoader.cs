@@ -11,7 +11,7 @@ namespace CG_2IV05.Visualize
 {
     class VBOLoader
     {
-        private ConcurrentPriorityQueue<Node, int> nodeQueue;
+        private ConcurrentPriorityQueue<NodeLoadItem, int> loadQueue;
         private ConcurrentBag<VBO> vboBag;
 
         private Thread thread;
@@ -20,7 +20,7 @@ namespace CG_2IV05.Visualize
         
         public VBOLoader(ConcurrentBag<VBO> vboBag)
         {
-            nodeQueue = new ConcurrentPriorityQueue<Node, int>(new PriorityQueue<Node, int>());
+            loadQueue = new ConcurrentPriorityQueue<NodeLoadItem, int>(new PriorityQueue<NodeLoadItem, int>());
             this.vboBag = vboBag;
             thread = new Thread(run);
         }
@@ -49,28 +49,18 @@ namespace CG_2IV05.Visualize
         {
             while (running)
             {
-                if (nodeQueue.Count > 0)
+                if (loadQueue.Count > 0)
                 {
-                    Node nextNode = nodeQueue.Dequeue();
-
-                    VBO oldVBO;
-                    bool taken = vboBag.TryTake(out oldVBO);
-                    if (taken)
-                    {
-                        oldVBO.LoadData(nextNode.ReadRawData());
-                        vboBag.Add(oldVBO);
-                    }
-                    else
-                    {
-                        nodeQueue.Enqueue(nextNode, 0);
-                    }
+                    NodeLoadItem nextNode = loadQueue.Dequeue();
+                    VBO reloadedVBO = nextNode.loadNodeFromDisc();
+                    vboBag.Add(reloadedVBO);
                 }
             }
         }
 
-        public void enqueueNode(Node node, int priority = 0)
+        public void enqueueNode(NodeLoadItem node, int priority = 0)
         {
-            nodeQueue.Enqueue(node, priority);
+            loadQueue.Enqueue(node, priority);
         }
     }
 }
