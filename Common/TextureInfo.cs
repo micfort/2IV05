@@ -6,7 +6,7 @@ using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common
 {
-	class TextureInfo
+	public class TextureInfo
 	{
 		private HyperPoint<int> ItemSize = new HyperPoint<int>(64, 64);
 		private HyperPoint<int> TextureSize = new HyperPoint<int>(512, 512);
@@ -29,10 +29,32 @@ namespace CG_2IV05.Common
 		{
 			get { return GetItem(2); }
 		}
-		public HyperPoint<float> Building
+		public List<HyperPoint<float>> Buildings
 		{
-			get { return GetItem(3); }
+			get
+			{
+				return new List<HyperPoint<float>>()
+					       {
+						       GetItem(3),
+							   GetItem(0),
+							   GetItem(1),
+							   GetItem(2),
+					       };
+			}
 		}
+		public List<HyperPoint<float>> Roof
+		{
+			get
+			{
+				return new List<HyperPoint<float>>()
+					       {
+						       GetItem(4),
+							   GetItem(4),
+							   GetItem(4),
+							   GetItem(4),
+					       };
+			}
+		} 
 		public HyperPoint<float> Forest
 		{
 			get { return GetItem(4); }

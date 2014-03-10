@@ -51,6 +51,21 @@ namespace CG_2IV05.Test
 
 			#endregion
 
+			data.TextCoord = new HyperPoint<float>[8];
+
+			#region texture coordinates
+
+			data.TextCoord[0] = new HyperPoint<float>(1, 1);
+			data.TextCoord[1] = new HyperPoint<float>(1, 1);
+			data.TextCoord[2] = new HyperPoint<float>(1, -1);
+			data.TextCoord[3] = new HyperPoint<float>(1, -1);
+			data.TextCoord[4] = new HyperPoint<float>(-1, 1);
+			data.TextCoord[5] = new HyperPoint<float>(-1, 1);
+			data.TextCoord[6] = new HyperPoint<float>(-1, -1);
+			data.TextCoord[7] = new HyperPoint<float>(-1, -1);
+
+			#endregion
+
 			data.Indexes = new int[12 * 3];
 
 			#region indexes
@@ -126,9 +141,14 @@ namespace CG_2IV05.Test
 				Assert.AreEqual(data.Vertices[i], data2.Vertices[i]);
 			}
 
-			for (int i = 0; i < data.Vertices.Length; i++)
+			for (int i = 0; i < data.Normals.Length; i++)
 			{
 				Assert.AreEqual(data.Normals[i], data2.Normals[i]);
+			}
+
+			for (int i = 0; i < data.TextCoord.Length; i++)
+			{
+				Assert.AreEqual(data.TextCoord[i], data2.TextCoord[i]);
 			}
 
 			for (int i = 0; i < data.Indexes.Length; i++)
@@ -171,6 +191,21 @@ namespace CG_2IV05.Test
 			data.Normals[5] = new HyperPoint<float>(-1, 1, -1, 1);
 			data.Normals[6] = new HyperPoint<float>(-1, -1, 1, 1);
 			data.Normals[7] = new HyperPoint<float>(-1, -1, -1, 1);
+
+			#endregion
+
+			data.TextCoord = new HyperPoint<float>[8];
+
+			#region texture coordinates
+
+			data.TextCoord[0] = new HyperPoint<float>(1, 1);
+			data.TextCoord[1] = new HyperPoint<float>(1, 1);
+			data.TextCoord[2] = new HyperPoint<float>(1, -1);
+			data.TextCoord[3] = new HyperPoint<float>(1, -1);
+			data.TextCoord[4] = new HyperPoint<float>(-1, 1);
+			data.TextCoord[5] = new HyperPoint<float>(-1, 1);
+			data.TextCoord[6] = new HyperPoint<float>(-1, -1);
+			data.TextCoord[7] = new HyperPoint<float>(-1, -1);
 
 			#endregion
 
@@ -242,6 +277,7 @@ namespace CG_2IV05.Test
 
 			Assert.AreEqual(data.Vertices.Length*3, data2.Vertices.Length);
 			Assert.AreEqual(data.Normals.Length*3, data2.Normals.Length);
+			Assert.AreEqual(data.TextCoord.Length*2, data2.TextCoord.Length);
 			Assert.AreEqual(data.Indexes.Length, data2.Indexes.Length);
 
 			for (int i = 0; i < data.Vertices.Length; i++)
@@ -256,6 +292,12 @@ namespace CG_2IV05.Test
 				Assert.AreEqual(data.Vertices[i][0], data2.Normals[i * 3 + 0]);
 				Assert.AreEqual(data.Vertices[i][1], data2.Normals[i * 3 + 1]);
 				Assert.AreEqual(data.Vertices[i][2], data2.Normals[i * 3 + 2]);
+			}
+
+			for (int i = 0; i < data.TextCoord.Length; i++)
+			{
+				Assert.AreEqual(data.TextCoord[i][0], data2.TextCoord[i * 2 + 0]);
+				Assert.AreEqual(data.TextCoord[i][1], data2.TextCoord[i * 2 + 1]);
 			}
 
 			for (int i = 0; i < data.Indexes.Length; i++)

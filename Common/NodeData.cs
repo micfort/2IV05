@@ -8,7 +8,7 @@ namespace CG_2IV05.Common
 	{
 		public float[] Vertices { get; set; }
 		public float[] Normals { get; set; }
-		public float[] TextCoords { get; set; }
+		public float[] TextCoord { get; set; }
 		public int[] Indexes { get; set; }
 
 		public static NodeDataRaw ReadFromStream(Stream stream)
@@ -19,19 +19,19 @@ namespace CG_2IV05.Common
 
 			output.Vertices = new float[vertexCount * 3];
 			output.Normals = new float[vertexCount * 3];
-			output.TextCoords = new float[vertexCount * 2];
+			output.TextCoord = new float[vertexCount * 2];
 			output.Indexes = new int[triangleCount * 3];
 
 			byte[] vertexPointsByteBuffer = new byte[vertexCount * 3 * sizeof(float)];
 
-			stream.Read(vertexPointsByteBuffer, 0, vertexPointsByteBuffer.Length);
+			stream.Read(vertexPointsByteBuffer, 0, vertexCount * 3 * sizeof(float));
 			ReadFloatArray(output.Vertices, vertexPointsByteBuffer, vertexCount*3);
 
-			stream.Read(vertexPointsByteBuffer, 0, vertexPointsByteBuffer.Length);
+			stream.Read(vertexPointsByteBuffer, 0, vertexCount * 3 * sizeof(float));
 			ReadFloatArray(output.Normals, vertexPointsByteBuffer, vertexCount*3);
 
-			stream.Read(vertexPointsByteBuffer, 0, vertexPointsByteBuffer.Length);
-			ReadFloatArray(output.TextCoords, vertexPointsByteBuffer, vertexCount*2);
+			stream.Read(vertexPointsByteBuffer, 0, vertexCount * 2 * sizeof(float));
+			ReadFloatArray(output.TextCoord, vertexPointsByteBuffer, vertexCount*2);
 
 			byte[] indexByteBuffer = new byte[triangleCount * 3 * sizeof(int)];
 
@@ -85,7 +85,7 @@ namespace CG_2IV05.Common
 			output.Indexes = new int[TriangleCount*3];
 
 			byte[] vertexPointsByteBuffer = new byte[VertexCount * 3 * sizeof(float)];
-			stream.Read(vertexPointsByteBuffer, 0, vertexPointsByteBuffer.Length);
+			stream.Read(vertexPointsByteBuffer, 0, VertexCount * 3 * sizeof(float));
 			for (int i = 0; i < VertexCount; i++)
 			{
 				output.Vertices[i] = new HyperPoint<float>(
@@ -95,7 +95,7 @@ namespace CG_2IV05.Common
 					1);
 			}
 
-			stream.Read(vertexPointsByteBuffer, 0, vertexPointsByteBuffer.Length);
+			stream.Read(vertexPointsByteBuffer, 0, VertexCount * 3 * sizeof(float));
 			for (int i = 0; i < VertexCount; i++)
 			{
 				output.Normals[i] = new HyperPoint<float>(
@@ -105,12 +105,12 @@ namespace CG_2IV05.Common
 					1);
 			}
 
-			stream.Read(vertexPointsByteBuffer, 0, vertexPointsByteBuffer.Length);
+			stream.Read(vertexPointsByteBuffer, 0, VertexCount * 2 * sizeof(float));
 			for (int i = 0; i < VertexCount; i++)
 			{
 				output.TextCoord[i] = new HyperPoint<float>(
-					BitConverter.ToSingle(vertexPointsByteBuffer, (i * 3 + 0) * sizeof(float)),
-					BitConverter.ToSingle(vertexPointsByteBuffer, (i * 3 + 1) * sizeof(float)));
+					BitConverter.ToSingle(vertexPointsByteBuffer, (i * 2 + 0) * sizeof(float)),
+					BitConverter.ToSingle(vertexPointsByteBuffer, (i * 2 + 1) * sizeof(float)));
 			}
 
 			byte[] indexByteBuffer = new byte[TriangleCount * 3 * sizeof(int)];

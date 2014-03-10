@@ -24,6 +24,8 @@ namespace CG_2IV05.TreeBuilding
         private static HyperPoint<float> CenterDataSet;
         private static bool FindCenterDataSet = true;
 
+		private static TextureInfo textureInfo = new TextureInfo();
+
         static void Main(string[] args)
         {
             micfort.GHL.GHLWindowsInit.Init();
@@ -132,6 +134,7 @@ namespace CG_2IV05.TreeBuilding
 
             output.Vertices = new HyperPoint<float>[verticesCount];
             output.Normals = new HyperPoint<float>[verticesCount];
+	        output.TextCoord = new HyperPoint<float>[verticesCount];
             output.Indexes = new int[indexesCount];
 
             int verticesI = 0;
@@ -145,6 +148,7 @@ namespace CG_2IV05.TreeBuilding
                 }
                 Array.Copy(nodeDataList[i].Vertices, 0, output.Vertices, verticesI, nodeDataList[i].Vertices.Length);
                 Array.Copy(nodeDataList[i].Normals, 0, output.Normals, verticesI, nodeDataList[i].Normals.Length);
+				Array.Copy(nodeDataList[i].TextCoord, 0, output.TextCoord, verticesI, nodeDataList[i].TextCoord.Length);
                 Array.Copy(nodeDataList[i].Indexes, 0, output.Indexes, indexI, nodeDataList[i].Indexes.Length);
                 verticesI += nodeDataList[i].Vertices.Length;
                 indexI += nodeDataList[i].Indexes.Length;
@@ -165,6 +169,7 @@ namespace CG_2IV05.TreeBuilding
             data.Vertices = new HyperPoint<float>[building.Polygon.Count * 4 + building.Polygon.Count]; //high and low point for both points and one extra for each top
             data.Normals = new HyperPoint<float>[building.Polygon.Count * 4 + building.Polygon.Count]; //high and low point for both points and one extra for each top
             data.Indexes = new int[building.Polygon.Count * 2 * 3 + (building.Polygon.Count - 2) * 3]; //2 triangles per square, 3 points per triangle + (n-2) triangles for triangulation
+			data.TextCoord = new HyperPoint<float>[building.Polygon.Count * 4 + building.Polygon.Count]; //high and low point for both points and one extra for each top
             
             HyperPoint<float>[] roofVertices = new HyperPoint<float>[building.Polygon.Count];
             HyperPoint<float> normalRoof = new HyperPoint<float>(0, 0, 1);
@@ -183,6 +188,7 @@ namespace CG_2IV05.TreeBuilding
                 int LastLow = i * 4 + 2;
                 int LastHigh = i * 4 + 3;
 
+				#region Vertices
                 data.Vertices[currentLow] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, 0);
                 data.Vertices[currentHigh] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, building.Height);
 
@@ -193,16 +199,34 @@ namespace CG_2IV05.TreeBuilding
                 data.Vertices[currentHigh] = data.Vertices[currentHigh] - CenterDataSet;
                 data.Vertices[LastLow] = data.Vertices[LastLow] - CenterDataSet;
                 data.Vertices[LastHigh] = data.Vertices[LastHigh] - CenterDataSet;
+				#endregion vertices
 
-                HyperPoint<float> sizeX = data.Vertices[currentHigh] - data.Vertices[currentLow];
-                HyperPoint<float> sizeY = data.Vertices[LastLow] - data.Vertices[currentLow];
-                HyperPoint<float> normal = HyperPoint<float>.Cross3D(sizeX.Normilize(), sizeY.Normilize()).Normilize();
+	            #region Normals
 
-                data.Normals[currentLow] = normal;
-                data.Normals[currentHigh] = normal;
+	            HyperPoint<float> sizeX = data.Vertices[currentHigh] - data.Vertices[currentLow];
+	            HyperPoint<float> sizeY = data.Vertices[LastLow] - data.Vertices[currentLow];
+	            HyperPoint<float> normal = HyperPoint<float>.Cross3D(sizeX.Normilize(), sizeY.Normilize()).Normilize();
 
-                data.Normals[LastLow] = normal;
-                data.Normals[LastHigh] = normal;
+	            data.Normals[currentLow] = normal;
+	            data.Normals[currentHigh] = normal;
+
+	            data.Normals[LastLow] = normal;
+	            data.Normals[LastHigh] = normal;
+
+	            #endregion
+
+				#region TextCoord
+
+	            HyperPoint<float> textureItem = textureInfo.Buildings[0];
+
+	            data.TextCoord[currentLow] = textureInfo.GetLeftBottom(textureItem);
+				data.TextCoord[currentHigh] = textureInfo.GetLeftTop(textureItem);
+				data.TextCoord[LastLow] = textureInfo.GetRightBottom(textureItem);
+				data.TextCoord[LastHigh] = textureInfo.GetRightTop(textureItem);
+
+				#endregion
+
+	            #region Indexes
 
 	            data.Indexes[i*2*3 + 3*0 + 0] = currentLow;
 	            data.Indexes[i*2*3 + 3*0 + 1] = currentHigh;
@@ -212,9 +236,16 @@ namespace CG_2IV05.TreeBuilding
 	            data.Indexes[i*2*3 + 3*1 + 1] = currentHigh;
 	            data.Indexes[i*2*3 + 3*1 + 2] = LastHigh;
 
+	            #endregion
+
+				#region Roof
+
                 roofVertices[i] = new HyperPoint<float>(building.Polygon[i].X, building.Polygon[i].Y, building.Height) - CenterDataSet;
 	            data.Vertices[building.Polygon.Count*4 + i] = roofVertices[i];
 	            data.Normals[building.Polygon.Count*4 + i] = normalRoof;
+	            data.TextCoord[building.Polygon.Count*4 + i] = new HyperPoint<float>(0,0);
+
+	            #endregion
             }
 
             int[] roofIndexes = EarClippingTriangulator.triangulatePolygon(roofVertices, building.Polygon.Count * 4);
