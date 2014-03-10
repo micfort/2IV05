@@ -49,7 +49,7 @@ namespace CG_2IV05.Visualize
 			// setup settings, load textures, sounds
 			game.VSync = VSyncMode.On;
 
-			using (FileStream file = File.OpenRead(@"D:\S120397\School\2IV05 ACCG\2IV05\TreeBuilding\bin\Debug\output\data_0"))
+            using (FileStream file = File.OpenRead(@"D:\Documents\CSE\Additional Computer Graphics Components\Visualizing the Netherlands\2IV05\TreeBuilding\bin\Debug\output\data_0"))
 			{
 				NodeDataRaw data = NodeDataRaw.ReadFromStream(file);
 				vbo = new VBO();
