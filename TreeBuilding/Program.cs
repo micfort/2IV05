@@ -25,6 +25,7 @@ namespace CG_2IV05.TreeBuilding
         private static bool FindCenterDataSet = true;
 
 		private static TextureInfo textureInfo = new TextureInfo();
+	    private static Random rand = new Random();
 
         static void Main(string[] args)
         {
@@ -60,7 +61,10 @@ namespace CG_2IV05.TreeBuilding
             {
                 SerializableType<Tree>.SerializeToStream(tree, file, BinarySerializableTypeEngine.BinairSerializer);
             }
-            
+
+	        Console.Out.WriteLine("Done. Press any key to close.");
+	        Console.ReadKey();
+
         }
         
         /// <summary>
@@ -174,6 +178,8 @@ namespace CG_2IV05.TreeBuilding
             HyperPoint<float>[] roofVertices = new HyperPoint<float>[building.Polygon.Count];
             HyperPoint<float> normalRoof = new HyperPoint<float>(0, 0, 1);
 
+			HyperPoint<float> textureItem = textureInfo.Buildings[rand.Next(textureInfo.Buildings.Count)];
+
             for (int i = 0; i < building.Polygon.Count; i++)
             {
                 int j = i;
@@ -216,8 +222,6 @@ namespace CG_2IV05.TreeBuilding
 	            #endregion
 
 				#region TextCoord
-
-	            HyperPoint<float> textureItem = textureInfo.Buildings[0];
 
 	            data.TextCoord[currentLow] = textureInfo.GetLeftBottom(textureItem);
 				data.TextCoord[currentHigh] = textureInfo.GetLeftTop(textureItem);

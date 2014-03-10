@@ -12,6 +12,7 @@ namespace CG_2IV05.Visualize
 	{
 		public uint Indexes { get; private set; }
 		public uint Vertices { get; private set; }
+		public uint TextCoord { get; private set; }
 		public uint Normals { get; private set; }
 		public int NumElements { get; private set; }
 		public bool DataLoaded { get; private set; }
@@ -23,6 +24,7 @@ namespace CG_2IV05.Visualize
 			Indexes = CreateBuffer();
 			Vertices = CreateBuffer();
 			Normals = CreateBuffer();
+			TextCoord = CreateBuffer();
 		}
 
 		public void LoadData(NodeDataRaw data)
@@ -31,11 +33,13 @@ namespace CG_2IV05.Visualize
 			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(data.Indexes.Length * sizeof(int)), data.Indexes, BufferUsageHint.DynamicDraw);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, Vertices);
-            // Crash here with 60k buildings
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(data.Vertices.Length * sizeof(float)), data.Vertices, BufferUsageHint.DynamicDraw);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, Normals);
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(data.Normals.Length * sizeof(float)), data.Normals, BufferUsageHint.DynamicDraw);
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, TextCoord);
+			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(data.TextCoord.Length * sizeof(float)), data.TextCoord, BufferUsageHint.DynamicDraw);
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
@@ -72,6 +76,17 @@ namespace CG_2IV05.Visualize
 
 				// Enable the client state so it will use this array buffer pointer
 				GL.EnableClientState(EnableCap.VertexArray);
+			}
+
+			{
+				// Bind to the Array Buffer ID
+				GL.BindBuffer(BufferTarget.ArrayBuffer, TextCoord);
+
+				// Set the Pointer to the current bound array describing how the data ia stored
+				GL.TexCoordPointer(2, TexCoordPointerType.Float, Vector2.SizeInBytes, IntPtr.Zero);
+
+				// Enable the client state so it will use this array buffer pointer
+				GL.EnableClientState(EnableCap.TextureCoordArray);
 			}
 
 			{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,6 @@ using OpenTK.Input;
 
 namespace CG_2IV05.Visualize
 {
-	
-
 	class Game
 	{
 		private GameWindow game;
@@ -22,8 +21,8 @@ namespace CG_2IV05.Visualize
 		private Vector2 Mouse;
 		private Vector2? LastMousePos;
 		private Matrix4 lookAtMatrix;
+		private int texture;
 		
-
 		public Game()
 		{
 			
@@ -57,11 +56,17 @@ namespace CG_2IV05.Visualize
 				vbo.LoadData(data);
 			}
 
-			GL.Enable(EnableCap.ColorMaterial);
+			using (FileStream file = File.OpenRead("Texture.fw.png"))
+			{
+				texture = LoadTexture(file);
+			}
+
+			//GL.Enable(EnableCap.ColorMaterial);
 			GL.Disable(EnableCap.CullFace);
 			GL.Enable(EnableCap.DepthTest);
 			GL.CullFace(CullFaceMode.Front);
 			GL.Enable(EnableCap.Normalize);
+			GL.Enable(EnableCap.Texture2D);
 
 			GL.Enable(EnableCap.Lighting);
 			GL.Enable(EnableCap.Light0);
@@ -83,25 +88,10 @@ namespace CG_2IV05.Visualize
 			// render graphics
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			
-			GL.MatrixMode(MatrixMode.Modelview);;
+			GL.MatrixMode(MatrixMode.Modelview);
 			GL.LoadMatrix(ref lookAtMatrix);
 			
-			GL.Begin(PrimitiveType.Triangles);
-
-			GL.Color3(Color.Green);
-			GL.Normal3(Vector3.UnitZ);
-
-			GL.Vertex3(-10000, -10000, 0);
-			GL.Vertex3(-10000, 10000, 0);
-			GL.Vertex3(10000, 10000, 0);
-
-			GL.Vertex3(-10000, -10000, 0);
-			GL.Vertex3(10000, 10000, 0);
-			GL.Vertex3(10000, -10000, 0);
-
-			GL.End();
-
-			GL.Color3(Color.Brown);
+			GL.BindTexture(TextureTarget.Texture2D, texture);
 			vbo.Draw();
 
 			game.SwapBuffers();
@@ -168,6 +158,29 @@ namespace CG_2IV05.Visualize
 			GL.LoadMatrix(ref projMatrix);
 		}
 
+		static int LoadTexture(Stream file)
+		{
+			if (file == null)
+				throw new ArgumentNullException("file");
 
+			int id = GL.GenTexture();
+			GL.BindTexture(TextureTarget.Texture2D, id);
+
+			Bitmap bmp = new Bitmap(file);
+			BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0,
+				OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
+
+			bmp.UnlockBits(bmp_data);
+
+			// We haven't uploaded mipmaps, so disable mipmapping (otherwise the texture will not appear).
+			// On newer video cards, we can use GL.GenerateMipmaps() or GL.Ext.GenerateMipmaps() to create
+			// mipmaps automatically. In that case, use TextureMinFilter.LinearMipmapLinear to enable them.
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+			return id;
+		}
 	}
 }

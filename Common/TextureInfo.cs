@@ -8,27 +8,32 @@ namespace CG_2IV05.Common
 {
 	public class TextureInfo
 	{
-		private HyperPoint<int> ItemSize = new HyperPoint<int>(64, 64);
-		private HyperPoint<int> TextureSize = new HyperPoint<int>(512, 512);
+		private HyperPoint<int> ItemCount = new HyperPoint<int>(512 / 64, 512 / 64);
+		private HyperPoint<float> ItemSize = new HyperPoint<float>(64f / 512f, 64f / 512f);
+		private HyperPoint<float> TextureSize = new HyperPoint<float>(1f, 1f);
 
 		private HyperPoint<float> GetItem(int i)
 		{
-			int ItemsPerRow = TextureSize.X/ItemSize.X;
-			return new HyperPoint<float>((i%ItemsPerRow)*TextureSize.X, (i/ItemsPerRow)*ItemSize.Y);
+			return new HyperPoint<float>((i % ItemCount.X) * ItemSize.X, (i / ItemCount.X) * ItemSize.Y);
 		}
+
+		#region Texture elements
 
 		public HyperPoint<float> Road
 		{
 			get { return GetItem(0); }
 		}
+
 		public HyperPoint<float> Grass
 		{
 			get { return GetItem(1); }
 		}
+
 		public HyperPoint<float> Water
 		{
 			get { return GetItem(2); }
 		}
+
 		public List<HyperPoint<float>> Buildings
 		{
 			get
@@ -36,12 +41,13 @@ namespace CG_2IV05.Common
 				return new List<HyperPoint<float>>()
 					       {
 						       GetItem(3),
-							   GetItem(0),
-							   GetItem(1),
-							   GetItem(2),
+						       GetItem(0),
+						       GetItem(1),
+						       GetItem(2),
 					       };
 			}
 		}
+
 		public List<HyperPoint<float>> Roof
 		{
 			get
@@ -49,16 +55,22 @@ namespace CG_2IV05.Common
 				return new List<HyperPoint<float>>()
 					       {
 						       GetItem(4),
-							   GetItem(4),
-							   GetItem(4),
-							   GetItem(4),
+						       GetItem(4),
+						       GetItem(4),
+						       GetItem(4),
 					       };
 			}
-		} 
+		}
+
 		public HyperPoint<float> Forest
 		{
 			get { return GetItem(4); }
 		}
+
+		#endregion
+
+
+		#region Helper methods
 
 		public HyperPoint<float> GetLeftTop(HyperPoint<float> item)
 		{
@@ -68,7 +80,7 @@ namespace CG_2IV05.Common
 		public HyperPoint<float> GetLeftBottom(HyperPoint<float> item)
 		{
 			return new HyperPoint<float>(item.X, item.Y + ItemSize.Y);
-		} 
+		}
 
 		public HyperPoint<float> GetRightTop(HyperPoint<float> item)
 		{
@@ -79,5 +91,8 @@ namespace CG_2IV05.Common
 		{
 			return new HyperPoint<float>(item.X + ItemSize.X, item.Y + ItemSize.Y);
 		}
+
+		#endregion
+
 	}
 }
