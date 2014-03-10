@@ -8,8 +8,8 @@ namespace CG_2IV05.Common
 {
 	public class TextureInfo
 	{
-		private HyperPoint<int> ItemCount = new HyperPoint<int>(512 / 64, 512 / 64);
-		private HyperPoint<float> ItemSize = new HyperPoint<float>(64f / 512f, 64f / 512f);
+		private HyperPoint<int> ItemCount = new HyperPoint<int>(2048 / 256, 2048 / 256);
+		private HyperPoint<float> ItemSize = new HyperPoint<float>(256f / 2048f, 256f / 2048f);
 		private HyperPoint<float> TextureSize = new HyperPoint<float>(1f, 1f);
 
 		private HyperPoint<float> GetItem(int i)
