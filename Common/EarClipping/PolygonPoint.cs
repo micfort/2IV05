@@ -1,12 +1,8 @@
 ﻿using micfort.GHL.Math2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace CG_2IV05.TreeBuilding
+namespace CG_2IV05.Common.EarClipping
 {
-    class PolygonPoint
+    public class PolygonPoint
     {
         public int id;
         public bool isReflex = false;

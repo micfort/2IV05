@@ -43,6 +43,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\micfort.GHL.Windows.0.116\lib\net40\micfort.GHL.Windows.dll</HintPath>
     </Reference>
+    <Reference Include="OsmSharp">
+      <HintPath>..\Lib\OsmSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="OsmSharp.Osm">
+      <HintPath>..\Lib\OsmSharp.Osm.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -52,9 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Building.cs" />
-    <Compile Include="EarClippingTriangulator.cs" />
-    <Compile Include="PolygonPoint.cs" />
+    <Compile Include="BAG.cs" />
+    <Compile Include="Generation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

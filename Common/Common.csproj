@@ -50,11 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EarClipping\EarClippingTriangulator.cs" />
+    <Compile Include="EarClipping\PolygonPoint.cs" />
+    <Compile Include="Element\Building.cs" />
+    <Compile Include="Element\ElementList.cs" />
+    <Compile Include="Element\IElement.cs" />
+    <Compile Include="FilenameGenerator.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextureInfo.cs" />
     <Compile Include="Tree.cs" />
+    <Compile Include="TreeBuildingSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
