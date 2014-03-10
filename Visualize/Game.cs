@@ -61,26 +61,23 @@ namespace CG_2IV05.Visualize
 				texture = LoadTexture(file);
 			}
 
-			//GL.Enable(EnableCap.ColorMaterial);
-			GL.Disable(EnableCap.CullFace);
-			GL.Enable(EnableCap.DepthTest);
-			GL.CullFace(CullFaceMode.Front);
-			GL.Enable(EnableCap.Normalize);
-			GL.Enable(EnableCap.Texture2D);
-
-			GL.Enable(EnableCap.Lighting);
-			GL.Enable(EnableCap.Light0);
-			GL.Light(LightName.Light0, LightParameter.Ambient, new Color4(0.2f, 0.2f, 0.2f, 1f));
-			GL.Light(LightName.Light0, LightParameter.Diffuse, new Color4(0.8f, 0.8f, 0.8f, 1f));
-			GL.Light(LightName.Light0, LightParameter.Position, new Vector4(1, 1, 10, 0));
-			GL.Light(LightName.Light0, LightParameter.Specular, new Vector4(0, 0, 0, 0));
-
-			System.Windows.Forms.Cursor.Position = game.PointToScreen(new Point(game.Width / 2, game.Height / 2));
-
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
 			Matrix4 projMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1920f / 1080f, 0.1f, 10000000f);
 			GL.LoadMatrix(ref projMatrix);
+
+			GL.Enable(EnableCap.CullFace);
+			GL.CullFace(CullFaceMode.Back);
+			GL.Enable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.Normalize);
+			GL.Enable(EnableCap.Texture2D);
+			GL.ShadeModel(ShadingModel.Flat);
+
+			GL.Enable(EnableCap.Lighting);
+			GL.Enable(EnableCap.Light0);
+			GL.Light(LightName.Light0, LightParameter.Ambient, new Color4(1.0f, 1.0f, 1.0f, 1f));
+			GL.Light(LightName.Light0, LightParameter.Diffuse, new Color4(1.0f, 1.0f, 1.0f, 1f));
+			GL.Light(LightName.Light0, LightParameter.Specular, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 
 		void game_RenderFrame(object sender, FrameEventArgs e)
@@ -90,6 +87,7 @@ namespace CG_2IV05.Visualize
 			
 			GL.MatrixMode(MatrixMode.Modelview);
 			GL.LoadMatrix(ref lookAtMatrix);
+			GL.Light(LightName.Light0, LightParameter.Position, new Vector4(1, 1, 10, 0));
 			
 			GL.BindTexture(TextureTarget.Texture2D, texture);
 			vbo.Draw();
