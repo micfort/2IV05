@@ -22,6 +22,7 @@ namespace CG_2IV05.Visualize
 		private Vector2? LastMousePos;
 		private Matrix4 lookAtMatrix;
 		private int texture;
+		private float speed = 10f;
 		
 		public Game()
 		{
@@ -98,12 +99,12 @@ namespace CG_2IV05.Visualize
 		void game_UpdateFrame(object sender, FrameEventArgs e)
 		{
 			#region mouse
-			if (LastMousePos == null || !game.Mouse[MouseButton.Left])
+			if (LastMousePos == null || !(game.Mouse[MouseButton.Left] || game.Mouse[MouseButton.Right]))
 			{
 				LastMousePos = new Vector2(game.Mouse.X, game.Mouse.Y);
 			}
 
-			if (game.Mouse[MouseButton.Left])
+			if (game.Mouse[MouseButton.Left] || game.Mouse[MouseButton.Right])
 			{
 				Vector2 mouseDiff = (new Vector2(game.Mouse.X, game.Mouse.Y) - LastMousePos.Value) * (1 / 50f);
 				Mouse = Mouse + mouseDiff;
@@ -118,7 +119,6 @@ namespace CG_2IV05.Visualize
 
 			#region keyboard
 			Vector3 SideStep = Vector3.Cross(Direction, Vector3.UnitZ);
-			float speed = 10f;
 
 			// add game logic, input handling
 			if (game.Keyboard[Key.Escape])
@@ -141,7 +141,53 @@ namespace CG_2IV05.Visualize
 			{
 				this.CameraPos = this.CameraPos + SideStep * speed;
 			}
+			if(game.Keyboard[Key.Number1])
+			{
+				speed = 0.1f;
+			}
+			if (game.Keyboard[Key.Number2])
+			{
+				speed = 0.2f;
+			}
+			if (game.Keyboard[Key.Number3])
+			{
+				speed = 0.5f;
+			}
+			if (game.Keyboard[Key.Number4])
+			{
+				speed = 1.0f;
+			}
+			if (game.Keyboard[Key.Number5])
+			{
+				speed = 2.0f;
+			}
+			if (game.Keyboard[Key.Number6])
+			{
+				speed = 3.0f;
+			}
+			if (game.Keyboard[Key.Number7])
+			{
+				speed = 5.0f;
+			}
+			if (game.Keyboard[Key.Number8])
+			{
+				speed = 10.0f;
+			}
+			if (game.Keyboard[Key.Number9])
+			{
+				speed = 20.0f;
+			}
+			if (game.Keyboard[Key.Number0])
+			{
+				speed = 50.0f;
+			}
 			#endregion
+
+			if (game.Mouse[MouseButton.Left])
+			{
+				this.CameraPos.Z = 1.75f;
+			}
+			
 
 			lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + Direction, Vector3.UnitZ);
 		}
