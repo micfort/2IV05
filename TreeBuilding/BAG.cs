@@ -42,7 +42,7 @@ namespace CG_2IV05.TreeBuilding
 					}
 					else if (reader.Name == "gmlbase64")
 					{
-						output.Polygon = RemoveRepeatition(ReadGML(reader.ReadElementContentAsString()));
+						output.Polygon = PolygonHelper.RemoveRepeatition(ReadGML(reader.ReadElementContentAsString()));
 					}
 				}
 				else if (reader.NodeType == XmlNodeType.EndElement)
@@ -54,22 +54,6 @@ namespace CG_2IV05.TreeBuilding
 				}
 			}
 			return null;
-		}
-
-		private static List<HyperPoint<float>> RemoveRepeatition(List<HyperPoint<float>> polygon)
-		{
-			for (int i = polygon.Count - 1; i >= 1; i--)
-			{
-				if (polygon[i] == polygon[i - 1])
-				{
-					polygon.RemoveAt(i);
-				}
-			}
-			if (polygon[0] == polygon[polygon.Count - 1])
-			{
-				polygon.RemoveAt(polygon.Count - 1);
-			}
-			return polygon;
 		}
 
 		private static List<HyperPoint<float>> ReadGML(string gml64)

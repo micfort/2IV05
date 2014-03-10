@@ -35,11 +35,17 @@
   <ItemGroup>
     <Reference Include="micfort.GHL.PCL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\micfort.GHL.PCL.0.116\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
+      <HintPath>..\packages\micfort.GHL.PCL.0.123\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
     </Reference>
     <Reference Include="micfort.GHL.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\micfort.GHL.Windows.0.116\lib\net40\micfort.GHL.Windows.dll</HintPath>
+      <HintPath>..\packages\micfort.GHL.Windows.0.123\lib\net40\micfort.GHL.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="OsmSharp">
+      <HintPath>..\Lib\OsmSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="OsmSharp.Osm">
+      <HintPath>..\Lib\OsmSharp.Osm.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,6 +64,10 @@
     <Compile Include="FilenameGenerator.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeData.cs" />
+    <Compile Include="OSM\Helper.cs" />
+    <Compile Include="OSM\OSM.cs" />
+    <Compile Include="OSM\Road.cs" />
+    <Compile Include="PolygonHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextureInfo.cs" />
     <Compile Include="Tree.cs" />

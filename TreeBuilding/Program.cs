@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 using CG_2IV05.Common;
 using CG_2IV05.Common.Element;
+using CG_2IV05.Common.OSM;
 using micfort.GHL.Math2;
 using micfort.GHL.Serialization;
 
@@ -26,19 +27,29 @@ namespace CG_2IV05.TreeBuilding
 				Directory.CreateDirectory(TreeBuildingSettings.DirectoryOutput);
             }
 
-            Console.Out.WriteLine("Generating/Reading Buildings");
             List<Building> buildings;
+	        List<IElement> roads;
             if (TreeBuildingSettings.Generate)
             {
+				Console.Out.WriteLine("Generating Buildings");
                 buildings = Generation.CreateData();
+				roads = new List<IElement>();
             }
             else
             {
+				Console.Out.WriteLine("Reading Buildings");
 				buildings = BAG.ReadBuildings(TreeBuildingSettings.InputFilename);
+	            Console.Out.WriteLine("Reading OSM data");
+				using (FileStream file = File.OpenRead(@"..\..\..\FilterOSM\bin\Debug\osm_data_Eindhoven"))
+				{
+					roads = OSM.ReadFiltered(file).ConvertAll(x => (IElement)x);
+				}
             }
 
 			ElementList list = new ElementList();
-	        list.Elements = buildings.ConvertAll(x => (IElement)x);
+	        list.Elements = new List<IElement>();
+	        buildings.ForEach(x => list.Elements.Add(x));
+	        roads.ForEach(x => list.Elements.Add(x));
 
 			SetCenterDateSet(list);
 

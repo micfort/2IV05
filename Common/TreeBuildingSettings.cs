@@ -14,6 +14,7 @@ namespace CG_2IV05.Common
 		public static string TreeOutputFileFormat = "{0}\\tree";
 		public static string DirectoryOutput = "output";
 		public static string InputFilename = "buildings.xml";
+		public static string InputOSMData = "../../../";
 		public static bool Generate = false;
 		public static int generateSizeX = 100;
 		public static int generateSizeY = 100;

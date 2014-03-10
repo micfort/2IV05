@@ -37,11 +37,11 @@
   <ItemGroup>
     <Reference Include="micfort.GHL.PCL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\micfort.GHL.PCL.0.116\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
+      <HintPath>..\packages\micfort.GHL.PCL.0.123\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
     </Reference>
     <Reference Include="micfort.GHL.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\micfort.GHL.Windows.0.116\lib\net40\micfort.GHL.Windows.dll</HintPath>
+      <HintPath>..\packages\micfort.GHL.Windows.0.123\lib\net40\micfort.GHL.Windows.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.1.1.1508.5724\lib\NET40\OpenTK.dll</HintPath>
