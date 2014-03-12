@@ -63,6 +63,10 @@ namespace CG_2IV05.Common.Element
 			HyperPoint<float> normalRoof = new HyperPoint<float>(0, 0, 1);
 
 			HyperPoint<float> textureItem = textureInfo.Buildings[0];
+			HyperPoint<float> roof = textureInfo.Roof[0];
+			HyperPoint<float> min = this.Min;
+			HyperPoint<float> max = this.Max;
+			HyperPoint<float> size = max - min;
 
 			for (int i = 0; i < Polygon.Count; i++)
 			{
@@ -93,9 +97,9 @@ namespace CG_2IV05.Common.Element
 
 				#region Normals
 
-				HyperPoint<float> sizeX = data.Vertices[currentHigh] - data.Vertices[currentLow];
-				HyperPoint<float> sizeY = data.Vertices[LastLow] - data.Vertices[currentLow];
-				HyperPoint<float> normal = HyperPoint<float>.Cross3D(sizeX.Normilize(), sizeY.Normilize()).Normilize();
+				HyperPoint<float> distanceX = data.Vertices[currentHigh] - data.Vertices[currentLow];
+				HyperPoint<float> distanceY = data.Vertices[LastLow] - data.Vertices[currentLow];
+				HyperPoint<float> normal = HyperPoint<float>.Cross3D(distanceX.Normilize(), distanceY.Normilize()).Normilize();
 
 				data.Normals[currentLow] = normal;
 				data.Normals[currentHigh] = normal;
@@ -131,7 +135,7 @@ namespace CG_2IV05.Common.Element
 				roofVertices[i] = new HyperPoint<float>(Polygon[i].X, Polygon[i].Y, Height) - centerDataSet;
 				data.Vertices[Polygon.Count * 4 + i] = roofVertices[i];
 				data.Normals[Polygon.Count * 4 + i] = normalRoof;
-				data.TextCoord[Polygon.Count * 4 + i] = new HyperPoint<float>(0, 0);
+				data.TextCoord[Polygon.Count * 4 + i] = textureInfo.GetPoint(roof, new HyperPoint<float>((Polygon[i].X-min.X)/size.X, (Polygon[i].Y-min.Y)/size.Y));
 
 				#endregion
 			}

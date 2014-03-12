@@ -40,9 +40,9 @@ namespace CG_2IV05.TreeBuilding
 				Console.Out.WriteLine("Reading Buildings");
 				buildings = BAG.ReadBuildings(TreeBuildingSettings.InputFilename);
 	            Console.Out.WriteLine("Reading OSM data");
-				using (FileStream file = File.OpenRead(@"..\..\..\FilterOSM\bin\Debug\osm_data_Eindhoven"))
+				using (FileStream file = File.OpenRead(@"Eindhoven.osm.pbf"))
 				{
-					roads = OSM.ReadFiltered(file).ConvertAll(x => (IElement)x);
+					roads = OSM.Read(file).ConvertAll(x => (IElement)x);
 				}
             }
 

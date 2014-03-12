@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CG_2IV05.Common.Element;
+using OsmSharp.Collections.Tags;
 using OsmSharp.Osm;
 using micfort.GHL.Math2;
 
@@ -9,6 +10,7 @@ namespace CG_2IV05.Common.OSM
 {
 	public class Road: IElement
 	{
+		public Way Way { get; set; }
 		public List<HyperPoint<float>> Points { get; set; }
 		public Road()
 		{
@@ -17,8 +19,10 @@ namespace CG_2IV05.Common.OSM
 
 		public Road(Way way, Dictionary<long, NodeRD> nodes)
 		{
+			Way = way;
 			Points = new List<HyperPoint<float>>();
 			way.Nodes.ForEach(x => Points.Add(nodes[x].RDCoordinate));
+			PolygonHelper.RemoveRepeatition(Points);
 		}
 
 		public static bool ExistInDataset(Way way, Dictionary<long, NodeRD> nodes)
@@ -62,7 +66,7 @@ namespace CG_2IV05.Common.OSM
 			data.Indexes = new int[TriangleCount*3];
 			
 			HyperPoint<float> up = new HyperPoint<float>(0, 0, 1);
-			HyperPoint<float> textureItem = textureInfo.Road;
+			HyperPoint<float> textureItem = textureInfo.GetTexture("highway", Way.Tags["highway"]);
 
 			for (int i = 0; i < Points.Count; i++)
 			{
