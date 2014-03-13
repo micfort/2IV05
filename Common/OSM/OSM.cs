@@ -1,13 +1,16 @@
-﻿using System;
+﻿extern alias osm;
+using osm::OsmSharp.Osm;
+using osm::OsmSharp.Collections;
+using osm::OsmSharp.Osm.PBF.Streams;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CG_2IV05.Common.Element;
 using micfort.GHL.Math2;
 using micfort.GHL.Serialization;
-using OsmSharp.Osm;
-using OsmSharp.Osm.PBF.Streams;
-using Way = OsmSharp.Osm.Way;
+
+using Way = osm::OsmSharp.Osm.Way;
 
 namespace CG_2IV05.Common.OSM
 {
@@ -34,7 +37,7 @@ namespace CG_2IV05.Common.OSM
 					}
 					if (geo.Id != null)
 					{
-						OsmSharp.Osm.Node node = (OsmSharp.Osm.Node)geo;
+						osm::OsmSharp.Osm.Node node = (osm::OsmSharp.Osm.Node)geo;
 						HyperPoint<double> RDCoordinate =
 							new HyperPoint<double>(node.Longitude.Value, node.Latitude.Value);
 						HyperPoint<float> RDCoordinateF = RDCoordinate.ConvertToRD().ConvertTo<float>();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿extern alias osm;
+using System;
 using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common.OSM
@@ -6,7 +7,7 @@ namespace CG_2IV05.Common.OSM
 	public class NodeRD
 	{
 		public HyperPoint<float> RDCoordinate { get; set; }
-		public OsmSharp.Osm.Node Node { get; set; }
+		public osm::OsmSharp.Osm.Node Node { get; set; }
 
 		public override string ToString()
 		{

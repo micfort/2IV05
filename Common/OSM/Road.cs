@@ -1,10 +1,11 @@
+extern alias osm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using CG_2IV05.Common.Element;
-using OsmSharp.Osm;
+using osm::OsmSharp.Osm;
+using osm::OsmSharp.Collections.Tags;
 using micfort.GHL.Math2;
-
 
 namespace CG_2IV05.Common.OSM
 {

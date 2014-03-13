@@ -1,12 +1,15 @@
-﻿using System;
+﻿extern alias osm;
+using osm::OsmSharp.Osm;
+using osm::OsmSharp.Collections;
+using osm::OsmSharp.Collections.Tags;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CG_2IV05.Common.EarClipping;
-using GeoLib;
-using OsmSharp.Osm;
+using CG_2IV05.Common.Element;
 using micfort.GHL.Math2;
-using OsmSharp.Collections.Tags;
 
 
 namespace CG_2IV05.Common.OSM
@@ -62,6 +65,11 @@ namespace CG_2IV05.Common.OSM
 		public int TriangleCount
 		{
 			get { return _points.Count - 2; }
+		}
+
+		public ScoreKey Score
+		{
+			get { return new ScoreKey(float.MaxValue); }
 		}
 
 		public HyperPoint<float> Min
@@ -120,6 +128,11 @@ namespace CG_2IV05.Common.OSM
 			}
 
 			return output;
+		}
+
+		public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+		{
+			return this;
 		}
 
 		private NodeData CreateData(List<HyperPoint<float>> polygon, HyperPoint<float> centerDataSet, TextureInfo textureInfo)

@@ -33,12 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GeoLib">
-      <HintPath>..\Lib\GeoLib.dll</HintPath>
-    </Reference>
-    <Reference Include="GeoPolygons">
-      <HintPath>..\Lib\GeoPolygons.dll</HintPath>
-    </Reference>
     <Reference Include="micfort.GHL.PCL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\micfort.GHL.PCL.0.123\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
@@ -49,10 +43,11 @@
     </Reference>
     <Reference Include="OsmSharp">
       <HintPath>..\Lib\OsmSharp.dll</HintPath>
-      <Aliases>OsmSharp</Aliases>
+      <Aliases>osm</Aliases>
     </Reference>
     <Reference Include="OsmSharp.Osm">
       <HintPath>..\Lib\OsmSharp.Osm.dll</HintPath>
+      <Aliases>osm</Aliases>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
