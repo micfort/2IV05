@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using CG_2IV05.Common;
 using NUnit.Framework;
 using CG_2IV05.Common.OSM;
 using micfort.GHL.Math2;
@@ -22,7 +23,7 @@ namespace CG_2IV05.Test
 													new HyperPoint<float>(1, 1),
 													new HyperPoint<float>(1, 0)
 				                                };
-			List<List<HyperPoint<float>>> polyList = LandUse.CreateSimplePolygons(poly);
+			List<List<HyperPoint<float>>> polyList = PolygonHelper.CreateSimplePolygons(poly);
 			Assert.AreEqual(1, polyList.Count);
 
 			Assert.AreEqual(4, polyList[0].Count);
@@ -50,7 +51,7 @@ namespace CG_2IV05.Test
 													new HyperPoint<float>(0, 1),
 													new HyperPoint<float>(1, 0)
 				                                };
-			List<List<HyperPoint<float>>> polyList = LandUse.CreateSimplePolygons(poly);
+			List<List<HyperPoint<float>>> polyList = PolygonHelper.CreateSimplePolygons(poly);
 			Assert.AreEqual(2, polyList.Count);
 
 			Assert.AreEqual(3, polyList[0].Count);
@@ -84,7 +85,7 @@ namespace CG_2IV05.Test
 													new HyperPoint<float>(1, 1),
 													new HyperPoint<float>(0, 1)
 				                                };
-			List<List<HyperPoint<float>>> polyList = LandUse.CreateSimplePolygons(poly);
+			List<List<HyperPoint<float>>> polyList = PolygonHelper.CreateSimplePolygons(poly);
 			Assert.AreEqual(2, polyList.Count);
 
 			Assert.AreEqual(3, polyList[0].Count);
@@ -123,7 +124,7 @@ namespace CG_2IV05.Test
 													new HyperPoint<float>(1, 2),
 													new HyperPoint<float>(1, 0)
 				                                };
-			List<List<HyperPoint<float>>> polyList = LandUse.CreateSimplePolygons(poly);
+			List<List<HyperPoint<float>>> polyList = PolygonHelper.CreateSimplePolygons(poly);
 			Assert.AreEqual(3, polyList.Count);
 
 			Assert.AreEqual(4, polyList[0].Count);
@@ -145,7 +146,7 @@ namespace CG_2IV05.Test
 													new HyperPoint<float>(1, 1),
 													new HyperPoint<float>(1, 0)
 				                                };
-			List<List<HyperPoint<float>>> polyList = LandUse.CreateSimplePolygons(poly);
+			List<List<HyperPoint<float>>> polyList = PolygonHelper.CreateSimplePolygons(poly);
 			Assert.AreEqual(2, polyList.Count);
 
 			Assert.AreEqual(4, polyList[0].Count);

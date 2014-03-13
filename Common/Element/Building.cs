@@ -70,6 +70,16 @@ namespace CG_2IV05.Common.Element
 		/// <remarks>O(P)</remarks>
 		public NodeData CreateData(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
 		{
+			if(!PolygonHelper.IsSimplePolygon(Polygon))
+			{
+				return new NodeData()
+					       {
+						       Indexes = new int[0],
+							   Vertices = new HyperPoint<float>[0],
+							   TextCoord = new HyperPoint<float>[0],
+							   Normals = new HyperPoint<float>[0]
+					       };
+			}
 			NodeData data = new NodeData();
 			data.Vertices = new HyperPoint<float>[Polygon.Count * 4 + Polygon.Count]; //high and low point for both points and one extra for each top
 			data.Normals = new HyperPoint<float>[Polygon.Count * 4 + Polygon.Count]; //high and low point for both points and one extra for each top
@@ -163,38 +173,39 @@ namespace CG_2IV05.Common.Element
 			return data;
 		}
 
-        public void createBuildingScore(){         
-            if(Polygon.Count <= 4)
-            {
-                score.Score = float.MaxValue;
-                return;
-            }
+        public void createBuildingScore()
+        {
+	        if (Polygon.Count <= 4)
+	        {
+		        score.Score = float.MaxValue;
+		        return;
+	        }
 
-            float minDistance = float.MaxValue;
-            int minDistanceIndex1 = 0;
-            int minDistanceIndex2 = 0;
+	        float minDistance = float.MaxValue;
+	        int minDistanceIndex1 = 0;
+	        int minDistanceIndex2 = 0;
 
-            for (int i = 0; i < Polygon.Count; i++)
-            {
-                int j = (i + 1) % Polygon.Count;
-                HyperPoint<float> pointI = Polygon[i];
-                HyperPoint<float> pointJ = Polygon[j];
+	        for (int i = 0; i < Polygon.Count; i++)
+	        {
+		        int j = (i + 1)%Polygon.Count;
+		        HyperPoint<float> pointI = Polygon[i];
+		        HyperPoint<float> pointJ = Polygon[j];
 
-                float distance = (pointI - pointJ).GetLengthSquared();
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    minDistanceIndex1 = i;
-                    minDistanceIndex2 = j;
-                }
-            }
+		        float distance = (pointI - pointJ).GetLengthSquared();
+		        if (distance < minDistance)
+		        {
+			        minDistance = distance;
+			        minDistanceIndex1 = i;
+			        minDistanceIndex2 = j;
+		        }
+	        }
 
-            score.Score = minDistance/3;
-            scorePointIndex1 = minDistanceIndex1;
-            scorePointIndex2 = minDistanceIndex2;
+	        score.Score = minDistance/3;
+	        scorePointIndex1 = minDistanceIndex1;
+	        scorePointIndex2 = minDistanceIndex2;
         }
 
-        public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+		public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
         {
             if (score.Score < float.MaxValue)
             {

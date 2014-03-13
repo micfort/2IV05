@@ -1,4 +1,7 @@
-﻿using micfort.GHL.Collections;
+﻿using OpenTK;
+using OpenTK.Graphics;
+using micfort.GHL;
+using micfort.GHL.Collections;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,56 +12,48 @@ using CG_2IV05.Common;
 
 namespace CG_2IV05.Visualize
 {
-    class VBOLoader
+    public class VBOLoader
     {
-        private ConcurrentPriorityQueue<NodeLoadItem, int> loadQueue;
-        private ConcurrentBag<VBO> vboBag;
+        private ConcurrentPriorityQueue<NodeWithData, int> loadQueue;
+		public List<NodeWithData> VBOList { get; set; }
 
-        private Thread thread;
+	    private micfort.GHL.ConsumerThread<NodeWithData> thread;
+	    private OpenTK.Graphics.GraphicsContext context;
 
-        private bool running = false;
-        
-        public VBOLoader(ConcurrentBag<VBO> vboBag)
+		public VBOLoader(List<NodeWithData> vboList)
         {
-            loadQueue = new ConcurrentPriorityQueue<NodeLoadItem, int>(new PriorityQueue<NodeLoadItem, int>());
-            this.vboBag = vboBag;
-            thread = new Thread(run);
+            loadQueue = new ConcurrentPriorityQueue<NodeWithData, int>(new PriorityQueue<NodeWithData, int>());
+            this.VBOList = vboList;
+			thread = new ConsumerThread<NodeWithData>(loadQueue, Handler);
+			thread.ExceptionHandling = ExceptionHandling.ReportErrorContinue;
         }
 
-        public Thread start()
+	    private void Handler(NodeWithData data)
+	    {
+			if(context == null)
+			{
+				INativeWindow window = new NativeWindow();
+				context = new GraphicsContext(GraphicsMode.Default, window.WindowInfo);
+				context.MakeCurrent(window.WindowInfo);
+			}
+			data.loadNodeFromDisc();
+		    lock (VBOList)
+		    {
+				VBOList.Add(data);    
+		    }
+	    }
+
+	    public void Start()
         {
-            if (!thread.IsAlive)
-            {
-                running = true;
-                thread.Start();
-            }
-            return thread;
+            thread.Start();
         }
 
-        public void stop(bool waitForStop = false)
+        public void Stop()
         {
-            if (thread.IsAlive)
-            {
-                running = false;
-                if (waitForStop)
-                    thread.Join();
-            }
+            thread.Stop();
         }
 
-        public void run()
-        {
-            while (running)
-            {
-                if (loadQueue.Count > 0)
-                {
-                    NodeLoadItem nextNode = loadQueue.Dequeue();
-                    VBO reloadedVBO = nextNode.loadNodeFromDisc();
-                    vboBag.Add(reloadedVBO);
-                }
-            }
-        }
-
-        public void enqueueNode(NodeLoadItem node, int priority = 0)
+        public void enqueueNode(NodeWithData node, int priority = 0)
         {
             loadQueue.Enqueue(node, priority);
         }

@@ -3,49 +3,100 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Windows.Forms;
 using CG_2IV05.Common;
 using micfort.GHL.Collections;
 using micfort.GHL.Math2;
 
 namespace CG_2IV05.Visualize
 {
-	class NodeManager:IDisposable
+	public class NodeManager:IDisposable
 	{
-		private const float DistanceModifier = 1;
-		private const float MaxDistanceError = 10000;
-
 		private Timer timer;
-		private List<Node> CurrentLoadedList = new List<Node>();  
+		private List<Node> CurrentLoadedList = new List<Node>();
+		private float _maxDistanceError = 1000000;
+		private float _distanceModifier = 1;
 
 		public HyperPoint<float> Position { get; set; }
-		public ConcurrentPriorityQueue<NodeLoadItem, int> Queue { get; set; }
 		public Tree Tree { get; set; }
-		public ConcurrentBag<VBO> VBOBag { get; set; }
-
-		private List<VBO> UnusedVBO = new List<VBO>();
-
-		private void timerCallback(object state)
+		public List<NodeWithData> VBOList { get; set; }
+		public VBOLoader Loader { get; set; }
+		public float DistanceModifier
 		{
-			List<Node> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
-			List<Node> newItems = DiffNewItems(CurrentLoadedList, newLoadedList);
-			List<Node> removedItems = DiffOldItems(CurrentLoadedList, newLoadedList);
-			
+			get { return _distanceModifier; }
+			set { _distanceModifier = value; }
+		}
+
+		public float MaxDistanceError
+		{
+			get { return _maxDistanceError; }
+			set { _maxDistanceError = value; }
 		}
 
 		public void Start()
 		{
-			timer = new Timer(timerCallback);
+			timer = new Timer();
+			timer.Tick += timer_Tick;
+			timer.Interval = 1000/10;
+			timer.Start();
+		}
+
+		void timer_Tick(object sender, EventArgs e)
+		{
+			List<Node> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
+			List<Node> newItems = DiffNewItems(CurrentLoadedList, newLoadedList);
+			List<Node> removedItems = DiffOldItems(CurrentLoadedList, newLoadedList);
+			CurrentLoadedList = newLoadedList;
+
+			for (int i = 0; i < newItems.Count; i++)
+			{
+				if (removedItems.Count > 0)
+				{
+					Node ReplacedNode = removedItems[0];
+					removedItems.RemoveAt(0);
+					NodeWithData replaceData = new NodeWithData();
+					int index = -1;
+					lock (VBOList)
+					{
+						index = VBOList.FindIndex(x => x.node == ReplacedNode);
+						if(index >= 0)
+						{
+							replaceData = VBOList[index];
+							VBOList.RemoveAt(index);
+						}
+					}
+					if (index >= 0)
+					{
+						NodeWithData item = new NodeWithData();
+						item.vbo = replaceData.vbo;
+						item.node = newItems[i];
+						Loader.enqueueNode(item);
+					}
+				}
+				else
+				{
+					NodeWithData item = new NodeWithData();
+					item.vbo = null;
+					item.node = newItems[i];
+					Loader.enqueueNode(item);
+				}
+				
+			}
+			for (int i = 0; i < removedItems.Count; i++)
+			{
+				int index = VBOList.FindIndex(x => x.node == removedItems[i]);
+				NodeWithData replaceData = VBOList[index];
+				lock (VBOList)
+				{
+					VBOList.RemoveAt(index);
+				}
+				replaceData.vbo.Dispose();
+			}
 		}
 
 		public void Stop()
 		{
-			Timer t = timer;
-			timer = null;
-			if(t != null)
-			{
-				t.Dispose();
-			}
+			timer.Stop();
 		}
 
 		public List<Node> DiffNewItems(List<Node> oldList, List<Node> newList)
@@ -76,12 +127,11 @@ namespace CG_2IV05.Visualize
 		private void DetermineLoadList(Node node, HyperPoint<float> position, List<Node> loadList)
 		{
 			float distanceError = DistanceToNode(node, position) * DistanceModifier;
-			float nodeError = 0;
 			if (distanceError > MaxDistanceError)
 			{
 				return;
 			}
-			if(distanceError < nodeError && node.Children != null && node.Children.Count > 0)
+			if(distanceError < node.Error && node.Children != null && node.Children.Count > 0)
 			{
 				foreach (Node child in node.Children)
 				{
@@ -97,7 +147,7 @@ namespace CG_2IV05.Visualize
 		private float DistanceToNode(Node node, HyperPoint<float> position)
 		{
 			//todo set bounding box of node
-			return DistanceToSquare(new HyperPoint<float>(), new HyperPoint<float>(),  position);
+			return DistanceToSquare(node.Min, node.Max,  position);
 		}
 
 		private float DistanceToSquare(HyperPoint<float> p1, HyperPoint<float> p2, HyperPoint<float> position)
@@ -118,12 +168,6 @@ namespace CG_2IV05.Visualize
 		/// <filterpriority>2</filterpriority>
 		public void Dispose()
 		{
-			Timer t = timer;
-			timer = null;
-			if (t != null)
-			{
-				t.Dispose();
-			}
 		}
 
 		#endregion

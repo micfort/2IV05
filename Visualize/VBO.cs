@@ -8,7 +8,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace CG_2IV05.Visualize
 {
-	class VBO: IDisposable
+	public class VBO: IDisposable
 	{
 		public uint Indexes { get; private set; }
 		public uint Vertices { get; private set; }

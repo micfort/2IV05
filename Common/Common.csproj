@@ -64,6 +64,7 @@
     <Compile Include="Element\ElementList.cs" />
     <Compile Include="Element\IElement.cs" />
     <Compile Include="FilenameGenerator.cs" />
+    <Compile Include="HyperPointSerializable.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeData.cs" />
     <Compile Include="OSM\Helper.cs" />

@@ -54,27 +54,7 @@ namespace CG_2IV05.Common.Element
 			return output;
 		}
 
-		/// <summary>
-		/// simple version of the data from children, just calculates the bounding box of every building in the set, also takes the average height
-		/// </summary>
-		/// <param name="buildings"></param>
-		/// <returns></returns>
-		public NodeData CreateDataFromChildren(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
-		{
-            HyperPoint<float> min = Min;
-            HyperPoint<float> max = Max;
-
-			Building b = new Building(new List<HyperPoint<float>>()
-				                          {
-					                          new HyperPoint<float>(min.X, min.Y, 0),
-											  new HyperPoint<float>(min.X, max.Y, 0),
-											  new HyperPoint<float>(max.X, max.Y, 0),
-											  new HyperPoint<float>(max.X, min.Y, 0),
-				                          }, 1);
-            return b.CreateData(centerDataSet, textureInfo);
-		}
-
-		public NodeData CreateDataFromChildren(List<Node> Children, HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+		public NodeData CreateDataFromChildren(List<Node> Children, HyperPoint<float> centerDataSet, TextureInfo textureInfo, out float error)
 		{
             SortedList<ScoreKey, IElement> sortedElements = new SortedList<ScoreKey, IElement>();
 		    int triangleCount = 0;
@@ -88,6 +68,7 @@ namespace CG_2IV05.Common.Element
                 }
 		    }
 
+			int originalTriangleCount = triangleCount;
 		    
             while (triangleCount > TreeBuildingSettings.MaxTriangleCount)
             {
@@ -98,7 +79,6 @@ namespace CG_2IV05.Common.Element
 
                 triangleCount -= element.TriangleCount;
                 element = element.GetSimplifiedVersion(centerDataSet, textureInfo);
-                int index = sortedElements.IndexOfKey(element.Score);
                 sortedElements.RemoveAt(0);
                 sortedElements.Add(element.Score, element);
 
@@ -107,6 +87,7 @@ namespace CG_2IV05.Common.Element
 		    Elements = sortedElements.Values.ToList();
             sortedElements.Clear();
 
+			error = originalTriangleCount - triangleCount;
             return this.CreateData(centerDataSet, textureInfo);
 		}
 
@@ -128,7 +109,7 @@ namespace CG_2IV05.Common.Element
 
 		public HyperPoint<float> Max
 		{
-			get { return new HyperPoint<float>(Elements.Max(x => x.Max.X), Elements.Min(x => x.Max.Y), 0); }
+			get { return new HyperPoint<float>(Elements.Max(x => x.Max.X), Elements.Max(x => x.Max.Y), 0); }
 		}
 
 		public HyperPoint<float> ReferencePoint

@@ -11,6 +11,9 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using micfort.GHL.Math2;
+using micfort.GHL.Collections;
+using micfort.GHL.Serialization;
 
 namespace CG_2IV05.Visualize
 {
@@ -23,7 +26,12 @@ namespace CG_2IV05.Visualize
 		private Matrix4 lookAtMatrix;
 		private int texture;
 		private float speed = 10f;
-		private ConcurrentBag<VBO> vbos;
+		private List<NodeWithData> vbos;
+
+		private Tree tree;
+		private VBOLoader loader;
+		private NodeManager manager;
+		private Settings settingsForm;
 		
 		public Game()
 		{
@@ -38,27 +46,46 @@ namespace CG_2IV05.Visualize
 				game.Resize += game_Resize;
 				game.UpdateFrame += game_UpdateFrame;
 				game.RenderFrame += game_RenderFrame;
+				game.Unload += game_Unload;
 
 				game.Run();
 			}
+		}
+
+		void game_Unload(object sender, EventArgs e)
+		{
+			loader.Stop();
+			manager.Stop();
 		}
 
 		void game_Load(object sender, EventArgs e)
 		{
 			CameraPos = new Vector3(0, 0, 10f);
 			Mouse = new Vector2(0, 0);
-			
+
+			vbos = new List<NodeWithData>();
+
+			loader = new VBOLoader(vbos);
+			loader.Start();
+
+			using (FileStream file = File.OpenRead(@"output\tree"))
+			{
+				this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
+			}
+
+			manager = new NodeManager();
+			manager.Loader = loader;
+			manager.Tree = tree;
+			manager.VBOList = vbos;
+			manager.Position = CameraPos.ToHyperPoint();
+			manager.Start();
+
+			settingsForm = new Settings();
+			settingsForm.Show();
+			settingsForm.manager = manager;
+
 			// setup settings, load textures, sounds
 			game.VSync = VSyncMode.On;
-
-			vbos = new ConcurrentBag<VBO>();
-            using (FileStream file = File.OpenRead(@"..\..\..\TreeBuilding\bin\Debug\output\data_0"))
-			{
-				NodeDataRaw data = NodeDataRaw.ReadFromStream(file);
-				VBO vbo = new VBO();
-				vbo.LoadData(data);
-				vbos.Add(vbo);
-			}
 
 			using (FileStream file = File.OpenRead("Texture.fw.png"))
 			{
@@ -94,11 +121,14 @@ namespace CG_2IV05.Visualize
 			GL.Light(LightName.Light0, LightParameter.Position, new Vector4(1, 1, 10, 0));
 			
 			GL.BindTexture(TextureTarget.Texture2D, texture);
-			foreach (VBO vbo in vbos)
+			lock (vbos)
 			{
-				vbo.Draw();
+				foreach (NodeWithData node in vbos)
+				{
+					node.vbo.Draw();
+				}	
 			}
-
+			
 			game.SwapBuffers();
 		}
 
@@ -114,6 +144,8 @@ namespace CG_2IV05.Visualize
 			{
 				Vector2 mouseDiff = (new Vector2(game.Mouse.X, game.Mouse.Y) - LastMousePos.Value) * (1 / 50f);
 				Mouse = Mouse + mouseDiff;
+
+				Mouse.Y = MathHelper.Clamp(Mouse.Y, -MathHelper.PiOver2 + float.Epsilon, MathHelper.PiOver2 - float.Epsilon);
 				LastMousePos = new Vector2(game.Mouse.X, game.Mouse.Y);
 			}
 			#endregion
@@ -193,8 +225,8 @@ namespace CG_2IV05.Visualize
 			{
 				this.CameraPos.Z = 1.75f;
 			}
-			
 
+			manager.Position = CameraPos.ToHyperPoint();
 			lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + Direction, Vector3.UnitZ);
 		}
 
