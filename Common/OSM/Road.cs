@@ -20,7 +20,7 @@ namespace CG_2IV05.Common.OSM
 
 		public bool CheckKeyAcceptance(TagsCollectionBase Tags)
 		{
-			return Tags.ContainsKey("highway");
+			return Tags.ContainsKey("highway") && !(Tags.ContainsKey("area") && Tags["area"] == "yes");
 		}
 
 		public bool CheckPolyAcceptance(List<HyperPoint<float>> poly)
@@ -87,42 +87,46 @@ namespace CG_2IV05.Common.OSM
 
 			for (int i = 0; i < _points.Count; i++)
 			{
-				HyperPoint<float> first;
-				HyperPoint<float> second;
+				float width = 2;
+				if(_way.Tags.ContainsKey("lanes"))
+				{
+					int lanes;
+					if(int.TryParse(_way.Tags["lanes"], out lanes))
+					{
+						width = 2.5f*lanes;
+					}
+				}
+
+				HyperPoint<float> cross;
+				HyperPoint<float> current = new HyperPoint<float>(_points[i], 0);
 				if(i == 0)
 				{
-					HyperPoint<float> current = new HyperPoint<float>(_points[i], 0);
 					HyperPoint<float> next = new HyperPoint<float>(_points[i + 1], 0);
 
 					HyperPoint<float> diff = next - current;
-					HyperPoint<float> cross = HyperPoint<float>.Cross3D(up, diff.Normilize());
-					first = current + cross;
-					second = current - cross;
+					cross = HyperPoint<float>.Cross3D(up, diff.Normilize());
 				}
 				else if(i == _points.Count-1)
 				{
 					HyperPoint<float> last = new HyperPoint<float>(_points[i - 1], 0);
-					HyperPoint<float> current = new HyperPoint<float>(_points[i], 0);
 
 					HyperPoint<float> diff = last - current;
-					HyperPoint<float> cross = HyperPoint<float>.Cross3D(diff.Normilize(), up);
-					first = current + cross;
-					second = current - cross;
+					cross = HyperPoint<float>.Cross3D(diff.Normilize(), up);
 				}
 				else
 				{
 					HyperPoint<float> last = new HyperPoint<float>(_points[i - 1], 0);
-					HyperPoint<float> current = new HyperPoint<float>(_points[i], 0);
 					HyperPoint<float> next = new HyperPoint<float>(_points[i + 1], 0);
 
 					HyperPoint<float> firstDiff = last - current;
 					HyperPoint<float> secondDiff = next - current;
 					HyperPoint<float> firstCross = HyperPoint<float>.Cross3D(firstDiff.Normilize(), up);
 					HyperPoint<float> secondCross = HyperPoint<float>.Cross3D(up, secondDiff.Normilize());
-					HyperPoint<float> average = (firstCross + secondCross) * (1f / 2f);
-					first = current + average;
-					second = current - average;
+					cross = (firstCross + secondCross) * (1f / 2f);
 				}
+
+				HyperPoint<float> first = current + (cross*(width/2));
+				HyperPoint<float> second = current - (cross*(width/2));
 
 				data.Vertices[i*2 + 0] = first - centerDataSet;
 				data.Vertices[i*2 + 1] = second - centerDataSet;

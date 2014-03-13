@@ -26,17 +26,38 @@ namespace CG_2IV05.Common.OSM
 		public bool CheckKeyAcceptance(TagsCollectionBase Tags)
 		{
 			return CheckKey(Tags, "landuse", "meadow") || CheckKey(Tags, "landuse", "grass") || CheckKey(Tags, "landuse", "pasture") ||
-			       CheckKey(Tags, "landcover", "grass") || CheckKey(Tags, "natural", "water");
+				   CheckKey(Tags, "landcover", "grass") || CheckKey(Tags, "natural", "water") || CheckKey(Tags, "highway", "pedestrian", true);
 		}
 
-		public bool CheckKey(TagsCollectionBase Tags, string key, string value)
+		public bool CheckKey(TagsCollectionBase Tags, string key, string value, bool checkArea = false)
 		{
-			return Tags.ContainsKey(key) && Tags[key] == value;
+			if (Tags.ContainsKey(key) && Tags[key] == value)
+			{
+				if(checkArea)
+				{
+					if(CheckKey(Tags, "area", "yes"))
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public bool CheckPolyAcceptance(List<HyperPoint<float>> poly)
 		{
-			return poly.Count > 2;// && SimplePolygon(poly);
+			return poly.Count > 2;
 		}
 
 		#endregion
@@ -150,13 +171,17 @@ namespace CG_2IV05.Common.OSM
 			{
 				texture = textureInfo.GetTexture("landuse", _way.Tags["landuse"]);
 			}
-			else if (_way.Tags.ContainsKey("landuse"))
+			else if (_way.Tags.ContainsKey("landcover"))
 			{
 				texture = textureInfo.GetTexture("landcover", _way.Tags["landcover"]);
 			}
 			else if (_way.Tags.ContainsKey("natural"))
 			{
 				texture = textureInfo.GetTexture("natural", _way.Tags["natural"]);
+			}
+			else if (_way.Tags.ContainsKey("highway"))
+			{
+				texture = textureInfo.GetTexture("highway", _way.Tags["highway"]);
 			}
 			else
 			{
