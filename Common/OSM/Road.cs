@@ -40,6 +40,7 @@ namespace CG_2IV05.Common.OSM
 		{
 			_way = way;
 			_points = poly;
+			InsertSteps(_points, 2.0f, 3.0f);
 		}
 
 		#region Implementation of IOSMWayElement
@@ -172,5 +173,27 @@ namespace CG_2IV05.Common.OSM
 	    }
 
 	    #endregion
+
+		private void InsertSteps(List<HyperPoint<float>> poly, float createStepSize, float maximumStep)
+		{
+			for (int i = 0; i < poly.Count-1; i++)
+			{
+				while ((poly[i] - poly[i + 1]).GetLengthSquared() > maximumStep * maximumStep)
+				{
+					poly.Insert(i + 1, PointInLineSegmentsWithAbsoluteLength(poly[i], poly[i + 1], createStepSize));
+					i++;
+				}
+			}
+		}
+
+		private HyperPoint<float> PointInLineSegmentsWithAbsoluteLength(HyperPoint<float> p1, HyperPoint<float> p2, float length)
+		{
+			return PointInLineSegments(p1, p2, length/(p2 - p1).GetLength());
+		} 
+		
+		private HyperPoint<float> PointInLineSegments(HyperPoint<float> p1, HyperPoint<float> p2, float U)
+		{
+			return p1 + (p2 - p1)*U;
+		}
 	}
 }
