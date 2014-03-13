@@ -33,14 +33,17 @@ namespace CG_2IV05.Common.OSM
 
 	public class Road: IOSMWayElement
 	{
+		private int scorePointIndex;
 		private Way _way;
 		private List<HyperPoint<float>> _points;
 
 		public Road(Way way, List<HyperPoint<float>> poly)
 		{
+			Score = new ScoreKey(float.MaxValue);
 			_way = way;
 			_points = poly;
 			InsertSteps(_points, 2.0f, 3.0f);
+			SetScore();
 		}
 
 		#region Implementation of IOSMWayElement
@@ -55,10 +58,7 @@ namespace CG_2IV05.Common.OSM
 			get { return (_points.Count - 1)*2; }
 		}
 
-        public ScoreKey Score
-        {
-            get { return new ScoreKey(float.MaxValue); }
-        }
+		public ScoreKey Score { get; private set; }
 
 		public HyperPoint<float> Min
 		{
@@ -169,10 +169,50 @@ namespace CG_2IV05.Common.OSM
 
 	    public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
 	    {
-	        return this;
+			if (Score.Score < float.MaxValue)
+			{
+				HyperPoint<float> pointI = _points[scorePointIndex];
+				HyperPoint<float> pointJ = _points[scorePointIndex+1];
+				HyperPoint<float> newPoint = (pointI + pointJ) / 2;
+
+				_points[scorePointIndex] = newPoint;
+				_points.RemoveAt(scorePointIndex+1);
+
+				SetScore();
+			}
+
+			return this;
 	    }
 
 	    #endregion
+
+		private void SetScore()
+		{
+			if (_points.Count <= 2)
+			{
+				Score.Score = float.MaxValue;
+				return;
+			}
+
+			float minDistance = float.MaxValue;
+			int minDistanceIndex = 0;
+
+			for (int i = 0; i < _points.Count-1; i++)
+			{
+				HyperPoint<float> pointI = _points[i];
+				HyperPoint<float> pointJ = _points[i+1];
+
+				float distance = (pointI - pointJ).GetLengthSquared();
+				if (distance < minDistance)
+				{
+					minDistance = distance;
+					minDistanceIndex = i;
+				}
+			}
+
+			Score.Score = minDistance / 3;
+			scorePointIndex = minDistanceIndex;
+		}
 
 		private void InsertSteps(List<HyperPoint<float>> poly, float createStepSize, float maximumStep)
 		{

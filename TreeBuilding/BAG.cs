@@ -14,6 +14,7 @@ namespace CG_2IV05.TreeBuilding
 	{
 		public static List<Building> ReadBuildings(string filename)
 		{
+			int buildingCount = 0;
 			List<Building> output = new List<Building>();
 			XmlReader reader = XmlReader.Create(filename);
 			while (reader.Read())
@@ -22,6 +23,11 @@ namespace CG_2IV05.TreeBuilding
 				{
 					if (reader.Name == "Building")
 					{
+						buildingCount++;
+						if (buildingCount % 10000 == 0)
+						{
+							Console.Out.WriteLine("Processing building {0:N0}", buildingCount);
+						}
 						output.Add(ReadBuilding(reader));
 					}
 				}
@@ -31,25 +37,26 @@ namespace CG_2IV05.TreeBuilding
 
 		private static Building ReadBuilding(XmlReader reader)
 		{
-			Building output = new Building();
+			List<HyperPoint<float>> polygon = null;
+			float height = 0;
 			while (reader.Read())
 			{
 				if (reader.NodeType == XmlNodeType.Element)
 				{
 					if (reader.Name == "height")
 					{
-						output.Height = reader.ReadElementContentAsFloat();
+						height = reader.ReadElementContentAsFloat();
 					}
 					else if (reader.Name == "gmlbase64")
 					{
-						output.Polygon = PolygonHelper.RemoveRepeatition(ReadGML(reader.ReadElementContentAsString()));
+						polygon = PolygonHelper.RemoveRepeatition(ReadGML(reader.ReadElementContentAsString()));
 					}
 				}
 				else if (reader.NodeType == XmlNodeType.EndElement)
 				{
 					if (reader.Name == "Building")
 					{
-						return output;
+						return new Building(polygon, height);
 					}
 				}
 			}

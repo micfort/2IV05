@@ -8,7 +8,7 @@ namespace CG_2IV05.Common
 {
 	public class TreeBuildingSettings
 	{
-		public static int MaxTriangleCount = 600000;
+		public static int MaxTriangleCount = 1000000;
 		public static int FileCount = 0;
 		public static string NodeFilenameFormat = "{0}\\data_{1}";
 		public static string TreeOutputFileFormat = "{0}\\tree";

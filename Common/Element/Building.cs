@@ -16,6 +16,13 @@ namespace CG_2IV05.Common.Element
         private int scorePointIndex1;
         private int scorePointIndex2;
 
+		public Building(List<HyperPoint<float>> polygon, float height)
+		{
+			this.Polygon = polygon;
+			this.Height = height;
+			createBuildingScore();
+		}
+
         private ScoreKey score = new ScoreKey(float.MaxValue);
         public ScoreKey Score
         {
@@ -153,15 +160,13 @@ namespace CG_2IV05.Common.Element
 			int[] roofIndexes = EarClippingTriangulator.triangulatePolygon(roofVertices, Polygon.Count * 4);
 			Array.Copy(roofIndexes, 0, data.Indexes, Polygon.Count * 6, roofIndexes.Length);
 
-            createBuildingScore();
-
 			return data;
 		}
 
         public void createBuildingScore(){         
             if(Polygon.Count <= 4)
             {
-                score.Score = float.MaxValue; ;
+                score.Score = float.MaxValue;
                 return;
             }
 
@@ -184,7 +189,7 @@ namespace CG_2IV05.Common.Element
                 }
             }
 
-            score.Score = minDistance;
+            score.Score = minDistance/3;
             scorePointIndex1 = minDistanceIndex1;
             scorePointIndex2 = minDistanceIndex2;
         }

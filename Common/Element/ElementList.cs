@@ -64,14 +64,13 @@ namespace CG_2IV05.Common.Element
             HyperPoint<float> min = Min;
             HyperPoint<float> max = Max;
 
-            Building b = new Building();
-            b.Polygon = new List<HyperPoint<float>>();
-            b.Polygon.Add(new HyperPoint<float>(min.X, min.Y, 0));
-            b.Polygon.Add(new HyperPoint<float>(min.X, max.Y, 0));
-            b.Polygon.Add(new HyperPoint<float>(max.X, max.Y, 0));
-            b.Polygon.Add(new HyperPoint<float>(max.X, min.Y, 0));
-            b.Height = 1;
-
+			Building b = new Building(new List<HyperPoint<float>>()
+				                          {
+					                          new HyperPoint<float>(min.X, min.Y, 0),
+											  new HyperPoint<float>(min.X, max.Y, 0),
+											  new HyperPoint<float>(max.X, max.Y, 0),
+											  new HyperPoint<float>(max.X, min.Y, 0),
+				                          }, 1);
             return b.CreateData(centerDataSet, textureInfo);
 		}
 

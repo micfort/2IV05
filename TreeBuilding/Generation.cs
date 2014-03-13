@@ -18,15 +18,18 @@ namespace CG_2IV05.TreeBuilding
 			{
 				for (int j = 0; j < TreeBuildingSettings.generateSizeY; j++)
 				{
-					Building b = new Building();
+					
 					int x = i * stepsize;
 					int y = j * stepsize;
-					b.Polygon = new List<HyperPoint<float>>();
-					b.Polygon.Add(new HyperPoint<float>(x, y, 0));
-					b.Polygon.Add(new HyperPoint<float>(x, y + 1, 0));
-					b.Polygon.Add(new HyperPoint<float>(x + 1, y + 1, 0));
-					b.Polygon.Add(new HyperPoint<float>(x + 1, y, 0));
-					b.Height = 1;
+					List<HyperPoint<float>> polygon = new List<HyperPoint<float>>
+						                                  {
+							                                  new HyperPoint<float>(x, y, 0),
+							                                  new HyperPoint<float>(x, y + 1, 0),
+							                                  new HyperPoint<float>(x + 1, y + 1, 0),
+							                                  new HyperPoint<float>(x + 1, y, 0)
+						                                  };
+					float height = 1;
+					Building b = new Building(polygon, height);
 					output.Add(b);
 				}
 			}
