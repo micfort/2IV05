@@ -13,12 +13,11 @@ namespace CG_2IV05.Common.OSM
 {
 	public class OSM
 	{
-		static HyperPoint<float> min = new HyperPoint<float>(5.4231f, 51.4046f);
-		static HyperPoint<float> max = new HyperPoint<float>(5.5302f, 51.4983f);
+		private static List<IOSMWayFactory> factories = new List<IOSMWayFactory>() {new LandUseFactory(), new RoadFactory()};
 
 		public static List<IElement> Read(Stream file)
 		{
-			List<Road> roads = new List<Road>();
+			List<IElement> elements = new List<IElement>();
 			Dictionary<long, NodeRD> nodes = new Dictionary<long, NodeRD>();
 			PBFOsmStreamSource source = new PBFOsmStreamSource(file);
 			source.Initialize();
@@ -29,55 +28,63 @@ namespace CG_2IV05.Common.OSM
 				var geo = source.Current();
 				if (geo.Type == OsmGeoType.Node)
 				{
-					if (elementCount % 1000000 == 0)
+					if (elementCount % 100000 == 0)
 					{
 						Console.Out.WriteLine("Processing node element {0:N0}", elementCount);
 					}
 					if (geo.Id != null)
 					{
 						OsmSharp.Osm.Node node = (OsmSharp.Osm.Node)geo;
-						if (node.Latitude != null && node.Longitude != null)
-						{
-							if (min.X < node.Longitude && node.Longitude < max.X
-								&& min.Y < node.Latitude && node.Latitude < max.Y)
-							{
-								HyperPoint<double> RDCoordinate =
-									new HyperPoint<double>(node.Longitude.Value, node.Latitude.Value);
-								HyperPoint<float> RDCoordinateF = RDCoordinate.ConvertToRD().ConvertTo<float>();
+						HyperPoint<double> RDCoordinate =
+							new HyperPoint<double>(node.Longitude.Value, node.Latitude.Value);
+						HyperPoint<float> RDCoordinateF = RDCoordinate.ConvertToRD().ConvertTo<float>();
 
-								NodeRD nodeRD = new NodeRD()
-								{
-									Node = node,
-									RDCoordinate = RDCoordinateF
-								};
-								nodes.Add(geo.Id.Value, nodeRD);
-							}
-						}
+						NodeRD nodeRD = new NodeRD()
+						{
+							Node = node,
+							RDCoordinate = RDCoordinateF
+						};
+						nodes.Add(geo.Id.Value, nodeRD);
 					}
 				}
 				else if (geo.Type == OsmGeoType.Way)
 				{
-					if (elementCount % 1000000 == 0)
+					if (elementCount % 100000 == 0)
 					{
-						Console.Out.WriteLine("Processing way element {0}", elementCount);
+						Console.Out.WriteLine("Processing way element {0:N0}", elementCount);
 					}
 					Way way = (Way)geo;
-					List<string> keys = new List<string>() { "highway", "sidewalk" };
-					if (way.Tags != null && keys.Any(way.Tags.ContainsKey) && Road.ExistInDataset(way, nodes) && way.Nodes.Count > 0)
+					if (way.Tags != null && way.Nodes.Count > 0)
 					{
-						roads.Add(new Road(way, nodes));
+						IOSMWayFactory factory = factories.Find(x => x.CheckKeyAcceptance(way.Tags));
+						if (factory != null)
+						{
+							List<HyperPoint<float>> wayCoordinates = GetCoordinates(way.Nodes, nodes);
+							if(factory.CheckPolyAcceptance(wayCoordinates))
+							{
+								elements.Add(factory.Create(way, wayCoordinates));
+							}
+						}
 					}
 				}
 				else if(geo.Type == OsmGeoType.Relation)
 				{
-					if (elementCount % 1000000 == 0)
+					if (elementCount % 100000 == 0)
 					{
-						Console.Out.WriteLine("Processing relation element {0}", elementCount);
+						Console.Out.WriteLine("Processing relation element {0:N0}", elementCount);
 					}
 				}
 				elementCount++;
 			}
-			return roads.ConvertAll(x => (IElement)x);
+			return elements;
 		}
+
+		public static List<HyperPoint<float>> GetCoordinates(List<long> nodesWay, Dictionary<long, NodeRD> nodes)
+		{
+			List<HyperPoint<float>>  points = new List<HyperPoint<float>>();
+			nodesWay.ForEach(x => points.Add(nodes[x].RDCoordinate));
+			PolygonHelper.RemoveRepeatition(points);
+			return points;
+		} 
 	}
 }

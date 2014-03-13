@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GeoLib">
+      <HintPath>..\Lib\GeoLib.dll</HintPath>
+    </Reference>
+    <Reference Include="GeoPolygons">
+      <HintPath>..\Lib\GeoPolygons.dll</HintPath>
+    </Reference>
     <Reference Include="micfort.GHL.PCL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\micfort.GHL.PCL.0.123\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
@@ -65,6 +71,9 @@
     <Compile Include="Node.cs" />
     <Compile Include="NodeData.cs" />
     <Compile Include="OSM\Helper.cs" />
+    <Compile Include="OSM\IOSMWayElement.cs" />
+    <Compile Include="OSM\IOSMWayFactory.cs" />
+    <Compile Include="OSM\LandUse.cs" />
     <Compile Include="OSM\OSM.cs" />
     <Compile Include="OSM\Road.cs" />
     <Compile Include="PolygonHelper.cs" />

@@ -14,7 +14,7 @@ namespace CG_2IV05.Common
 		private HyperPoint<float> TextureSize = new HyperPoint<float>(1f, 1f);
 
 		private const string localKey = "2IV05";
-		private static Tuple<string, string> Unknown = CreateKey("unknown");
+		private static Tuple<string, string> UnknownKey = CreateKey("unknown");
 		private static Tuple<string, string> CreateKey(string name)
 		{
 			return new Tuple<string, string>(localKey, name);
@@ -28,7 +28,7 @@ namespace CG_2IV05.Common
 		private Dictionary<Tuple<string, string>, int> textureInfos = new Dictionary<Tuple<string, string>, int>()
 			                                               {	
 																//unknown
-				                                               {Unknown, 0},
+				                                               {UnknownKey, 0},
 															   //asfalt
 				                                               {CreateKey("highway", "motorway"), 1},
 															   //grass
@@ -38,6 +38,7 @@ namespace CG_2IV05.Common
 															   {CreateKey("landcover", "grass"), 2},
 															   //water
 															   {CreateKey("water"), 3},
+															   {CreateKey("natural", "water"), 3},
 															   //bricks
 															   {CreateKey("bricks"), 4},
 															   //trees
@@ -61,7 +62,7 @@ namespace CG_2IV05.Common
 			}
 			else
 			{
-				return GetItem(textureInfos[Unknown]);
+				return GetItem(textureInfos[UnknownKey]);
 			}
 		}
 
@@ -73,7 +74,7 @@ namespace CG_2IV05.Common
 			}
 			else
 			{
-				return GetItem(textureInfos[Unknown]);
+				return GetItem(textureInfos[UnknownKey]);
 			}
 		}
 
@@ -120,6 +121,11 @@ namespace CG_2IV05.Common
 		{
 			get { return GetTexture("trees"); }
 		}
+
+		public HyperPoint<float> Unknown
+		{
+			get { return GetItem(textureInfos[UnknownKey]); }
+		} 
 
 		#endregion
 
