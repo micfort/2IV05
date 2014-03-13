@@ -43,10 +43,11 @@
     </Reference>
     <Reference Include="OsmSharp">
       <HintPath>..\Lib\OsmSharp.dll</HintPath>
-      <Aliases>OsmSharp</Aliases>
+      <Aliases>osm</Aliases>
     </Reference>
     <Reference Include="OsmSharp.Osm">
       <HintPath>..\Lib\OsmSharp.Osm.dll</HintPath>
+      <Aliases>osm</Aliases>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,6 +67,9 @@
     <Compile Include="Node.cs" />
     <Compile Include="NodeData.cs" />
     <Compile Include="OSM\Helper.cs" />
+    <Compile Include="OSM\IOSMWayElement.cs" />
+    <Compile Include="OSM\IOSMWayFactory.cs" />
+    <Compile Include="OSM\LandUse.cs" />
     <Compile Include="OSM\OSM.cs" />
     <Compile Include="OSM\Road.cs" />
     <Compile Include="PolygonHelper.cs" />

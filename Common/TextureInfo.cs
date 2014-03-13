@@ -14,7 +14,7 @@ namespace CG_2IV05.Common
 		private HyperPoint<float> TextureSize = new HyperPoint<float>(1f, 1f);
 
 		private const string localKey = "2IV05";
-		private static Tuple<string, string> Unknown = CreateKey("unknown");
+		private static Tuple<string, string> UnknownKey = CreateKey("unknown");
 		private static Tuple<string, string> CreateKey(string name)
 		{
 			return new Tuple<string, string>(localKey, name);
@@ -28,9 +28,25 @@ namespace CG_2IV05.Common
 		private Dictionary<Tuple<string, string>, int> textureInfos = new Dictionary<Tuple<string, string>, int>()
 			                                               {	
 																//unknown
-				                                               {Unknown, 0},
+				                                               {UnknownKey, 0},
+															   {CreateKey("highway", "construction"), 0},
+															   {CreateKey("highway", "unsurfaced"), 0},
 															   //asfalt
 				                                               {CreateKey("highway", "motorway"), 1},
+															   {CreateKey("highway", "trunk"), 1},
+															   {CreateKey("highway", "primary"), 1},
+															   {CreateKey("highway", "secondary"), 1},
+															   {CreateKey("highway", "tertiary"), 1},
+															   {CreateKey("highway", "unclassified"), 1},
+															   {CreateKey("highway", "residential"), 1},
+															   {CreateKey("highway", "service"), 1},
+															   {CreateKey("highway", "motorway_link"), 1},
+															   {CreateKey("highway", "trunk_link"), 1},
+															   {CreateKey("highway", "primary_link"), 1},
+															   {CreateKey("highway", "secondary_link"), 1},
+															   {CreateKey("highway", "tertiary_link"), 1},
+															   {CreateKey("highway", "living_street"), 1},
+
 															   //grass
 				                                               {CreateKey("landuse", "meadow"), 2},
 															   {CreateKey("landuse", "grass"), 2},
@@ -38,6 +54,7 @@ namespace CG_2IV05.Common
 															   {CreateKey("landcover", "grass"), 2},
 															   //water
 															   {CreateKey("water"), 3},
+															   {CreateKey("natural", "water"), 3},
 															   //bricks
 															   {CreateKey("bricks"), 4},
 															   //trees
@@ -45,7 +62,17 @@ namespace CG_2IV05.Common
 															   //cycle way
 															   {CreateKey("highway", "cycleway"), 6},
 															   //roof
-															   {CreateKey("roof"), 7}
+															   {CreateKey("roof"), 7},
+															   //looppad
+															   {CreateKey("highway", "footway"), 8},
+															   {CreateKey("highway", "pedestrian"), 8},
+															   //track
+															   {CreateKey("highway", "track"), 9},
+															   {CreateKey("highway", "path"), 9},
+															   {CreateKey("highway", "bridleway"), 9},
+															   //steps
+															   {CreateKey("highway", "steps"), 10},
+
 			                                               };
 
 		private HyperPoint<float> GetItem(int i)
@@ -61,7 +88,7 @@ namespace CG_2IV05.Common
 			}
 			else
 			{
-				return GetItem(textureInfos[Unknown]);
+				return GetItem(textureInfos[UnknownKey]);
 			}
 		}
 
@@ -73,7 +100,7 @@ namespace CG_2IV05.Common
 			}
 			else
 			{
-				return GetItem(textureInfos[Unknown]);
+				return GetItem(textureInfos[UnknownKey]);
 			}
 		}
 
@@ -120,6 +147,11 @@ namespace CG_2IV05.Common
 		{
 			get { return GetTexture("trees"); }
 		}
+
+		public HyperPoint<float> Unknown
+		{
+			get { return GetItem(textureInfos[UnknownKey]); }
+		} 
 
 		#endregion
 

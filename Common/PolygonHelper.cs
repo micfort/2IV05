@@ -17,6 +17,10 @@ namespace CG_2IV05.Common
 					polygon.RemoveAt(i);
 				}
 			}
+			if (polygon.Count == 1)
+			{
+				return polygon;
+			}
 			if (polygon[0] == polygon[polygon.Count - 1])
 			{
 				polygon.RemoveAt(polygon.Count - 1);
