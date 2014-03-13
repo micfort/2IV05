@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -16,13 +17,13 @@ namespace CG_2IV05.Visualize
 	class Game
 	{
 		private GameWindow game;
-		private VBO vbo;
 		private Vector3 CameraPos;
 		private Vector2 Mouse;
 		private Vector2? LastMousePos;
 		private Matrix4 lookAtMatrix;
 		private int texture;
 		private float speed = 10f;
+		private ConcurrentBag<VBO> vbos;
 		
 		public Game()
 		{
@@ -50,11 +51,13 @@ namespace CG_2IV05.Visualize
 			// setup settings, load textures, sounds
 			game.VSync = VSyncMode.On;
 
+			vbos = new ConcurrentBag<VBO>();
             using (FileStream file = File.OpenRead(@"..\..\..\TreeBuilding\bin\Debug\output\data_0"))
 			{
 				NodeDataRaw data = NodeDataRaw.ReadFromStream(file);
-				vbo = new VBO();
+				VBO vbo = new VBO();
 				vbo.LoadData(data);
+				vbos.Add(vbo);
 			}
 
 			using (FileStream file = File.OpenRead("Texture.fw.png"))
@@ -91,7 +94,10 @@ namespace CG_2IV05.Visualize
 			GL.Light(LightName.Light0, LightParameter.Position, new Vector4(1, 1, 10, 0));
 			
 			GL.BindTexture(TextureTarget.Texture2D, texture);
-			vbo.Draw();
+			foreach (VBO vbo in vbos)
+			{
+				vbo.Draw();
+			}
 
 			game.SwapBuffers();
 		}
