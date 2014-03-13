@@ -9,14 +9,17 @@ namespace CG_2IV05.Common.Element
 	{
 		public List<IElement> Elements { get; set; }
 
+        public ElementList()
+        {
+            Elements = new List<IElement>();
+        } 
+
 		public ElementList[] SplitList()
 		{
 			HyperPoint<float> min = this.Min;
 			HyperPoint<float> max = this.Max;
 
-			HyperPoint<float> center = (max - min);
-			center = center * (1f / 2f);
-			center = center + min;
+			HyperPoint<float> center = (max + min) * 0.5f;
 
 			ElementList[] output = new ElementList[4];
 			for (int i = 0; i < 4; i++)
@@ -58,23 +61,54 @@ namespace CG_2IV05.Common.Element
 		/// <returns></returns>
 		public NodeData CreateDataFromChildren(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
 		{
-			HyperPoint<float> min = Min;
-			HyperPoint<float> max = Max;
+            HyperPoint<float> min = Min;
+            HyperPoint<float> max = Max;
 
-			Building b = new Building();
-			b.Polygon = new List<HyperPoint<float>>();
-			b.Polygon.Add(new HyperPoint<float>(min.X, min.Y, 0));
-			b.Polygon.Add(new HyperPoint<float>(min.X, max.Y, 0));
-			b.Polygon.Add(new HyperPoint<float>(max.X, max.Y, 0));
-			b.Polygon.Add(new HyperPoint<float>(max.X, min.Y, 0));
-			b.Height = 1;
+            Building b = new Building();
+            b.Polygon = new List<HyperPoint<float>>();
+            b.Polygon.Add(new HyperPoint<float>(min.X, min.Y, 0));
+            b.Polygon.Add(new HyperPoint<float>(min.X, max.Y, 0));
+            b.Polygon.Add(new HyperPoint<float>(max.X, max.Y, 0));
+            b.Polygon.Add(new HyperPoint<float>(max.X, min.Y, 0));
+            b.Height = 1;
 
-			return b.CreateData(centerDataSet, textureInfo);
+            return b.CreateData(centerDataSet, textureInfo);
 		}
 
 		public NodeData CreateDataFromChildren(List<Node> Children, HyperPoint<float> centerDataSet, TextureInfo textureInfo)
 		{
-			throw new NotImplementedException();
+            SortedList<ScoreKey, IElement> sortedElements = new SortedList<ScoreKey, IElement>();
+		    int triangleCount = 0;
+            foreach(Node node in Children)
+            {
+                var nodeElements = (ElementList) node.Tag;
+                foreach (var element in nodeElements.Elements)
+                {
+                    sortedElements.Add(element.Score, element);
+                    triangleCount += element.TriangleCount;
+                }
+		    }
+
+		    
+            while (triangleCount > TreeBuildingSettings.MaxTriangleCount)
+            {
+                IElement element = sortedElements.First().Value;
+
+                if (element.Score.Score == float.MaxValue)
+                    break;
+
+                triangleCount -= element.TriangleCount;
+                element = element.GetSimplifiedVersion(centerDataSet, textureInfo);
+                int index = sortedElements.IndexOfKey(element.Score);
+                sortedElements.RemoveAt(0);
+                sortedElements.Add(element.Score, element);
+
+                triangleCount += element.TriangleCount;
+            }
+		    Elements = sortedElements.Values.ToList();
+            sortedElements.Clear();
+
+            return this.CreateData(centerDataSet, textureInfo);
 		}
 
 		#region Implementation of IElement
@@ -86,7 +120,9 @@ namespace CG_2IV05.Common.Element
 			get { return Elements.Sum(b => b.TriangleCount); } 
 		}
 
-		public HyperPoint<float> Min
+	    public ScoreKey Score { get; private set; }
+
+	    public HyperPoint<float> Min
 		{
 			get { return new HyperPoint<float>(Elements.Min(x => x.Min.X), Elements.Min(x => x.Min.Y), 0); }
 		}
@@ -139,6 +175,11 @@ namespace CG_2IV05.Common.Element
 			return output;
 		}
 
-		#endregion
+	    public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    #endregion
 	}
 }
