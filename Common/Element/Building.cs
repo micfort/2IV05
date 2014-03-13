@@ -13,6 +13,16 @@ namespace CG_2IV05.Common.Element
 
 		public bool FinalElement { get { return true; } }
 
+        private int scorePointIndex1;
+        private int scorePointIndex2;
+
+        private ScoreKey score = new ScoreKey(float.MaxValue);
+        public ScoreKey Score
+        {
+            get { return score; }
+
+        }
+
 		public int TriangleCount
 		{
 			get
@@ -139,7 +149,87 @@ namespace CG_2IV05.Common.Element
 			int[] roofIndexes = EarClippingTriangulator.triangulatePolygon(roofVertices, Polygon.Count * 4);
 			Array.Copy(roofIndexes, 0, data.Indexes, Polygon.Count * 6, roofIndexes.Length);
 
+            createBuildingScore();
+
 			return data;
 		}
+
+        public void createBuildingScore(){         
+            if(Polygon.Count <= 4)
+            {
+                score.Score = float.MaxValue; ;
+                return;
+            }
+
+            float minDistance = float.MaxValue;
+            int minDistanceIndex1 = 0;
+            int minDistanceIndex2 = 0;
+
+            for (int i = 0; i < Polygon.Count; i++)
+            {
+                int j = (i + 1) % Polygon.Count;
+                HyperPoint<float> pointI = Polygon[i];
+                HyperPoint<float> pointJ = Polygon[j];
+
+                float distance = (pointI - pointJ).GetLengthSquared();
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    minDistanceIndex1 = i;
+                    minDistanceIndex2 = j;
+                }
+            }
+
+            score.Score = minDistance;
+            scorePointIndex1 = minDistanceIndex1;
+            scorePointIndex2 = minDistanceIndex2;
+        }
+
+        public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+        {
+            if (score.Score < float.MaxValue)
+            {
+                HyperPoint<float> pointI = Polygon[scorePointIndex1];
+                HyperPoint<float> pointJ = Polygon[scorePointIndex2];
+                HyperPoint<float> newPoint = (pointI + pointJ)/2;
+
+                Polygon[scorePointIndex1] = newPoint;
+                Polygon.RemoveAt(scorePointIndex2);
+
+                createBuildingScore();
+            }
+
+            return this;
+        }
+
+//        public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+//        {
+//            Building simpleBuilding = new Building();
+//            List<HyperPoint<float>> newPolygon = new List<HyperPoint<float>>();
+//            if (score.Score < float.MaxValue)
+//            {
+//                HyperPoint<float> pointI = Polygon[scorePointIndex1];
+//                HyperPoint<float> pointJ = Polygon[scorePointIndex2];
+//                HyperPoint<float> newPoint = (pointI + pointJ) / 2;
+//
+//                Polygon.ForEach(x => newPolygon.Add(x));
+//
+//                newPolygon[scorePointIndex1] = newPoint;
+//                newPolygon.RemoveAt(scorePointIndex2);
+//
+//            }
+//            else
+//            {
+//                Polygon.ForEach(x => newPolygon.Add(x));
+//            }
+//
+//            simpleBuilding.Height = Height;
+//            simpleBuilding.Polygon = newPolygon;
+//
+//            simpleBuilding.CreateData(centerDataSet, textureInfo);
+//            simpleBuilding.createBuildingScore();
+//
+//            return simpleBuilding;
+//        }
 	}
 }

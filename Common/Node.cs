@@ -38,7 +38,7 @@ namespace CG_2IV05.Common
 					Children.Add(child);
 				}
 
-				NodeData data = elements.CreateDataFromChildren(TreeBuildingSettings.CenterDataSet, textureInfo);
+				NodeData data = elements.CreateDataFromChildren(Children, TreeBuildingSettings.CenterDataSet, textureInfo);
 				using (FileStream file = File.Open(NodeDataFile, FileMode.Create, FileAccess.ReadWrite))
 				{
 					data.SaveToStream(file);

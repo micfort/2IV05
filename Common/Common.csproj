@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="OsmSharp">
       <HintPath>..\Lib\OsmSharp.dll</HintPath>
+      <Aliases>OsmSharp</Aliases>
     </Reference>
     <Reference Include="OsmSharp.Osm">
       <HintPath>..\Lib\OsmSharp.Osm.dll</HintPath>

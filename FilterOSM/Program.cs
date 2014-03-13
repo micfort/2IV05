@@ -9,9 +9,9 @@ namespace CG_2IV05.FilterOSM
 		static void Main(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
-			using (FileStream input = File.OpenRead(@"D:\S120397\School\2IV05 ACCG\netherlands-latest.osm.pbf"))
+            using (FileStream input = File.OpenRead(@"Groningen.osm.pbf"))
 			{
-				using (FileStream output = File.OpenWrite("osm_data_Eindhoven"))
+				using (FileStream output = File.OpenWrite("osm_data_Groningen"))
 				{
 					OSM.Filter(input, output);
 				}

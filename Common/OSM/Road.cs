@@ -5,6 +5,7 @@ using CG_2IV05.Common.Element;
 using OsmSharp.Osm;
 using micfort.GHL.Math2;
 
+
 namespace CG_2IV05.Common.OSM
 {
 	public class Road: IElement
@@ -37,6 +38,11 @@ namespace CG_2IV05.Common.OSM
 		{
 			get { return (Points.Count - 1)*2; }
 		}
+
+        public ScoreKey Score
+        {
+            get { return new ScoreKey(float.MaxValue); }
+        }
 
 		public HyperPoint<float> Min
 		{
@@ -141,6 +147,11 @@ namespace CG_2IV05.Common.OSM
 			return data;
 		}
 
-		#endregion
+	    public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+	    {
+	        return this;
+	    }
+
+	    #endregion
 	}
 }
