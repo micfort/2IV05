@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CG_2IV05.Common.Element;
-using OsmSharp.Collections.Tags;
 using OsmSharp.Osm;
 using micfort.GHL.Math2;
 
