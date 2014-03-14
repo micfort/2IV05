@@ -122,6 +122,7 @@ namespace CG_2IV05.Visualize
 			GL.DeleteBuffer(Indexes);
 			GL.DeleteBuffer(Vertices);
 			GL.DeleteBuffer(Normals);
+			GL.DeleteBuffer(TextCoord);
 		}
 
 		#endregion

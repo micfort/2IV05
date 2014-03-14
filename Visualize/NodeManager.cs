@@ -10,12 +10,16 @@ using micfort.GHL.Math2;
 
 namespace CG_2IV05.Visualize
 {
+	public struct ReplaceNode
+	{
+		public List<NodeWithData> OriginalNodes;
+		public List<NodeWithData> ReplaceBy;
+	}
 	public class NodeManager:IDisposable
 	{
 		private Timer timer;
-		private List<Node> CurrentLoadedList = new List<Node>();
 		private float _maxDistanceError = 1000000;
-		private float _distanceModifier = 1;
+		private float _distanceModifier = 10;
 
 		public HyperPoint<float> Position { get; set; }
 		public Tree Tree { get; set; }
@@ -35,6 +39,14 @@ namespace CG_2IV05.Visualize
 
 		public void Start()
 		{
+			NodeWithData nodeWithData = new NodeWithData();
+			nodeWithData.node = Tree.Root;
+			nodeWithData.loadNodeFromDisc();
+			lock (VBOList)
+			{
+				VBOList.Add(nodeWithData);
+			}
+
 			timer = new Timer();
 			timer.Tick += timer_Tick;
 			timer.Interval = 1000/10;
@@ -43,54 +55,37 @@ namespace CG_2IV05.Visualize
 
 		void timer_Tick(object sender, EventArgs e)
 		{
-			List<Node> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
-			List<Node> newItems = DiffNewItems(CurrentLoadedList, newLoadedList);
-			List<Node> removedItems = DiffOldItems(CurrentLoadedList, newLoadedList);
-			CurrentLoadedList = newLoadedList;
-
-			for (int i = 0; i < newItems.Count; i++)
+			List<ReplaceNode> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
+			foreach (ReplaceNode replaceNode in newLoadedList)
 			{
-				if (removedItems.Count > 0)
+				micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this, "Load nodes from disc " + replaceNode.ReplaceBy.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
+				foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
 				{
-					Node ReplacedNode = removedItems[0];
-					removedItems.RemoveAt(0);
-					NodeWithData replaceData = new NodeWithData();
-					int index = -1;
-					lock (VBOList)
-					{
-						index = VBOList.FindIndex(x => x.node == ReplacedNode);
-						if(index >= 0)
-						{
-							replaceData = VBOList[index];
-							VBOList.RemoveAt(index);
-						}
-					}
-					if (index >= 0)
-					{
-						NodeWithData item = new NodeWithData();
-						item.vbo = replaceData.vbo;
-						item.node = newItems[i];
-						Loader.enqueueNode(item);
-					}
+					nodeWithData.loadNodeFromDisc();
 				}
-				else
-				{
-					NodeWithData item = new NodeWithData();
-					item.vbo = null;
-					item.node = newItems[i];
-					Loader.enqueueNode(item);
-				}
-				
 			}
-			for (int i = 0; i < removedItems.Count; i++)
+			lock (VBOList)
 			{
-				int index = VBOList.FindIndex(x => x.node == removedItems[i]);
-				NodeWithData replaceData = VBOList[index];
-				lock (VBOList)
+				foreach (ReplaceNode replaceNode in newLoadedList)
 				{
-					VBOList.RemoveAt(index);
+					foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
+					{
+						VBOList.Add(nodeWithData);
+					}
+					foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
+					{
+						VBOList.Remove(originalNode);
+					}
 				}
-				replaceData.vbo.Dispose();
+			}
+
+			foreach (ReplaceNode replaceNode in newLoadedList)
+			{
+				micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this, "Unload nodes from disc " + replaceNode.OriginalNodes.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
+				foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
+				{
+					originalNode.ReleaseVBO();
+				}
 			}
 		}
 
@@ -117,46 +112,109 @@ namespace CG_2IV05.Visualize
 			return DiffNewItems(newList, oldList);
 		}
 
-		public List<Node> DetermineCompleteLoadList(Tree tree, HyperPoint<float> position)
+		public List<ReplaceNode> DetermineCompleteLoadList(Tree tree, HyperPoint<float> position)
 		{
-			List<Node> loadList = new List<Node>();
-			DetermineLoadList(tree.Root, position, loadList);
-			return loadList;
-		} 
+			List<ReplaceNode> replaceList = new List<ReplaceNode>();
+			DetermineLoadList(tree.Root, position, replaceList);
+			return replaceList;
+		}
 
-		private void DetermineLoadList(Node node, HyperPoint<float> position, List<Node> loadList)
+		private void DetermineLoadList(Node node, HyperPoint<float> position, List<ReplaceNode> loadList)
+		{
+			float distanceError = DistanceToNode(node, position) * DistanceModifier;
+			if (distanceError > MaxDistanceError)
+			{
+				if(VBOList.Exists(x => x.node == node))
+				{
+					List<NodeWithData> unloadList = new List<NodeWithData>() { VBOList.Find(x => x.node == node) };
+					List<NodeWithData> newLoadList = new List<NodeWithData>();
+					loadList.Add(new ReplaceNode() { OriginalNodes = unloadList, ReplaceBy = newLoadList });
+				}
+				return;
+			}
+			if(distanceError < node.Error && node.Children != null && node.Children.Count > 0)
+			{
+				if(VBOList.Exists(x => x.node == node))
+				{
+					List<NodeWithData> unloadList = new List<NodeWithData>() {VBOList.Find(x => x.node == node)};
+					List<NodeWithData> newLoadList = new List<NodeWithData>();
+					foreach (Node child in node.Children)
+					{
+						DetermineLoadListForUnloadingParent(child, position, newLoadList);
+					}
+					loadList.Add(new ReplaceNode(){OriginalNodes = unloadList, ReplaceBy = newLoadList});
+				}
+				else
+				{
+					foreach (Node child in node.Children)
+					{
+						DetermineLoadList(child, position, loadList);
+					}
+				}
+			}
+			else
+			{
+				if(!VBOList.Exists(x => x.node == node))
+				{
+					List<NodeWithData> newLoadList = new List<NodeWithData>() {new NodeWithData(null, node)};
+					List<NodeWithData> unloadList = new List<NodeWithData>();
+					foreach (Node child in node.Children)
+					{
+						DetermineLoadListForLoadingParent(child, unloadList);
+					}
+					loadList.Add(new ReplaceNode() {OriginalNodes = unloadList, ReplaceBy = newLoadList});
+				}
+			}
+		}
+
+		private void DetermineLoadListForUnloadingParent(Node node, HyperPoint<float> position, List<NodeWithData> loadList)
 		{
 			float distanceError = DistanceToNode(node, position) * DistanceModifier;
 			if (distanceError > MaxDistanceError)
 			{
 				return;
 			}
-			if(distanceError < node.Error && node.Children != null && node.Children.Count > 0)
+			if (distanceError < node.Error && node.Children != null && node.Children.Count > 0)
 			{
 				foreach (Node child in node.Children)
 				{
-					DetermineLoadList(child, position, loadList);
+					DetermineLoadListForUnloadingParent(child, position, loadList);
 				}
 			}
 			else
 			{
-				loadList.Add(node);
+				loadList.Add(new NodeWithData(null, node));
+			}
+		}
+
+		private void DetermineLoadListForLoadingParent(Node node, List<NodeWithData> unLoadList)
+		{
+			if(VBOList.Exists(x => x.node == node))
+			{
+				unLoadList.Add(VBOList.Find(x => x.node == node));
+			}
+			else
+			{
+				foreach (Node child in node.Children)
+				{
+					DetermineLoadListForLoadingParent(child, unLoadList);
+				}
 			}
 		}
 
 		private float DistanceToNode(Node node, HyperPoint<float> position)
 		{
 			//todo set bounding box of node
-			return DistanceToSquare(node.Min, node.Max,  position);
+			return DistanceToSquare(node.Min, node.Max, position);
 		}
 
 		private float DistanceToSquare(HyperPoint<float> p1, HyperPoint<float> p2, HyperPoint<float> position)
 		{
 			HyperPoint<float> b = p2 - p1;
 			HyperPoint<float> p = position - p1;
-			HyperPoint<float> abs_p = new HyperPoint<float>(Math.Abs(p.X), Math.Abs(p.Y));
+			HyperPoint<float> abs_p = new HyperPoint<float>(Math.Abs(p.X), Math.Abs(p.Y), Math.Abs(p.Z));
 			HyperPoint<float> sub = abs_p - b;
-			HyperPoint<float> max = new HyperPoint<float>(Math.Max(sub.X, 0f), Math.Max(sub.Y, 0f));
+			HyperPoint<float> max = new HyperPoint<float>(Math.Max(sub.X, 0f), Math.Max(sub.Y, 0f), Math.Max(sub.Z, 0f));
 			return max.GetLength();
 		}
 

@@ -11,7 +11,16 @@ namespace CG_2IV05.Visualize
 {
 	public partial class Settings : Form
 	{
-		public NodeManager manager { get; set; }
+		private NodeManager _manager;
+		public NodeManager manager
+		{
+			get { return _manager; }
+			set
+			{
+				_manager = value;
+				numericUpDown1.Value = Convert.ToDecimal(_manager.DistanceModifier);
+			}
+		}
 
 		public Settings()
 		{

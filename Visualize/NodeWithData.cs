@@ -6,10 +6,15 @@ using System.Text;
 
 namespace CG_2IV05.Visualize
 {
-    public struct NodeWithData
+    public class NodeWithData
     {
         public VBO vbo;
         public Node node;
+
+		public NodeWithData()
+		{
+			
+		}
 
         public NodeWithData(VBO vbo, Node node)
         {
@@ -21,10 +26,16 @@ namespace CG_2IV05.Visualize
         {
 			if(vbo == null)
 			{
-				vbo = new VBO();
+				vbo = OnDemand<VBO>.Create();
 			}
             vbo.LoadData(node.ReadRawData());
         }
+
+		public void ReleaseVBO()
+		{
+			OnDemand<VBO>.Release(vbo);
+			vbo = null;
+		}
 
     }
 }
