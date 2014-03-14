@@ -32,6 +32,8 @@ namespace CG_2IV05.Visualize
 		private VBOLoader loader;
 		private NodeManager manager;
 		private Settings settingsForm;
+
+		private VBO vbo;
 		
 		public Game()
 		{
@@ -73,12 +75,22 @@ namespace CG_2IV05.Visualize
 				this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
 			}
 
+			//using (FileStream file = File.OpenRead(@"output\data_13"))
+			//{
+			//	vbo = OnDemand<VBO>.Create();
+			//	vbo.LoadData(NodeDataRaw.ReadFromStream(file));
+			//}
+
+			//game.Context.MakeCurrent(null);
+
 			manager = new NodeManager();
 			manager.Loader = loader;
 			manager.Tree = tree;
 			manager.VBOList = vbos;
 			manager.Position = CameraPos.ToHyperPoint();
 			manager.Start();
+
+			game.MakeCurrent();
 
 			settingsForm = new Settings();
 			settingsForm.Show();
@@ -109,6 +121,8 @@ namespace CG_2IV05.Visualize
 			GL.Light(LightName.Light0, LightParameter.Ambient, new Color4(1.0f, 1.0f, 1.0f, 1f));
 			GL.Light(LightName.Light0, LightParameter.Diffuse, new Color4(1.0f, 1.0f, 1.0f, 1f));
 			GL.Light(LightName.Light0, LightParameter.Specular, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+
+			GL.Color3(Color.Blue);
 		}
 
 		void game_RenderFrame(object sender, FrameEventArgs e)
@@ -121,11 +135,20 @@ namespace CG_2IV05.Visualize
 			GL.Light(LightName.Light0, LightParameter.Position, new Vector4(1, 1, 10, 0));
 			
 			GL.BindTexture(TextureTarget.Texture2D, texture);
-			lock (vbos)
+
+			if(vbo != null)
 			{
-				foreach (NodeWithData node in vbos)
+				vbo.Draw();
+			}
+			else
+			{
+				lock (vbos)
 				{
-					node.vbo.Draw();
+					for (int index = 0; index < vbos.Count; index++)
+					{
+						NodeWithData node = vbos[index];
+						node.vbo.Draw();
+					}
 				}	
 			}
 			

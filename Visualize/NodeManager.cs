@@ -3,10 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using System.Threading;
+using System.Timers;
 using CG_2IV05.Common;
+using OpenTK;
+using OpenTK.Graphics;
 using micfort.GHL.Collections;
 using micfort.GHL.Math2;
+using Timer = System.Timers.Timer;
 
 namespace CG_2IV05.Visualize
 {
@@ -17,7 +21,11 @@ namespace CG_2IV05.Visualize
 	}
 	public class NodeManager:IDisposable
 	{
-		private Timer timer;
+		private bool running = false;
+		private AutoResetEvent threadFinished = new AutoResetEvent(false);
+		private AutoResetEvent ContextReady = new AutoResetEvent(false);
+		private Thread thread;
+		private GraphicsContext context;
 		private float _maxDistanceError = 1000000;
 		private float _distanceModifier = 10;
 
@@ -47,51 +55,72 @@ namespace CG_2IV05.Visualize
 				VBOList.Add(nodeWithData);
 			}
 
-			timer = new Timer();
-			timer.Tick += timer_Tick;
-			timer.Interval = 1000/10;
-			timer.Start();
+			running = true;
+			thread = new Thread(threadMethod);
+			thread.Name = "Node manager";
+			thread.IsBackground = true;
+			thread.Start();
+			ContextReady.WaitOne();
 		}
 
-		void timer_Tick(object sender, EventArgs e)
+		private void threadMethod()
 		{
-			List<ReplaceNode> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
-			foreach (ReplaceNode replaceNode in newLoadedList)
+			INativeWindow window = new NativeWindow();
+			context = new GraphicsContext(GraphicsMode.Default, window.WindowInfo);
+			context.MakeCurrent(window.WindowInfo);
+			ContextReady.Set();
+
+			while (window.Exists)
 			{
-				micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this, "Load nodes from disc " + replaceNode.ReplaceBy.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
-				foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
-				{
-					nodeWithData.loadNodeFromDisc();
-				}
-			}
-			lock (VBOList)
-			{
+				window.ProcessEvents();
+
+				List<ReplaceNode> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
 				foreach (ReplaceNode replaceNode in newLoadedList)
 				{
+					micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this,
+					                                                         "Load nodes from disc " +
+					                                                         replaceNode.ReplaceBy.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
+					//replaceNode.ReplaceBy.Reverse();
 					foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
 					{
-						VBOList.Add(nodeWithData);
+						nodeWithData.loadNodeFromDisc();
 					}
+				}
+
+				foreach (ReplaceNode replaceNode in newLoadedList)
+				{
+					lock (VBOList)
+					{
+						foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
+						{
+							VBOList.Add(nodeWithData);
+						}
+						foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
+						{
+							VBOList.Remove(originalNode);
+						}
+					}
+				}
+
+				foreach (ReplaceNode replaceNode in newLoadedList)
+				{
+					micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this,
+					                                                         "Unload nodes from disc " +
+					                                                         replaceNode.OriginalNodes.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
 					foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
 					{
-						VBOList.Remove(originalNode);
+						originalNode.ReleaseVBO();
 					}
 				}
+				Thread.Sleep(1000/10);
 			}
-
-			foreach (ReplaceNode replaceNode in newLoadedList)
-			{
-				micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this, "Unload nodes from disc " + replaceNode.OriginalNodes.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
-				foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
-				{
-					originalNode.ReleaseVBO();
-				}
-			}
+			threadFinished.Set();
 		}
 
 		public void Stop()
 		{
-			timer.Stop();
+			running = false;
+			threadFinished.WaitOne();
 		}
 
 		public List<Node> DiffNewItems(List<Node> oldList, List<Node> newList)
