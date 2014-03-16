@@ -30,7 +30,6 @@ namespace CG_2IV05.Visualize
 		private List<NodeWithData> releaseNodes; 
 
 		private Tree tree;
-		private VBOLoader loader;
 		private NodeManager manager;
 		private Settings settingsForm;
 
@@ -57,7 +56,6 @@ namespace CG_2IV05.Visualize
 
 		void game_Unload(object sender, EventArgs e)
 		{
-			loader.Stop();
 			manager.Stop();
 		}
 
@@ -68,9 +66,6 @@ namespace CG_2IV05.Visualize
 
 			vbos = new List<NodeWithData>();
 			releaseNodes = new List<NodeWithData>();
-
-			loader = new VBOLoader(vbos);
-			loader.Start();
 
 			using (FileStream file = File.OpenRead(@"output\tree"))
 			{
@@ -84,7 +79,6 @@ namespace CG_2IV05.Visualize
 			//}
 
 			manager = new NodeManager();
-			manager.Loader = loader;
 			manager.Tree = tree;
 			manager.VBOList = vbos;
 			manager.ReleaseNodes = releaseNodes;
