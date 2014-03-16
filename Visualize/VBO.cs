@@ -10,49 +10,23 @@ namespace CG_2IV05.Visualize
 {
 	public class VBO: IDisposable
 	{
-		public uint Indexes { get; private set; }
-		public uint Vertices { get; private set; }
-		public uint TextCoord { get; private set; }
-		public uint Normals { get; private set; }
-		public int NumElements { get; private set; }
+		private uint _indexes = 0;
+		private uint _vertices = 0;
+		private uint _textCoord = 0;
+		private uint _normals = 0;
+		private int _numElements;
+		private NodeDataRaw raw = null;
+		
 		public bool DataLoaded { get; private set; }
 
 		public VBO()
 		{
 			DataLoaded = false;
-
-			Indexes = CreateBuffer();
-			Vertices = CreateBuffer();
-			Normals = CreateBuffer();
-			TextCoord = CreateBuffer();
 		}
 
 		public void LoadData(NodeDataRaw data)
 		{
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, Indexes);
-			GLError();
-			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(data.Indexes.Length * sizeof(int)), data.Indexes, BufferUsageHint.DynamicDraw);
-			GLError();
-			
-			GL.BindBuffer(BufferTarget.ArrayBuffer, Vertices);
-			GLError();
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(data.Vertices.Length * sizeof(float)), data.Vertices, BufferUsageHint.DynamicDraw);
-			GLError();
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, TextCoord);
-			GLError();
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(data.TextCoord.Length * sizeof(float)), data.TextCoord, BufferUsageHint.DynamicDraw);
-			GLError();
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, Normals);
-			GLError();
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(data.Normals.Length * sizeof(float)), data.Normals, BufferUsageHint.DynamicDraw);
-			GLError();
-
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
-			NumElements = data.Indexes.Length;
+			this.raw = data;
 
 			DataLoaded = true;
 		}
@@ -71,11 +45,14 @@ namespace CG_2IV05.Visualize
 			if (!DataLoaded)
 				throw new ArgumentException("There should be data loaded.");
 
+			if(raw != null)
+				CopyToGPU();
+
 			GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
 			GLError();
 			{
 				// Bind to the Array Buffer ID
-				GL.BindBuffer(BufferTarget.ArrayBuffer, Normals);
+				GL.BindBuffer(BufferTarget.ArrayBuffer, _normals);
 				GLError();
 				// Set the Pointer to the current bound array describing how the data ia stored
 				GL.NormalPointer(NormalPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
@@ -88,7 +65,7 @@ namespace CG_2IV05.Visualize
 
 			{
 				// Bind to the Array Buffer ID
-				GL.BindBuffer(BufferTarget.ArrayBuffer, Vertices);
+				GL.BindBuffer(BufferTarget.ArrayBuffer, _vertices);
 				GLError();
 				// Set the Pointer to the current bound array describing how the data ia stored
 				GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
@@ -100,7 +77,7 @@ namespace CG_2IV05.Visualize
 
 			{
 				// Bind to the Array Buffer ID
-				GL.BindBuffer(BufferTarget.ArrayBuffer, TextCoord);
+				GL.BindBuffer(BufferTarget.ArrayBuffer, _textCoord);
 				GLError();
 				// Set the Pointer to the current bound array describing how the data ia stored
 				GL.TexCoordPointer(2, TexCoordPointerType.Float, Vector2.SizeInBytes, IntPtr.Zero);
@@ -112,11 +89,11 @@ namespace CG_2IV05.Visualize
 
 			{
 				// Bind to the Array Buffer ID
-				GL.BindBuffer(BufferTarget.ElementArrayBuffer, Indexes);
+				GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indexes);
 				GLError();
 				// Draw the elements in the element array buffer
 				// Draws up items in the Color, Vertex, TexCoordinate, and Normal Buffers using indices in the ElementArrayBuffer
-				GL.DrawElements(BeginMode.Triangles, NumElements, DrawElementsType.UnsignedInt, IntPtr.Zero);
+				GL.DrawElements(BeginMode.Triangles, _numElements, DrawElementsType.UnsignedInt, IntPtr.Zero);
 				GLError();
 				// Could also call GL.DrawArrays which would ignore the ElementArrayBuffer and just use primitives
 				// Of course we would have to reorder our data to be in the correct primitive order
@@ -133,6 +110,41 @@ namespace CG_2IV05.Visualize
 			return i;
 		}
 
+		private void CopyToGPU()
+		{
+			_indexes = CreateBuffer();
+			_vertices = CreateBuffer();
+			_normals = CreateBuffer();
+			_textCoord = CreateBuffer();
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indexes);
+			GLError();
+			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(raw.Indexes.Length * sizeof(int)), raw.Indexes, BufferUsageHint.DynamicDraw);
+			GLError();
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, _vertices);
+			GLError();
+			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(raw.Vertices.Length * sizeof(float)), raw.Vertices, BufferUsageHint.DynamicDraw);
+			GLError();
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, _textCoord);
+			GLError();
+			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(raw.TextCoord.Length * sizeof(float)), raw.TextCoord, BufferUsageHint.DynamicDraw);
+			GLError();
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, _normals);
+			GLError();
+			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(raw.Normals.Length * sizeof(float)), raw.Normals, BufferUsageHint.DynamicDraw);
+			GLError();
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+
+			_numElements = raw.Indexes.Length;
+
+			raw = null;
+		}
+
 		#region Implementation of IDisposable
 
 		/// <summary>
@@ -141,10 +153,10 @@ namespace CG_2IV05.Visualize
 		/// <filterpriority>2</filterpriority>
 		public void Dispose()
 		{
-			GL.DeleteBuffer(Indexes);
-			GL.DeleteBuffer(Vertices);
-			GL.DeleteBuffer(Normals);
-			GL.DeleteBuffer(TextCoord);
+			if(_indexes != 0) GL.DeleteBuffer(_indexes);
+			if (_indexes != 0) GL.DeleteBuffer(_vertices);
+			if (_indexes != 0) GL.DeleteBuffer(_normals);
+			if (_indexes != 0) GL.DeleteBuffer(_textCoord);
 		}
 
 		#endregion

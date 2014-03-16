@@ -10,6 +10,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using micfort.GHL.Collections;
 using micfort.GHL.Math2;
+using micfort.GHL.Logging;
 using Timer = System.Timers.Timer;
 
 namespace CG_2IV05.Visualize
@@ -23,15 +24,14 @@ namespace CG_2IV05.Visualize
 	{
 		private bool running = false;
 		private AutoResetEvent threadFinished = new AutoResetEvent(false);
-		private AutoResetEvent ContextReady = new AutoResetEvent(false);
 		private Thread thread;
-		private GraphicsContext context;
 		private float _maxDistanceError = 1000000;
 		private float _distanceModifier = 10;
 
 		public HyperPoint<float> Position { get; set; }
 		public Tree Tree { get; set; }
 		public List<NodeWithData> VBOList { get; set; }
+		public List<NodeWithData> ReleaseNodes { get; set; }
 		public VBOLoader Loader { get; set; }
 		public float DistanceModifier
 		{
@@ -60,27 +60,18 @@ namespace CG_2IV05.Visualize
 			thread.Name = "Node manager";
 			thread.IsBackground = true;
 			thread.Start();
-			ContextReady.WaitOne();
 		}
 
 		private void threadMethod()
 		{
-			INativeWindow window = new NativeWindow();
-			context = new GraphicsContext(GraphicsMode.Default, window.WindowInfo);
-			context.MakeCurrent(window.WindowInfo);
-			ContextReady.Set();
-
-			while (window.Exists)
+			while (running)
 			{
-				window.ProcessEvents();
-
 				List<ReplaceNode> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
 				foreach (ReplaceNode replaceNode in newLoadedList)
 				{
-					micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this,
-					                                                         "Load nodes from disc " +
-					                                                         replaceNode.ReplaceBy.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
-					//replaceNode.ReplaceBy.Reverse();
+					ErrorReporting.Instance.ReportDebugT(this,
+					                                     "Load nodes from disc " +
+					                                     replaceNode.ReplaceBy.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
 					foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
 					{
 						nodeWithData.loadNodeFromDisc();
@@ -104,12 +95,15 @@ namespace CG_2IV05.Visualize
 
 				foreach (ReplaceNode replaceNode in newLoadedList)
 				{
-					micfort.GHL.Logging.ErrorReporting.Instance.ReportDebugT(this,
-					                                                         "Unload nodes from disc " +
-					                                                         replaceNode.OriginalNodes.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
-					foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
+					ErrorReporting.Instance.ReportDebugT(this,
+					                                     "Unload nodes from disc " +
+					                                     replaceNode.OriginalNodes.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
+					lock (ReleaseNodes)
 					{
-						originalNode.ReleaseVBO();
+						foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
+						{
+							ReleaseNodes.Add(originalNode);
+						}
 					}
 				}
 				Thread.Sleep(1000/10);

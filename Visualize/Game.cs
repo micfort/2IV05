@@ -27,6 +27,7 @@ namespace CG_2IV05.Visualize
 		private int texture;
 		private float speed = 10f;
 		private List<NodeWithData> vbos;
+		private List<NodeWithData> releaseNodes; 
 
 		private Tree tree;
 		private VBOLoader loader;
@@ -66,6 +67,7 @@ namespace CG_2IV05.Visualize
 			Mouse = new Vector2(0, 0);
 
 			vbos = new List<NodeWithData>();
+			releaseNodes = new List<NodeWithData>();
 
 			loader = new VBOLoader(vbos);
 			loader.Start();
@@ -81,16 +83,13 @@ namespace CG_2IV05.Visualize
 			//	vbo.LoadData(NodeDataRaw.ReadFromStream(file));
 			//}
 
-			//game.Context.MakeCurrent(null);
-
 			manager = new NodeManager();
 			manager.Loader = loader;
 			manager.Tree = tree;
 			manager.VBOList = vbos;
+			manager.ReleaseNodes = releaseNodes;
 			manager.Position = CameraPos.ToHyperPoint();
 			manager.Start();
-
-			game.MakeCurrent();
 
 			settingsForm = new Settings();
 			settingsForm.Show();
@@ -150,6 +149,15 @@ namespace CG_2IV05.Visualize
 						node.vbo.Draw();
 					}
 				}	
+			}
+
+			lock (releaseNodes)
+			{
+				foreach (NodeWithData nodeWithData in releaseNodes)
+				{
+					nodeWithData.ReleaseVBO();
+				}
+				releaseNodes.Clear();
 			}
 			
 			game.SwapBuffers();
