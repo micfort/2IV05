@@ -1,6 +1,7 @@
 extern alias osm;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CG_2IV05.Common.Element;
 using osm::OsmSharp.Osm;
@@ -29,20 +30,45 @@ namespace CG_2IV05.Common.OSM
 		}
 
 		#endregion
+
+		#region Implementation of IElementFactory
+
+		public IElement ReadFromStream(Stream stream)
+		{
+			List<HyperPoint<float>> poly = PolygonHelper.ReadPolyFromStream(stream);
+			TagsCollectionBase tags = TagsCollectionStream.ReadTagsCollectionFromStream(stream);
+			return new Road(tags, poly);
+		}
+
+		public int FactoryID
+		{
+			get { return FactoryIDs.RoadID; }
+		}
+
+		#endregion
 	}
 
 	public class Road: IOSMWayElement
 	{
 		private int scorePointIndex;
-		private Way _way;
+		private TagsCollectionBase _tagsCollection;
 		private List<HyperPoint<float>> _points;
 
 		public Road(Way way, List<HyperPoint<float>> poly)
 		{
 			Score = new ScoreKey(float.MaxValue);
-			_way = way;
+			_tagsCollection = way.Tags;
 			_points = poly;
-			InsertSteps(_points, 2.0f, 3.0f);
+			//InsertSteps(_points, 2.0f, 3.0f);
+			SetScore();
+		}
+
+		public Road(TagsCollectionBase collection, List<HyperPoint<float>> poly)
+		{
+			Score = new ScoreKey(float.MaxValue);
+			_tagsCollection = collection;
+			_points = poly;
+			//InsertSteps(_points, 2.0f, 3.0f);
 			SetScore();
 		}
 
@@ -84,15 +110,15 @@ namespace CG_2IV05.Common.OSM
 			data.Indexes = new int[TriangleCount*3];
 			
 			HyperPoint<float> up = new HyperPoint<float>(0, 0, 1);
-			HyperPoint<float> textureItem = textureInfo.GetTexture("highway", _way.Tags["highway"]);
+			HyperPoint<float> textureItem = textureInfo.GetTexture("highway", _tagsCollection["highway"]);
 
 			for (int i = 0; i < _points.Count; i++)
 			{
 				float width = 2;
-				if(_way.Tags.ContainsKey("lanes"))
+				if (_tagsCollection.ContainsKey("lanes"))
 				{
 					int lanes;
-					if(int.TryParse(_way.Tags["lanes"], out lanes))
+					if (int.TryParse(_tagsCollection["lanes"], out lanes))
 					{
 						width = 2.5f*lanes;
 					}
@@ -184,7 +210,18 @@ namespace CG_2IV05.Common.OSM
 			return this;
 	    }
 
-	    #endregion
+		public void SaveToStream(Stream stream)
+		{
+			PolygonHelper.WriteToStream(stream, _points);
+			TagsCollectionStream.WriteToStream(_tagsCollection, stream);
+		}
+
+		public int FactoryID
+		{
+			get { return FactoryIDs.RoadID; }
+		}
+
+		#endregion
 
 		private void SetScore()
 		{

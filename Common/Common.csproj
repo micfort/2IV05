@@ -58,11 +58,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryToStream.cs" />
     <Compile Include="EarClipping\EarClippingTriangulator.cs" />
     <Compile Include="EarClipping\PolygonPoint.cs" />
     <Compile Include="Element\Building.cs" />
+    <Compile Include="Element\FileElementList.cs" />
     <Compile Include="Element\ElementList.cs" />
+    <Compile Include="Element\FileElementListWriter.cs" />
+    <Compile Include="Element\IElementFactory.cs" />
     <Compile Include="Element\IElement.cs" />
+    <Compile Include="Element\FactoryIDs.cs" />
     <Compile Include="FilenameGenerator.cs" />
     <Compile Include="HyperPointSerializable.cs" />
     <Compile Include="Node.cs" />
@@ -81,6 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BinaryElement\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

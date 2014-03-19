@@ -1,4 +1,5 @@
 ﻿extern alias osm;
+using System.IO;
 using osm::OsmSharp.Osm;
 using osm::OsmSharp.Collections;
 using osm::OsmSharp.Collections.Tags;
@@ -62,17 +63,37 @@ namespace CG_2IV05.Common.OSM
 
 		#endregion
 
+		#region Implementation of IElementFactory
 
+		public IElement ReadFromStream(Stream stream)
+		{
+			List<HyperPoint<float>> poly = PolygonHelper.ReadPolyFromStream(stream);
+			TagsCollectionBase tags = TagsCollectionStream.ReadTagsCollectionFromStream(stream);
+			return new LandUse(tags, poly);
+		}
+
+		public int FactoryID
+		{
+			get { return FactoryIDs.LandUseID; }
+		}
+
+		#endregion
 	}
 
 	public class LandUse: IOSMWayElement
 	{
-		private Way _way;
+		private TagsCollectionBase _tagsCollection;
 		private List<HyperPoint<float>> _points;
 
 		public LandUse(Way way, List<HyperPoint<float>> poly)
 		{
-			_way = way;
+			_tagsCollection = way.Tags;
+			this._points = poly;
+		}
+
+		public LandUse(TagsCollectionBase tags, List<HyperPoint<float>> poly)
+		{
+			_tagsCollection = tags;
 			this._points = poly;
 		}
 
@@ -167,21 +188,21 @@ namespace CG_2IV05.Common.OSM
 			HyperPoint<float> normalRoof = new HyperPoint<float>(0, 0, 1);
 
 			HyperPoint<float> texture;
-			if (_way.Tags.ContainsKey("landuse"))
+			if (_tagsCollection.ContainsKey("landuse"))
 			{
-				texture = textureInfo.GetTexture("landuse", _way.Tags["landuse"]);
+				texture = textureInfo.GetTexture("landuse", _tagsCollection["landuse"]);
 			}
-			else if (_way.Tags.ContainsKey("landcover"))
+			else if (_tagsCollection.ContainsKey("landcover"))
 			{
-				texture = textureInfo.GetTexture("landcover", _way.Tags["landcover"]);
+				texture = textureInfo.GetTexture("landcover", _tagsCollection["landcover"]);
 			}
-			else if (_way.Tags.ContainsKey("natural"))
+			else if (_tagsCollection.ContainsKey("natural"))
 			{
-				texture = textureInfo.GetTexture("natural", _way.Tags["natural"]);
+				texture = textureInfo.GetTexture("natural", _tagsCollection["natural"]);
 			}
-			else if (_way.Tags.ContainsKey("highway"))
+			else if (_tagsCollection.ContainsKey("highway"))
 			{
-				texture = textureInfo.GetTexture("highway", _way.Tags["highway"]);
+				texture = textureInfo.GetTexture("highway", _tagsCollection["highway"]);
 			}
 			else
 			{
@@ -202,6 +223,17 @@ namespace CG_2IV05.Common.OSM
 			data.Indexes = EarClippingTriangulator.triangulatePolygon(data.Vertices, 0);
 
 			return data;
+		}
+
+		public void SaveToStream(Stream stream)
+		{
+			PolygonHelper.WriteToStream(stream, _points);
+			TagsCollectionStream.WriteToStream(_tagsCollection, stream);
+		}
+
+		public int FactoryID
+		{
+			get { return FactoryIDs.LandUseID; }
 		}
 
 		#endregion

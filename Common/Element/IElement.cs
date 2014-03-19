@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common.Element
@@ -17,6 +19,16 @@ namespace CG_2IV05.Common.Element
 		HyperPoint<float> ReferencePoint { get; }
 		NodeData CreateData(HyperPoint<float> centerDataSet, TextureInfo textureInfo);
         IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo);
+	}
+
+	public interface IFinalElement : IElement
+	{
+		void SaveToStream(Stream stream);
+		int FactoryID { get; }
+	}
+
+	public interface IListElement : IElement, IEnumerable<IFinalElement>
+	{
 	}
 
     public class ScoreKey : IComparable<ScoreKey>

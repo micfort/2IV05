@@ -1,11 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common.Element
 {
-	public class ElementList : IElement
+	public class ElementList : IListElement
 	{
 		public List<IElement> Elements { get; set; }
 
@@ -160,6 +162,34 @@ namespace CG_2IV05.Common.Element
 	        throw new NotImplementedException();
 	    }
 
-	    #endregion
+		#endregion
+
+		#region Implementation of IEnumerable
+
+		/// <summary>
+		/// Returns an enumerator that iterates through the collection.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+		/// </returns>
+		/// <filterpriority>1</filterpriority>
+		public IEnumerator<IElement> GetEnumerator()
+		{
+			return Elements.GetEnumerator();
+		}
+
+		/// <summary>
+		/// Returns an enumerator that iterates through a collection.
+		/// </summary>
+		/// <returns>
+		/// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+		/// </returns>
+		/// <filterpriority>2</filterpriority>
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		#endregion
 	}
 }

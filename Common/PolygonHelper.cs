@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using micfort.GHL.Math2;
@@ -117,6 +118,46 @@ namespace CG_2IV05.Common
 			float Ub = ((p2.X - p1.X) * (p1.Y - p3.Y) - (p2.Y - p1.Y) * (p1.X - p3.X)) / ((p4.Y - p3.Y) * (p2.X - p1.X) - (p4.X - p3.X) * (p2.Y - p1.Y));
 			crossing = new HyperPoint<float>(p1.X + Ua * (p2.X - p1.X), p1.Y + Ub * (p2.Y - p1.Y));
 			return 0 <= Ua && Ua <= 1 && 0 <= Ub && Ub <= 1;
+		}
+
+		public static void WriteToStream(Stream stream, List<HyperPoint<float>> poly)
+		{
+			BinaryToStream.WriteToStream(poly.Count, stream);
+			for (int i = 0; i < poly.Count; i++)
+			{
+				WriteToStream(stream, poly[i]);
+			}
+		}
+
+		public static List<HyperPoint<float>> ReadPolyFromStream(Stream stream)
+		{
+			int count = BinaryToStream.ReadIntFromStream(stream);
+			List<HyperPoint<float>> poly = new List<HyperPoint<float>>(count);
+			for (int i = 0; i < count; i++)
+			{
+				poly.Add(ReadHyperPointFromStream(stream));
+			}
+			return poly;
+		}
+
+		public static void WriteToStream(Stream stream, HyperPoint<float> hyperPoint)
+		{
+			BinaryToStream.WriteToStream(hyperPoint.Dim, stream);
+			for (int i = 0; i < hyperPoint.Dim; i++)
+			{
+				BinaryToStream.WriteToStream(hyperPoint[i], stream);
+			}
+		}
+
+		public static HyperPoint<float> ReadHyperPointFromStream(Stream stream)
+		{
+			int dim = BinaryToStream.ReadIntFromStream(stream);
+			float[] p = new float[dim];
+			for (int i = 0; i < dim; i++)
+			{
+				p[i] = BinaryToStream.ReadFloatFromStream(stream);
+			}
+			return new HyperPoint<float>(p);
 		}
 	}
 }
