@@ -55,11 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Common\BinaryToStream.cs">
-      <Link>BinaryToStream.cs</Link>
-    </Compile>
     <Compile Include="BAG.cs" />
-    <Compile Include="FileElementListWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
