@@ -20,10 +20,11 @@ namespace CG_2IV05.Common.OSM
 
 		public static void Read(Stream file, Action<IElement> handler)
 		{
-			Dictionary<long, NodeRD> nodes = new Dictionary<long, NodeRD>();
+			int nodeCount = CountNodes(file);
+			file.Position = 0;
+			Dictionary<long, HyperPoint<float>> nodes = new Dictionary<long, HyperPoint<float>>(nodeCount);
 			PBFOsmStreamSource source = new PBFOsmStreamSource(file);
 			source.Initialize();
-			int nodeCount = 0;
 			int elementCount = 0;
 			while (source.MoveNext())
 			{
@@ -41,12 +42,7 @@ namespace CG_2IV05.Common.OSM
 							new HyperPoint<double>(node.Longitude.Value, node.Latitude.Value);
 						HyperPoint<float> RDCoordinateF = RDCoordinate.ConvertToRD().ConvertTo<float>();
 
-						NodeRD nodeRD = new NodeRD()
-						{
-							Node = node,
-							RDCoordinate = RDCoordinateF
-						};
-						nodes.Add(geo.Id.Value, nodeRD);
+						nodes.Add(geo.Id.Value, RDCoordinateF);
 					}
 				}
 				else if (geo.Type == OsmGeoType.Way)
@@ -84,7 +80,7 @@ namespace CG_2IV05.Common.OSM
 		public static List<IElement> Read(Stream file)
 		{
 			List<IElement> elements = new List<IElement>();
-			Dictionary<long, NodeRD> nodes = new Dictionary<long, NodeRD>();
+			Dictionary<long, HyperPoint<float>> nodes = new Dictionary<long, HyperPoint<float>>();
 			PBFOsmStreamSource source = new PBFOsmStreamSource(file);
 			source.Initialize();
 			int nodeCount = 0;
@@ -105,12 +101,7 @@ namespace CG_2IV05.Common.OSM
 							new HyperPoint<double>(node.Longitude.Value, node.Latitude.Value);
 						HyperPoint<float> RDCoordinateF = RDCoordinate.ConvertToRD().ConvertTo<float>();
 
-						NodeRD nodeRD = new NodeRD()
-						{
-							Node = node,
-							RDCoordinate = RDCoordinateF
-						};
-						nodes.Add(geo.Id.Value, nodeRD);
+						nodes.Add(geo.Id.Value, RDCoordinateF);
 					}
 				}
 				else if (geo.Type == OsmGeoType.Way)
@@ -145,12 +136,35 @@ namespace CG_2IV05.Common.OSM
 			return elements;
 		}
 
-		public static List<HyperPoint<float>> GetCoordinates(List<long> nodesWay, Dictionary<long, NodeRD> nodes)
+		public static List<HyperPoint<float>> GetCoordinates(List<long> nodesWay, Dictionary<long, HyperPoint<float>> nodes)
 		{
 			List<HyperPoint<float>>  points = new List<HyperPoint<float>>();
-			nodesWay.ForEach(x => points.Add(nodes[x].RDCoordinate));
+			nodesWay.ForEach(x => points.Add(nodes[x]));
 			PolygonHelper.RemoveRepeatition(points);
 			return points;
-		} 
+		}
+
+		private static int CountNodes(Stream stream)
+		{
+			int count = 0;
+			PBFOsmStreamSource source = new PBFOsmStreamSource(stream);
+			source.Initialize();
+			while (source.MoveNext())
+			{
+				var geo = source.Current();
+				if (geo.Type == OsmGeoType.Node)
+				{
+					if (geo.Id != null)
+					{
+						count++;
+						if (count % 100000 == 0)
+						{
+							Console.Out.WriteLine("Counting node element {0:N0}", count);
+						}
+					}
+				}
+			}
+			return count;
+		}
 	}
 }

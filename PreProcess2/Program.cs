@@ -36,7 +36,6 @@ namespace CG_2IV05.PreProcess2
 							{
 								BAGXML.ReadBuildings(s, building => writer.WriteElement(building));
 							}
-							break;	// todo get this out for the whole zip file
 						}
 					}
 				}
@@ -69,16 +68,17 @@ namespace CG_2IV05.PreProcess2
 			}
 			{
 				FileElementList list = new FileElementList(outputFilename);
-				int buildingCount = 0;
+				int count = 0;
 				foreach (IElement element in list)
 				{
-					if (buildingCount%10000 == 0)
+					if (count%10000 == 0)
 					{
-						Console.Out.WriteLine("Processing element {0:N0}", buildingCount);
+						Console.Out.WriteLine("Processing element {0:N0}", count);
 					}
-					buildingCount++;
+					count++;
 				}
 			}
+			Console.ReadKey();
 		}
 
 		public static void ParseCommandLine(string[] args)
