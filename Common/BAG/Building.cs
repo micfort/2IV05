@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CG_2IV05.Common.EarClipping;
+using CG_2IV05.Common.Element;
 using micfort.GHL.Math2;
 
-namespace CG_2IV05.Common.Element
+namespace CG_2IV05.Common.BAG
 {
 	public class BuildingFactory: IElementFactory
 	{
@@ -26,7 +27,7 @@ namespace CG_2IV05.Common.Element
 		#endregion
 	}
 
-	public class Building : IFinalElement
+	public class Building : IElement
 	{
 		public float Height { get; set; }
 		public List<HyperPoint<float>> Polygon { get; set; }

@@ -13,7 +13,7 @@ namespace CG_2IV05.Common.Element
 
         public ElementList()
         {
-            Elements = new List<IElement>();
+			Elements = new List<IElement>();
         } 
 
 		public ElementList[] SplitList()
@@ -58,7 +58,7 @@ namespace CG_2IV05.Common.Element
 
 		public NodeData CreateDataFromChildren(List<Node> Children, HyperPoint<float> centerDataSet, TextureInfo textureInfo, out float error)
 		{
-            SortedList<ScoreKey, IElement> sortedElements = new SortedList<ScoreKey, IElement>();
+			SortedList<ScoreKey, IElement> sortedElements = new SortedList<ScoreKey, IElement>();
 		    int triangleCount = 0;
             foreach(Node node in Children)
             {
@@ -74,7 +74,7 @@ namespace CG_2IV05.Common.Element
 		    
             while (triangleCount > TreeBuildingSettings.MaxTriangleCount)
             {
-                IElement element = sortedElements.First().Value;
+				IElement element = sortedElements.First().Value;
 
                 if (element.Score.Score == float.MaxValue)
                     break;

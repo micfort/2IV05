@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using CG_2IV05.Common;
+using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.Element;
 using CG_2IV05.Common.OSM;
 using micfort.GHL.Math2;

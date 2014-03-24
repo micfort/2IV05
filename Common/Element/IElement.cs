@@ -19,15 +19,12 @@ namespace CG_2IV05.Common.Element
 		HyperPoint<float> ReferencePoint { get; }
 		NodeData CreateData(HyperPoint<float> centerDataSet, TextureInfo textureInfo);
         IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo);
-	}
 
-	public interface IFinalElement : IElement
-	{
 		void SaveToStream(Stream stream);
 		int FactoryID { get; }
 	}
 
-	public interface IListElement : IElement, IEnumerable<IFinalElement>
+	public interface IListElement : IEnumerable<IElement>
 	{
 	}
 

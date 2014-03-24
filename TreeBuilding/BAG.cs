@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using CG_2IV05.Common.BAG;
 using micfort.GHL.Math2;
 using CG_2IV05.Common;
 using CG_2IV05.Common.Element;

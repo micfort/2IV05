@@ -3,11 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.OSM;
 using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common.Element
 {
+	public enum SplitDirection : int
+	{
+		Vertical = 0,
+		Horizontal = 1,
+	}
+
 	public class FileElementList : IListElement
 	{
 		public string Filename { get; private set; }
@@ -16,6 +23,43 @@ namespace CG_2IV05.Common.Element
 		{
 			this.Filename = filename;
 			ReadMetaData();
+		}
+
+		public FileElementList[] SplitListBinary(string[] filenames, SplitDirection direction)
+		{
+			HyperPoint<float> min = this.Min;
+			HyperPoint<float> max = this.Max;
+			HyperPoint<float> center = (max + min) * 0.5f;
+
+			//todo calculate approximate median
+			float split = center[(int)direction];
+
+			FileElementListWriter[] output = new FileElementListWriter[2];
+			for (int i = 0; i < output.Length; i++)
+			{
+				output[i] = new FileElementListWriter(filenames[i]);
+			}
+			foreach (IElement element in this)
+			{
+				if (element.ReferencePoint[(int)direction] < split)
+				{
+					output[0].WriteElement(element);
+				}
+				else
+				{
+					output[1].WriteElement(element);
+				}
+			}
+			for (int i = 0; i < output.Length; i++)
+			{
+				output[i].Dispose();
+			}
+			FileElementList[] lists = new FileElementList[2];
+			for (int i = 0; i < lists.Length; i++)
+			{
+				lists[i] = new FileElementList(filenames[i]);
+			}
+			return lists;
 		}
 
 		public FileElementList[] SplitList(string[] filenames)
@@ -40,53 +84,47 @@ namespace CG_2IV05.Common.Element
 					}
 					else
 					{
-						output[1].Elements.Add(element);
+						output[1].WriteElement(element);
 					}
 				}
 				else
 				{
 					if (element.ReferencePoint.X < center.X)
 					{
-						output[2].Elements.Add(element);
+						output[2].WriteElement(element);
 					}
 					else
 					{
-						output[3].Elements.Add(element);
+						output[3].WriteElement(element);
 					}
 				}
 			}
-			for (int i = 0; i < Elements.Count; i++)
+			for (int i = 0; i < output.Length; i++)
 			{
-				if (Elements[i].ReferencePoint.Y < center.Y)
-				{
-					if (Elements[i].ReferencePoint.X < center.X)
-					{
-						output[0].Elements.Add(Elements[i]);
-					}
-					else
-					{
-						output[1].Elements.Add(Elements[i]);
-					}
-				}
-				else
-				{
-					if (Elements[i].ReferencePoint.X < center.X)
-					{
-						output[2].Elements.Add(Elements[i]);
-					}
-					else
-					{
-						output[3].Elements.Add(Elements[i]);
-					}
-				}
+				output[i].Dispose();
 			}
-			return output;s
+			FileElementList[] lists = new FileElementList[4];
+			for (int i = 0; i < 4; i++)
+			{
+				lists[i] = new FileElementList(filenames[i]);
+			}
+			return lists;
 		}
 
 		public NodeData CreateDataFromChildren(List<Node> Children, HyperPoint<float> centerDataSet, TextureInfo textureInfo,
 		                                       out float error)
 		{
 			throw new NotImplementedException();
+		}
+
+		public ElementList ToElementList()
+		{
+			ElementList output = new ElementList();
+			foreach (IElement element in this)
+			{
+				output.Elements.Add(element);
+			}
+			return output;
 		}
 
 		#region Implementation of IElement
@@ -154,7 +192,7 @@ namespace CG_2IV05.Common.Element
 		/// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
 		/// </returns>
 		/// <filterpriority>1</filterpriority>
-		public IEnumerator<IFinalElement> GetEnumerator()
+		public IEnumerator<IElement> GetEnumerator()
 		{
 			return new FileElementListEnumerator(Filename);
 		}
@@ -259,7 +297,7 @@ namespace CG_2IV05.Common.Element
 		/// <returns>
 		/// The element in the collection at the current position of the enumerator.
 		/// </returns>
-		public IFinalElement Current { get; private set; }
+		public IElement Current { get; private set; }
 
 		/// <summary>
 		/// Gets the current element in the collection.

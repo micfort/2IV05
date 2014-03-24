@@ -61,7 +61,7 @@
     <Compile Include="BinaryToStream.cs" />
     <Compile Include="EarClipping\EarClippingTriangulator.cs" />
     <Compile Include="EarClipping\PolygonPoint.cs" />
-    <Compile Include="Element\Building.cs" />
+    <Compile Include="BAG\Building.cs" />
     <Compile Include="Element\FileElementList.cs" />
     <Compile Include="Element\ElementList.cs" />
     <Compile Include="Element\FileElementListWriter.cs" />

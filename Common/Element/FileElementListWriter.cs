@@ -49,7 +49,7 @@ namespace CG_2IV05.Common.Element
 			_max = new HyperPoint<float>(BinaryToStream.ReadFloatFromStream(_stream), BinaryToStream.ReadFloatFromStream(_stream));
 		}
 
-		public void WriteElement(IFinalElement element)
+		public void WriteElement(IElement element)
 		{
 			_triangleCount += element.TriangleCount;
 			_min.X = Math.Min(_min.X, element.Min.X);
