@@ -20,5 +20,10 @@ namespace CG_2IV05.Common
 		public static int generateSizeY = 100;
 		public static HyperPoint<float> CenterDataSet;
 		public static bool FindCenterDataSet = true;
+		public static int MinCurrentDepthForData = 2;
+
+		public static string TmpDirectory = "tmp";
+		public static int TmpFileCount = 0;
+		public static string TmpFilenameFormat = "{0}\\{1}";
 	}
 }

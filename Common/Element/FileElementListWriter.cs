@@ -7,7 +7,7 @@ using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common.Element
 {
-	class FileElementListWriter:IDisposable
+	public class FileElementListWriter:IDisposable
 	{
 		private readonly FileStream _stream;
 
@@ -54,10 +54,12 @@ namespace CG_2IV05.Common.Element
 			_triangleCount += element.TriangleCount;
 			_min.X = Math.Min(_min.X, element.Min.X);
 			_min.Y = Math.Min(_min.Y, element.Min.Y);
-			_max.X = Math.Min(_max.X, element.Max.X);
-			_max.Y = Math.Min(_max.Y, element.Max.Y);
+			_max.X = Math.Max(_max.X, element.Max.X);
+			_max.Y = Math.Max(_max.Y, element.Max.Y);
 
 			_stream.Position = _stream.Length;
+
+			BinaryToStream.WriteToStream(element.FactoryID, _stream);
 			element.SaveToStream(_stream);
 		}
 

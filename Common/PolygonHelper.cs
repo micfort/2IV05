@@ -159,5 +159,10 @@ namespace CG_2IV05.Common
 			}
 			return new HyperPoint<float>(p);
 		}
+
+		public static List<HyperPoint<float>> CreateConvexHull(List<HyperPoint<float>> points)
+		{
+			throw new NotImplementedException("Still need to be done");
+		} 
 	}
 }

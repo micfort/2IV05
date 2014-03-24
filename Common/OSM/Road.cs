@@ -45,6 +45,16 @@ namespace CG_2IV05.Common.OSM
 			get { return FactoryIDs.RoadID; }
 		}
 
+		public IElement Merge(List<IElement> elements)
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool CanMerge(List<IElement> elements)
+		{
+			return false;
+		}
+
 		#endregion
 	}
 
@@ -193,7 +203,7 @@ namespace CG_2IV05.Common.OSM
 			return data;
 		}
 
-	    public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+	    public IElement GetSimplifiedVersion()
 	    {
 			if (Score.Score < float.MaxValue)
 			{

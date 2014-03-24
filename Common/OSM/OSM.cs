@@ -18,6 +18,69 @@ namespace CG_2IV05.Common.OSM
 	{
 		private static List<IOSMWayFactory> factories = new List<IOSMWayFactory>() {new LandUseFactory(), new RoadFactory()};
 
+		public static void Read(Stream file, Action<IElement> handler)
+		{
+			Dictionary<long, NodeRD> nodes = new Dictionary<long, NodeRD>();
+			PBFOsmStreamSource source = new PBFOsmStreamSource(file);
+			source.Initialize();
+			int nodeCount = 0;
+			int elementCount = 0;
+			while (source.MoveNext())
+			{
+				var geo = source.Current();
+				if (geo.Type == OsmGeoType.Node)
+				{
+					if (elementCount % 100000 == 0)
+					{
+						Console.Out.WriteLine("Processing node element {0:N0}", elementCount);
+					}
+					if (geo.Id != null)
+					{
+						osm::OsmSharp.Osm.Node node = (osm::OsmSharp.Osm.Node)geo;
+						HyperPoint<double> RDCoordinate =
+							new HyperPoint<double>(node.Longitude.Value, node.Latitude.Value);
+						HyperPoint<float> RDCoordinateF = RDCoordinate.ConvertToRD().ConvertTo<float>();
+
+						NodeRD nodeRD = new NodeRD()
+						{
+							Node = node,
+							RDCoordinate = RDCoordinateF
+						};
+						nodes.Add(geo.Id.Value, nodeRD);
+					}
+				}
+				else if (geo.Type == OsmGeoType.Way)
+				{
+					if (elementCount % 100000 == 0)
+					{
+						Console.Out.WriteLine("Processing way element {0:N0}", elementCount);
+					}
+					Way way = (Way)geo;
+					if (way.Tags != null && way.Nodes.Count > 0)
+					{
+						IOSMWayFactory factory = factories.Find(x => x.CheckKeyAcceptance(way.Tags));
+						if (factory != null)
+						{
+							List<HyperPoint<float>> wayCoordinates = GetCoordinates(way.Nodes, nodes);
+							if (factory.CheckPolyAcceptance(wayCoordinates))
+							{
+								IOSMWayElement element = factory.Create(way, wayCoordinates);
+								handler(element);
+							}
+						}
+					}
+				}
+				else if (geo.Type == OsmGeoType.Relation)
+				{
+					if (elementCount % 100000 == 0)
+					{
+						Console.Out.WriteLine("Processing relation element {0:N0}", elementCount);
+					}
+				}
+				elementCount++;
+			}
+		}
+
 		public static List<IElement> Read(Stream file)
 		{
 			List<IElement> elements = new List<IElement>();

@@ -24,6 +24,27 @@ namespace CG_2IV05.Common.BAG
 			get { return FactoryIDs.BuildingID; }
 		}
 
+		public IElement Merge(List<IElement> elements)
+		{
+			if(elements.Any(x => !(x is Building)))
+				throw new ArgumentException("elements should be buildings", "elements");
+
+			List<Building> buildings = elements.ConvertAll(x => x as Building);
+			List<HyperPoint<float>> points = buildings.Aggregate(new List<HyperPoint<float>>(), (list, building) =>
+				                                                                                    {
+					                                                                                    list.AddRange(building.Polygon);
+					                                                                                    return list;
+				                                                                                    });
+			List<HyperPoint<float>> convex = PolygonHelper.CreateConvexHull(points);
+			float height = buildings.Average(x => x.Height);
+			return new Building(convex, height);
+		}
+
+		public bool CanMerge(List<IElement> elements)
+		{
+			return true;
+		}
+
 		#endregion
 	}
 
@@ -226,7 +247,7 @@ namespace CG_2IV05.Common.BAG
 	        scorePointIndex2 = minDistanceIndex2;
         }
 
-		public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+		public IElement GetSimplifiedVersion()
         {
             if (score.Score < float.MaxValue)
             {

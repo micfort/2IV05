@@ -277,6 +277,8 @@ namespace CG_2IV05.Common.Element
 			}
 			int factoryID = BinaryToStream.ReadIntFromStream(_s);
 			IElementFactory factory = factories.Find(x => x.FactoryID == factoryID);
+			if(factory == null)
+				throw new ArgumentException("Incorrect format file.");
 			Current = factory.ReadFromStream(_s);
 			return true;
 		}

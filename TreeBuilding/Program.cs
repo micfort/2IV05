@@ -28,6 +28,11 @@ namespace CG_2IV05.TreeBuilding
 				Directory.CreateDirectory(TreeBuildingSettings.DirectoryOutput);
             }
 
+			if (!Directory.Exists(TreeBuildingSettings.TmpDirectory))
+			{
+				Directory.CreateDirectory(TreeBuildingSettings.TmpDirectory);
+			}
+
             List<Building> buildings;
 	        List<IElement> roads;
             if (TreeBuildingSettings.Generate)
@@ -64,6 +69,11 @@ namespace CG_2IV05.TreeBuilding
             {
                 SerializableType<Tree>.SerializeToStream(tree, file, BinarySerializableTypeEngine.BinairSerializer);
             }
+
+			if (Directory.Exists(TreeBuildingSettings.TmpDirectory))
+			{
+				Directory.Delete(TreeBuildingSettings.TmpDirectory, true);
+			}
 
 	        Console.Out.WriteLine("Done. Press any key to close.");
 	        Console.ReadKey();

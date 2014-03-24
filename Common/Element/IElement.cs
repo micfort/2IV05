@@ -18,7 +18,7 @@ namespace CG_2IV05.Common.Element
 
 		HyperPoint<float> ReferencePoint { get; }
 		NodeData CreateData(HyperPoint<float> centerDataSet, TextureInfo textureInfo);
-        IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo);
+        IElement GetSimplifiedVersion();
 
 		void SaveToStream(Stream stream);
 		int FactoryID { get; }
@@ -45,16 +45,15 @@ namespace CG_2IV05.Common.Element
 
         public int CompareTo(ScoreKey other)
         {
-            if (Score > other.Score)
-            {
-                return 1;
-            }
-            if (Score < other.Score)
-            {
-                return -1;
-            }
-
-            return UID > other.UID ? 1 : -1;
+	        int scoreCompare = Score.CompareTo(other.Score);
+			if (scoreCompare == 0)
+			{
+				return UID.CompareTo(other.UID);
+			}
+			else
+			{
+				return scoreCompare;
+			}
         }
     }
 }

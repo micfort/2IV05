@@ -10,5 +10,7 @@ namespace CG_2IV05.Common.Element
 	{
 		IElement ReadFromStream(Stream stream);
 		int FactoryID { get; }
+		IElement Merge(List<IElement> elements);
+		bool CanMerge(List<IElement> elements);
 	}
 }

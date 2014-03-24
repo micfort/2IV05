@@ -77,6 +77,16 @@ namespace CG_2IV05.Common.OSM
 			get { return FactoryIDs.LandUseID; }
 		}
 
+		public IElement Merge(List<IElement> elements)
+		{
+			throw new NotImplementedException("more difficult");
+		}
+
+		public bool CanMerge(List<IElement> elements)
+		{
+			return false;
+		}
+
 		#endregion
 	}
 
@@ -172,7 +182,7 @@ namespace CG_2IV05.Common.OSM
 			return output;
 		}
 
-		public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+		public IElement GetSimplifiedVersion()
 		{
 			return this;
 		}
