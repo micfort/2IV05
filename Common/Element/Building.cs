@@ -221,35 +221,5 @@ namespace CG_2IV05.Common.Element
 
             return this;
         }
-
-//        public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
-//        {
-//            Building simpleBuilding = new Building();
-//            List<HyperPoint<float>> newPolygon = new List<HyperPoint<float>>();
-//            if (score.Score < float.MaxValue)
-//            {
-//                HyperPoint<float> pointI = Polygon[scorePointIndex1];
-//                HyperPoint<float> pointJ = Polygon[scorePointIndex2];
-//                HyperPoint<float> newPoint = (pointI + pointJ) / 2;
-//
-//                Polygon.ForEach(x => newPolygon.Add(x));
-//
-//                newPolygon[scorePointIndex1] = newPoint;
-//                newPolygon.RemoveAt(scorePointIndex2);
-//
-//            }
-//            else
-//            {
-//                Polygon.ForEach(x => newPolygon.Add(x));
-//            }
-//
-//            simpleBuilding.Height = Height;
-//            simpleBuilding.Polygon = newPolygon;
-//
-//            simpleBuilding.CreateData(centerDataSet, textureInfo);
-//            simpleBuilding.createBuildingScore();
-//
-//            return simpleBuilding;
-//        }
 	}
 }

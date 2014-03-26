@@ -23,6 +23,7 @@ namespace CG_2IV05.Visualize
 		private Vector3 CameraPos;
 		private Vector2 Mouse;
 		private Vector2? LastMousePos;
+	    private Vector3 CurDirection = Vector3.Zero;
 		private Matrix4 lookAtMatrix;
 		private int texture;
 		private float speed = 10f;
@@ -35,7 +36,8 @@ namespace CG_2IV05.Visualize
 		private Settings settingsForm;
 
 		private VBO vbo;
-		
+	    private SkyBox skybox;
+
 		public Game()
 		{
 			
@@ -95,6 +97,9 @@ namespace CG_2IV05.Visualize
 			settingsForm.Show();
 			settingsForm.manager = manager;
 
+            skybox = new SkyBox(this);
+            skybox.Load();
+
 			// setup settings, load textures, sounds
 			game.VSync = VSyncMode.On;
 
@@ -133,6 +138,8 @@ namespace CG_2IV05.Visualize
 			GL.LoadMatrix(ref lookAtMatrix);
 			GL.Light(LightName.Light0, LightParameter.Position, new Vector4(1, 1, 10, 0));
 			
+            skybox.Draw();
+
 			GL.BindTexture(TextureTarget.Texture2D, texture);
 
 			if(vbo != null)
@@ -181,13 +188,13 @@ namespace CG_2IV05.Visualize
 			}
 			#endregion
 			
-			#region Direction calculation
+			#region CurDirection calculation
 			Matrix4 Rotation = Matrix4.CreateRotationY(Mouse.Y) * Matrix4.CreateRotationZ(-Mouse.X);
-			Vector3 Direction = Vector3.Transform(Vector3.UnitX, Rotation);
+			CurDirection = Vector3.Transform(Vector3.UnitX, Rotation);
 			#endregion
 
 			#region keyboard
-			Vector3 SideStep = Vector3.Cross(Direction, Vector3.UnitZ);
+			Vector3 SideStep = Vector3.Cross(CurDirection, Vector3.UnitZ);
 
 			// add game logic, input handling
 			if (game.Keyboard[Key.Escape])
@@ -196,11 +203,11 @@ namespace CG_2IV05.Visualize
 			}
 			if (game.Keyboard[Key.Up] || game.Keyboard[Key.W])
 			{
-				this.CameraPos = this.CameraPos + Direction*speed;
+				this.CameraPos = this.CameraPos + CurDirection*speed;
 			}
 			if (game.Keyboard[Key.Down] || game.Keyboard[Key.S])
 			{
-				this.CameraPos = this.CameraPos - Direction * speed;
+				this.CameraPos = this.CameraPos - CurDirection * speed;
 			}
 			if (game.Keyboard[Key.Left] || game.Keyboard[Key.A])
 			{
@@ -258,7 +265,7 @@ namespace CG_2IV05.Visualize
 			}
 
 			manager.Position = CameraPos.ToHyperPoint();
-			lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + Direction, Vector3.UnitZ);
+			lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + CurDirection, Vector3.UnitZ);
 		}
 
 		void game_Resize(object sender, EventArgs e)
@@ -271,7 +278,7 @@ namespace CG_2IV05.Visualize
 			GL.LoadMatrix(ref projMatrix);
 		}
 
-		static int LoadTexture(Stream file)
+	    public static int LoadTexture(Stream file)
 		{
 			if (file == null)
 				throw new ArgumentNullException("file");
@@ -295,5 +302,10 @@ namespace CG_2IV05.Visualize
 
 			return id;
 		}
+
+        public Vector3 GetCurrentDirection()
+        {
+            return CurDirection;
+        }
 	}
 }
