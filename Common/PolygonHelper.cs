@@ -186,7 +186,7 @@ namespace CG_2IV05.Common
 					}
 					HyperPoint<float> v1 = p[i] - p[cur];
 					HyperPoint<float> v2 = p[next] - p[cur];
-					float c = HyperPoint<float>.Cross2D(v1, v2);
+					float c = HyperPoint<float>.Cross2D(v1.GetLowerDim(2), v2.GetLowerDim(2));
 					if (c > 0) next = i;
 					if ((c == 0) && (distanceSquared(p[cur], p[i]) > distanceSquared(p[cur], p[next]))) next = i;
 				}
@@ -194,7 +194,7 @@ namespace CG_2IV05.Common
 				cnvxhll.Add(next);
 			}
 			while (cur != first);
-			return cnvxhll.ConvertAll(x => p[x]);
+			return cnvxhll.ConvertAll(x => p[x]).Take(cnvxhll.Count - 1).ToList();
 		}
 
 		private static double distanceSquared(HyperPoint<float> p1, HyperPoint<float> p2)

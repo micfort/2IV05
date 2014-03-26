@@ -56,7 +56,7 @@ namespace CG_2IV05.Common
 
 						InitilizeClosestElement(closestElementsList, factorys, elementLists);
 
-						while (triangleCount > TreeBuildingSettings.MaxTriangleCount)
+						while (triangleCount > TreeBuildingSettings.MaxTriangleCount && closestElementsList.Count > 0)
 						{
 							//get lowest distance
 							KeyValuePair<float, Tuple<IElement, IElement>> closestElement = closestElementsList.First();

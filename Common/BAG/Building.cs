@@ -62,7 +62,7 @@ namespace CG_2IV05.Common.BAG
 		{
 			this.Polygon = polygon;
 			this.Height = height;
-			createBuildingScore();
+			score = new ScoreKey(0f);
 		}
 
         private ScoreKey score = new ScoreKey(float.MaxValue);
@@ -251,14 +251,9 @@ namespace CG_2IV05.Common.BAG
         {
             if (score.Score < float.MaxValue)
             {
-                HyperPoint<float> pointI = Polygon[scorePointIndex1];
-                HyperPoint<float> pointJ = Polygon[scorePointIndex2];
-                HyperPoint<float> newPoint = (pointI + pointJ)/2;
+				Polygon = PolygonHelper.CreateConvexHull(Polygon);
 
-                Polygon[scorePointIndex1] = newPoint;
-                Polygon.RemoveAt(scorePointIndex2);
-
-                createBuildingScore();
+	            score = new ScoreKey(float.MaxValue);
             }
 
             return this;
