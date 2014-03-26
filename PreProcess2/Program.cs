@@ -51,18 +51,30 @@ namespace CG_2IV05.PreProcess2
 				{
 					Console.Out.WriteLine("Reading binair file 1: {0}", Bin1Filename);
 					FileElementList list = new FileElementList(Bin1Filename);
+					int i = 0;
 					foreach (IElement element in list)
 					{
+						if (i % 100000 == 0)
+						{
+							Console.Out.WriteLine("Processing element {0:N0}", i);
+						}
 						writer.WriteElement(element);
+						i++;
 					}
 				}
 				if (Bin2Filename != string.Empty && File.Exists(Bin2Filename))
 				{
 					Console.Out.WriteLine("Reading binair file 2: {0}", Bin2Filename);
 					FileElementList list = new FileElementList(Bin2Filename);
+					int i = 0;
 					foreach (IElement element in list)
 					{
+						if (i % 100000 == 0)
+						{
+							Console.Out.WriteLine("Processing element {0:N0}", i);
+						}
 						writer.WriteElement(element);
+						i++;
 					}
 				}
 			}

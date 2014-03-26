@@ -31,6 +31,12 @@ namespace CG_2IV05.Common.Element
 			
 		}
 
+		public static void CreateEmptyFile(string filename)
+		{
+			FileElementListWriter writer = new FileElementListWriter(filename);
+			writer.Dispose();
+		}
+
 		private void WriteMetadata()
 		{
 			_stream.Position = 0;

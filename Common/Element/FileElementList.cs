@@ -111,12 +111,6 @@ namespace CG_2IV05.Common.Element
 			return lists;
 		}
 
-		public NodeData CreateDataFromChildren(List<Node> Children, HyperPoint<float> centerDataSet, TextureInfo textureInfo,
-		                                       out float error)
-		{
-			throw new NotImplementedException();
-		}
-
 		public ElementList ToElementList()
 		{
 			ElementList output = new ElementList();
@@ -176,11 +170,6 @@ namespace CG_2IV05.Common.Element
 			return output;
 		}
 
-		public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
-		{
-			throw new NotImplementedException();
-		}
-
 		#endregion
 
 		#region Implementation of IEnumerable
@@ -230,13 +219,6 @@ namespace CG_2IV05.Common.Element
 
 	class FileElementListEnumerator : IEnumerator<IElement>
 	{
-		private static List<IElementFactory> factories = new List<IElementFactory>()
-			                                                 {
-				                                                 new BuildingFactory(),
-																 new LandUseFactory(),
-																 new RoadFactory()
-			                                                 }; 
-
 		private FileStream _s;
 		public FileElementListEnumerator(string filename)
 		{
@@ -276,7 +258,7 @@ namespace CG_2IV05.Common.Element
 				return false;
 			}
 			int factoryID = BinaryToStream.ReadIntFromStream(_s);
-			IElementFactory factory = factories.Find(x => x.FactoryID == factoryID);
+			IElementFactory factory = FactoryIDs.GetFactory(factoryID);
 			if(factory == null)
 				throw new ArgumentException("Incorrect format file.");
 			Current = factory.ReadFromStream(_s);

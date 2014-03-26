@@ -157,11 +157,6 @@ namespace CG_2IV05.Common.Element
 			return output;
 		}
 
-	    public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
-	    {
-	        throw new NotImplementedException();
-	    }
-
 		#endregion
 
 		#region Implementation of IEnumerable

@@ -90,7 +90,8 @@ namespace CG_2IV05.Common
 					Children.Add(child);
 					height = Math.Max(heights[i]+1, height);
 				}
-				FileElementList optimizedVersion = CreateDataFromChildren(new List<FileElementList>(usedVersion), new List<int>(heights), depth, out _error);
+				Simplification simplification = new Simplification();
+				FileElementList optimizedVersion = simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), new List<int>(heights), depth, out _error);
 				NodeData data = optimizedVersion.CreateData(TreeBuildingSettings.CenterDataSet, textureInfo);
 				using (FileStream file = File.Open(NodeDataFile, FileMode.Create, FileAccess.ReadWrite))
 				{
@@ -100,56 +101,7 @@ namespace CG_2IV05.Common
 			}
 		}
 
-		public FileElementList CreateDataFromChildren(List<FileElementList> children, List<int> heights, int currentDepth, out float error)
-		{
-			string filename = FilenameGenerator.CreateTempFilename();
-			if (currentDepth >= TreeBuildingSettings.MinCurrentDepthForData)
-			{
-				error = 0;
-				using (FileElementListWriter writer = new FileElementListWriter(filename))
-				{
-					if (heights.Exists(x => x == 0))
-					{
-						#region First step (convex hulls)
 
-						for (int i = 0; i < children.Count; i++)
-						{
-							if (heights[i] == 0)
-							{
-								foreach (IElement element in children[i])
-								{
-									error += element.TriangleCount;
-									writer.WriteElement(element.GetSimplifiedVersion());
-									error -= element.TriangleCount;
-								}
-							}
-						}
-
-						#endregion
-					}
-					else
-					{
-						List<ElementList> lists = children.ConvertAll(x => x.ToElementList());
-						List<IElement> elements = lists.Aggregate(new List<IElement>(),
-						                                          (list, elementList) =>
-							                                          {
-								                                          list.AddRange(elementList.Elements);
-								                                          return list;
-							                                          });
-						SortedList<ScoreKey, IElement> sortedList = new SortedList<ScoreKey, IElement>();
-
-						//todo combine buildings
-					}
-				}
-			}
-			else
-			{
-				error = float.PositiveInfinity;
-				throw new NotImplementedException("create empty file");
-			}
-			return new FileElementList(filename);
-
-		}
 
         public List<Node> Children { get; set; }
         public Node Parent { get; set; }
