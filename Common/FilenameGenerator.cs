@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -9,7 +10,12 @@ namespace CG_2IV05.Common
 	{
 		public static string CreateFilename()
 		{
-			return string.Format(TreeBuildingSettings.NodeFilenameFormat, TreeBuildingSettings.DirectoryOutput, TreeBuildingSettings.FileCount++);
+			return string.Format(TreeBuildingSettings.NodeFilenameFormat, TreeBuildingSettings.FileCount++);
+		}
+
+		public static string GetOutputPathToFile(string filename)
+		{
+			return TreeBuildingSettings.DirectoryOutput + Path.DirectorySeparatorChar + filename;
 		}
 
 		public static string CreateTempFilename()

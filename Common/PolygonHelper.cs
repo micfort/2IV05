@@ -160,9 +160,46 @@ namespace CG_2IV05.Common
 			return new HyperPoint<float>(p);
 		}
 
-		public static List<HyperPoint<float>> CreateConvexHull(List<HyperPoint<float>> points)
+		public static List<HyperPoint<float>> CreateConvexHull(List<HyperPoint<float>> p)
 		{
-			throw new NotImplementedException("Still need to be done");
-		} 
+			List<int> cnvxhll = new List<int>();
+
+			int b = 0;
+			for (int i = 0; i < p.Count; i++)
+			{
+				if (p[i].Y < p[b].Y || p[i].Y == p[b].Y && p[i].X < p[b].X)
+					b = i;
+			}
+			cnvxhll.Add(b);
+			int first = b;
+			int cur = b;
+			int next = 0; //
+			do
+			{
+				bool f = true;
+				for (int i = 0; i < p.Count; i++)
+				{
+					if (f)
+					{
+						next = i;
+						f = false;
+					}
+					HyperPoint<float> v1 = p[i] - p[cur];
+					HyperPoint<float> v2 = p[next] - p[cur];
+					float c = HyperPoint<float>.Cross2D(v1, v2);
+					if (c > 0) next = i;
+					if ((c == 0) && (distanceSquared(p[cur], p[i]) > distanceSquared(p[cur], p[next]))) next = i;
+				}
+				cur = next;
+				cnvxhll.Add(next);
+			}
+			while (cur != first);
+			return cnvxhll.ConvertAll(x => p[x]);
+		}
+
+		private static double distanceSquared(HyperPoint<float> p1, HyperPoint<float> p2)
+		{
+			return (p1 - p2).GetLengthSquared();
+		}
 	}
 }

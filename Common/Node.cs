@@ -33,7 +33,7 @@ namespace CG_2IV05.Common
                 //Leaf
 	            Error = 0;
                 NodeData data = elements.CreateData(TreeBuildingSettings.CenterDataSet, textureInfo);
-                using (FileStream file = File.Open(NodeDataFile, FileMode.Create, FileAccess.ReadWrite))
+				using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Create, FileAccess.ReadWrite))
                 {
                     data.SaveToStream(file);
                 }
@@ -49,29 +49,49 @@ namespace CG_2IV05.Common
                 }
                 NodeData data = elements.CreateDataFromChildren(Children, TreeBuildingSettings.CenterDataSet,
                                                                 textureInfo, out _error);
-                using (FileStream file = File.Open(NodeDataFile, FileMode.Create, FileAccess.ReadWrite))
+				using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Create, FileAccess.ReadWrite))
                 {
                     data.SaveToStream(file);
                 }
             }
         }
 
-		public Node(FileElementList elements, Node parent, TextureInfo textureInfo, int depth, out FileElementList usedList, out int height)
+		/// <summary>
+		/// create root node of a tree with elements
+		/// </summary>
+		/// <param name="elements"></param>
+		/// <param name="parent"></param>
+		/// <param name="textureInfo"></param>
+		public Node(FileElementList elements, Node parent, TextureInfo textureInfo)
 		{
+			FileElementList usedList;//dummy variable
+			int height;//dummy variable
+			ConstructorFileElementList(elements, parent, textureInfo, 0, out usedList, out height);
+		}
+
+		private Node(FileElementList elements, Node parent, TextureInfo textureInfo, int depth, out FileElementList usedList, out int height)
+		{
+			ConstructorFileElementList(elements, parent, textureInfo, depth, out usedList, out height);
+		}
+
+		private void ConstructorFileElementList(FileElementList elements, Node parent, TextureInfo textureInfo, int depth, out FileElementList usedList, out int height)
+		{
+			Console.Out.WriteLine("Creating node on depth {0} with file {1}", depth, Path.GetFileName(elements.Filename));
+
 			Children = new List<Node>();
 			NodeDataFile = FilenameGenerator.CreateFilename();
 			Parent = parent;
 			Tag = elements;
-			Min = elements.Min - TreeBuildingSettings.CenterDataSet;
-			Max = elements.Max - TreeBuildingSettings.CenterDataSet;
+			Min = new HyperPoint<float>(elements.Min - TreeBuildingSettings.CenterDataSet, 0);
+			Max = new HyperPoint<float>(elements.Max - TreeBuildingSettings.CenterDataSet, 0);
 			height = 0;
 
 			if (elements.FinalElement || elements.TriangleCount < TreeBuildingSettings.MaxTriangleCount)
 			{
 				//Leaf
 				Error = 0;
-				NodeData data = elements.CreateData(TreeBuildingSettings.CenterDataSet, textureInfo);
-				using (FileStream file = File.Open(NodeDataFile, FileMode.Create, FileAccess.ReadWrite))
+				NodeData data = elements.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo);
+				using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Create, FileAccess.ReadWrite))
 				{
 					data.SaveToStream(file);
 				}
@@ -92,8 +112,8 @@ namespace CG_2IV05.Common
 				}
 				Simplification simplification = new Simplification();
 				FileElementList optimizedVersion = simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), new List<int>(heights), depth, out _error);
-				NodeData data = optimizedVersion.CreateData(TreeBuildingSettings.CenterDataSet, textureInfo);
-				using (FileStream file = File.Open(NodeDataFile, FileMode.Create, FileAccess.ReadWrite))
+				NodeData data = optimizedVersion.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo);
+				using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Create, FileAccess.ReadWrite))
 				{
 					data.SaveToStream(file);
 				}
@@ -127,7 +147,7 @@ namespace CG_2IV05.Common
 
 	    public NodeData ReadData()
         {
-            using (FileStream file = File.Open(NodeDataFile, FileMode.Open, FileAccess.Read))
+			using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Open, FileAccess.Read))
             {
                 return NodeData.ReadFromStream(file);
             }
@@ -135,7 +155,7 @@ namespace CG_2IV05.Common
 
         public NodeDataRaw ReadRawData()
         {
-            using (FileStream file = File.Open(NodeDataFile, FileMode.Open, FileAccess.Read))
+			using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Open, FileAccess.Read))
             {
                 return NodeDataRaw.ReadFromStream(file);
             }

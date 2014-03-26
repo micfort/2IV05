@@ -37,6 +37,7 @@ namespace CG_2IV05.Common
 					}
 					else
 					{
+						int triangleCount = children.Aggregate(0, (i, list) => i + list.TriangleCount);
 						List<ElementList> lists = children.ConvertAll(x => x.ToElementList());
 						List<IElement> elements = lists.Aggregate(new List<IElement>(),
 																  (list, elementList) =>
@@ -55,12 +56,15 @@ namespace CG_2IV05.Common
 
 						InitilizeClosestElement(closestElementsList, factorys, elementLists);
 
-						//todo use triangle count
-						while (elementLists.Aggregate(0, (i, pair) => i + pair.Value.Count) > TreeBuildingSettings.MaxElementCount)
+						while (triangleCount > TreeBuildingSettings.MaxTriangleCount)
 						{
 							//get lowest distance
 							KeyValuePair<float, Tuple<IElement, IElement>> closestElement = closestElementsList.First();
 							int factoryID = closestElement.Value.Item1.FactoryID;
+
+							//remove from triangleCount
+							triangleCount -= closestElement.Value.Item1.TriangleCount;
+							triangleCount -= closestElement.Value.Item2.TriangleCount;
 
 							//remove out of collections
 							closestElementsList.RemoveAt(0);
@@ -70,6 +74,9 @@ namespace CG_2IV05.Common
 							//merge elements
 							var factory = FactoryIDs.GetFactory(factoryID);
 							IElement newElement = factory.Merge(new List<IElement>() { closestElement.Value.Item1, closestElement.Value.Item2 });
+
+							//add to triangle count
+							triangleCount += newElement.TriangleCount;
 
 							//add to the collection
 							elementLists[factoryID].Add(newElement);

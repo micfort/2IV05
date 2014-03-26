@@ -212,7 +212,14 @@ namespace CG_2IV05.Common.Element
 			using (var enumerator = this.GetEnumerator())
 			{
 				enumerator.MoveNext();
-				ReferencePoint = enumerator.Current.ReferencePoint;
+				if (enumerator.Current != null)
+				{
+					ReferencePoint = enumerator.Current.ReferencePoint;
+				}
+				else
+				{
+					ReferencePoint = new HyperPoint<float>(0, 0);
+				}
 			}
 		}
 	}

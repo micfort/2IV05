@@ -67,9 +67,11 @@ namespace CG_2IV05.Visualize
 			vbos = new List<NodeWithData>();
 			releaseNodes = new List<NodeWithData>();
 
-			using (FileStream file = File.OpenRead(@"output\tree"))
+			string treePath = @"D:\S120397\School\2IV05 ACCG\2IV05\TreeBuilding\bin\Debug\output\tree";
+			using (FileStream file = File.OpenRead(treePath))
 			{
 				this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
+				TreeBuildingSettings.DirectoryOutput = Path.GetDirectoryName(treePath);
 			}
 
 			//using (FileStream file = File.OpenRead(@"output\data_13"))

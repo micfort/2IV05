@@ -33,38 +33,18 @@ namespace CG_2IV05.TreeBuilding
 				Directory.CreateDirectory(TreeBuildingSettings.TmpDirectory);
 			}
 
-            List<Building> buildings;
-	        List<IElement> roads;
-            if (TreeBuildingSettings.Generate)
-            {
-				Console.Out.WriteLine("Generating Buildings");
-                buildings = Generation.CreateData();
-				roads = new List<IElement>();
-            }
-            else
-            {
-				Console.Out.WriteLine("Reading Buildings");
-				buildings = BAG.ReadBuildings(TreeBuildingSettings.InputFilename);
-	            Console.Out.WriteLine("Reading OSM data");
-				using (FileStream file = File.OpenRead(@"Eindhoven.osm.pbf"))
-				{
-					roads = OSM.Read(file).ConvertAll(x => (IElement)x);
-				}
-            }
-
-			ElementList list = new ElementList();
-	        list.Elements = new List<IElement>();
-	        buildings.ForEach(x => list.Elements.Add(x));
-	        roads.ForEach(x => list.Elements.Add(x));
+            FileElementList list = new FileElementList(TreeBuildingSettings.InputFilename);
 
 			SetCenterDateSet(list);
 
             Console.Out.WriteLine("Create Nodes");
-	        Node root = new Node(list, null, textureInfo);
+			Node root = new Node(list, null, textureInfo);
             CleanTag(root);
+
             Tree tree = new Tree();
             tree.Root = root;
-            Console.Out.WriteLine("Writing Tree");
+            
+			Console.Out.WriteLine("Writing Tree");
 			using (FileStream file = File.Open(string.Format(TreeBuildingSettings.TreeOutputFileFormat, TreeBuildingSettings.DirectoryOutput), FileMode.Create, FileAccess.ReadWrite))
             {
                 SerializableType<Tree>.SerializeToStream(tree, file, BinarySerializableTypeEngine.BinairSerializer);
@@ -86,7 +66,7 @@ namespace CG_2IV05.TreeBuilding
             node.Children.ForEach(CleanTag);
         }
 
-		public static void SetCenterDateSet(ElementList list)
+		public static void SetCenterDateSet(FileElementList list)
         {
 			if (TreeBuildingSettings.FindCenterDataSet)
 			{
@@ -99,7 +79,7 @@ namespace CG_2IV05.TreeBuilding
             }
             else
             {
-				TreeBuildingSettings.CenterDataSet = new HyperPoint<float>(0, 0, 0);
+				TreeBuildingSettings.CenterDataSet = new HyperPoint<float>(0, 0);
             }
         }
 
@@ -138,6 +118,11 @@ namespace CG_2IV05.TreeBuilding
                 {
 					TreeBuildingSettings.FindCenterDataSet = true;
                 }
+				else if(args[i] == "--min-depth" || args[i] == "-d")
+	            {
+					i++;
+					TreeBuildingSettings.MinCurrentDepthForData = int.Parse(args[i]);
+	            }
             }
         }
     }
