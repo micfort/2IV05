@@ -6,20 +6,20 @@ using System.Text;
 
 namespace CG_2IV05.Common
 {
-	public class SkipList<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
-		where TKey: IComparable<TKey>
+	public class SkipList<T> : IEnumerable<T>
+		where T: IComparable<T>
 	{
-		private SkipListItem<TKey, TValue> _head;
+		private SkipListItem<T> _head;
 		private Random rand = new Random();
 		private const float probability = 0.5f;
 		private const int MaxLevels = 32;
 
 		public SkipList()
 		{
-			_head = new SkipListItem<TKey, TValue>(default(KeyValuePair<TKey, TValue>), MaxLevels);
+			_head = new SkipListItem<T>(default(T), MaxLevels);
 		}
 
-		public SkipListItem<TKey, TValue> Insert(TKey key, TValue value)
+		public SkipListItem<T> Insert(T value)
 		{
 			int levels = 1; //minimal 1 level (bottom level)
 			while (rand.NextDouble() > probability && levels < MaxLevels)
@@ -27,13 +27,12 @@ namespace CG_2IV05.Common
 				levels++;
 			}
 
-			SkipListItem<TKey, TValue> newItem = new SkipListItem<TKey, TValue>(new KeyValuePair<TKey, TValue>(key, value),
-				                                                                levels);
+			SkipListItem<T> newItem = new SkipListItem<T>(value, levels);
 			var currentItem = _head;
 			int curLevel = _head.LinksAfter.Count-1;
 			while (curLevel >= 0)
 			{
-				if(currentItem.LinksAfter[curLevel].To == null || currentItem.LinksAfter[curLevel].To.Item.Key.CompareTo(key) >= 0)
+				if (currentItem.LinksAfter[curLevel].To == null || currentItem.LinksAfter[curLevel].To.Item.CompareTo(value) >= 0)
 				{
 					if(curLevel < levels)
 					{
@@ -41,7 +40,7 @@ namespace CG_2IV05.Common
 					}
 					curLevel--;
 				}
-				else if (currentItem.LinksAfter[curLevel].To.Item.Key.CompareTo(key) < 0)
+				else if (currentItem.LinksAfter[curLevel].To.Item.CompareTo(value) < 0)
 				{
 					currentItem = currentItem.LinksAfter[curLevel].To;
 				}
@@ -49,9 +48,9 @@ namespace CG_2IV05.Common
 			return newItem;
 		}
 
-		public bool Remove(TKey key)
+		public bool Remove(T value)
 		{
-			var item = FindItem(key);
+			var item = FindItem(value);
 			if (item != null)
 			{
 				item.RemoveFromList();
@@ -63,7 +62,7 @@ namespace CG_2IV05.Common
 			}
 		}
 
-		public void RemoveAll(Func<KeyValuePair<TKey, TValue>, bool> predicate)
+		public void RemoveAll(Func<T, bool> predicate)
 		{
 			var currentItem = _head;
 			var nextItem = currentItem.LinksAfter[0].To;
@@ -78,9 +77,9 @@ namespace CG_2IV05.Common
 			}
 		}
 
-		public bool Contains(TKey key)
+		public bool Contains(T value)
 		{
-			var item = FindItem(key);
+			var item = FindItem(value);
 			if (item != null)
 			{
 				return true;
@@ -91,21 +90,21 @@ namespace CG_2IV05.Common
 			}
 		}
 
-		private SkipListItem<TKey, TValue> FindItem(TKey key)
+		private SkipListItem<T> FindItem(T value)
 		{
 			var currentItem = _head;
 			int curLevel = _head.LinksAfter.Count - 1;
 			while (curLevel >= 0)
 			{
-				if(currentItem != _head && currentItem.Item.Key.CompareTo(key) == 0)
+				if(currentItem != _head && currentItem.Item.CompareTo(value) == 0)
 				{
 					return currentItem;
 				}
-				else if (currentItem.LinksAfter[curLevel].To == null || currentItem.LinksAfter[curLevel].To.Item.Key.CompareTo(key) > 0)
+				else if (currentItem.LinksAfter[curLevel].To == null || currentItem.LinksAfter[curLevel].To.Item.CompareTo(value) > 0)
 				{
 					curLevel--;
 				}
-				else if (currentItem.LinksAfter[curLevel].To.Item.Key.CompareTo(key) <= 0)
+				else if (currentItem.LinksAfter[curLevel].To.Item.CompareTo(value) <= 0)
 				{
 					currentItem = currentItem.LinksAfter[curLevel].To;
 				}
@@ -122,9 +121,9 @@ namespace CG_2IV05.Common
 		/// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
 		/// </returns>
 		/// <filterpriority>1</filterpriority>
-		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+		public IEnumerator<T> GetEnumerator()
 		{
-			return new SkipListEnumerator<TKey, TValue>(_head);
+			return new SkipListEnumerator<T>(_head);
 		}
 
 		/// <summary>
@@ -142,41 +141,41 @@ namespace CG_2IV05.Common
 		#endregion
 	}
 
-	public class SkipListItem<TKey, TValue>
-		where TKey: IComparable<TKey>
+	public class SkipListItem<T>
+		where T: IComparable<T>
 	{
-		public List<SkipListLink<TKey, TValue>> LinksBefore { get; set; }
-		public List<SkipListLink<TKey, TValue>> LinksAfter { get; set; }
-		public KeyValuePair<TKey, TValue> Item { get; set; }
+		public List<SkipListLink<T>> LinksBefore { get; set; }
+		public List<SkipListLink<T>> LinksAfter { get; set; }
+		public T Item { get; set; }
 
 		public bool Tail
 		{
 			get { return LinksAfter[0].To == null; }
 		}
 
-		public SkipListItem(KeyValuePair<TKey, TValue> item)
+		public SkipListItem(T item)
 		{
 			Item = item;
-			LinksBefore = new List<SkipListLink<TKey, TValue>>();
-			LinksAfter = new List<SkipListLink<TKey, TValue>>();
+			LinksBefore = new List<SkipListLink<T>>();
+			LinksAfter = new List<SkipListLink<T>>();
 		}
 
-		public SkipListItem(KeyValuePair<TKey, TValue> item, int levels)
+		public SkipListItem(T item, int levels)
 		{
 			Item = item;
-			LinksBefore = new List<SkipListLink<TKey, TValue>>(levels);
-			LinksAfter = new List<SkipListLink<TKey, TValue>>(levels);
+			LinksBefore = new List<SkipListLink<T>>(levels);
+			LinksAfter = new List<SkipListLink<T>>(levels);
 			for (int i = 0; i < levels; i++)
 			{
-				LinksBefore.Add(new SkipListLink<TKey, TValue>(0, null, this));
-				LinksAfter.Add(new SkipListLink<TKey, TValue>(0, this, null));
+				LinksBefore.Add(new SkipListLink<T>(0, null, this));
+				LinksAfter.Add(new SkipListLink<T>(0, this, null));
 			}
 		}
 
-		public void InstertAfterItem(SkipListItem<TKey, TValue> beforeItem, int level)
+		public void InstertAfterItem(SkipListItem<T> beforeItem, int level)
 		{
 			//tempory hold reference
-			SkipListItem<TKey, TValue> afterItem = beforeItem.LinksAfter[level].To;
+			SkipListItem<T> afterItem = beforeItem.LinksAfter[level].To;
 
 			//update the link before
 			beforeItem.LinksAfter[level].To = this;
@@ -184,7 +183,7 @@ namespace CG_2IV05.Common
 			LinksBefore[level] = beforeItem.LinksAfter[level];
 
 			//create link for after this node
-			LinksAfter[level] = new SkipListLink<TKey, TValue>(1, this, afterItem);
+			LinksAfter[level] = new SkipListLink<T>(1, this, afterItem);
 			if(afterItem != null) //update link in afternode if neccesary
 				afterItem.LinksBefore[level] = LinksAfter[level];
 		}
@@ -199,14 +198,14 @@ namespace CG_2IV05.Common
 		}
 	}
 
-	public class SkipListLink<TKey, TValue>
-		where TKey : IComparable<TKey>
+	public class SkipListLink<T>
+		where T : IComparable<T>
 	{
 		public int Distance { get; set; }
-		public SkipListItem<TKey, TValue> From { get; set; }
-		public SkipListItem<TKey, TValue> To { get; set; }
+		public SkipListItem<T> From { get; set; }
+		public SkipListItem<T> To { get; set; }
 
-		public SkipListLink(int distance, SkipListItem<TKey, TValue> from, SkipListItem<TKey, TValue> to)
+		public SkipListLink(int distance, SkipListItem<T> from, SkipListItem<T> to)
 		{
 			Distance = distance;
 			From = @from;
@@ -214,13 +213,13 @@ namespace CG_2IV05.Common
 		}
 	}
 
-	class SkipListEnumerator<TKey, TValue> : IEnumerator<KeyValuePair<TKey, TValue>>
-		where TKey : IComparable<TKey>
+	class SkipListEnumerator<T> : IEnumerator<T>
+		where T : IComparable<T>
 	{
-		private readonly SkipListItem<TKey, TValue> _head;
-		private SkipListItem<TKey, TValue> _currentItem;
+		private readonly SkipListItem<T> _head;
+		private SkipListItem<T> _currentItem;
 
-		public SkipListEnumerator(SkipListItem<TKey, TValue> head)
+		public SkipListEnumerator(SkipListItem<T> head)
 		{
 			_head = head;
 			_currentItem = head;
@@ -268,9 +267,9 @@ namespace CG_2IV05.Common
 		/// <returns>
 		/// The element in the collection at the current position of the enumerator.
 		/// </returns>
-		public KeyValuePair<TKey, TValue> Current
+		public T Current
 		{
-			get { return _currentItem != null ? _currentItem.Item : default(KeyValuePair<TKey, TValue>); }
+			get { return _currentItem != null ? _currentItem.Item : default(T); }
 		}
 
 		/// <summary>

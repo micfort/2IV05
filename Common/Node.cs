@@ -110,7 +110,7 @@ namespace CG_2IV05.Common
 					Children.Add(child);
 					height = Math.Max(heights[i]+1, height);
 				}
-				Simplification simplification = new Simplification();
+				Simplification2 simplification = new Simplification2();
 				FileElementList optimizedVersion = simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), new List<int>(heights), depth, out _error);
 				NodeData data = optimizedVersion.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo);
 				using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Create, FileAccess.ReadWrite))

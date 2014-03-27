@@ -50,8 +50,17 @@ namespace CG_2IV05.Common.BAG
 
 	public class Building : IElement
 	{
-		public float Height { get; set; }
-		public List<HyperPoint<float>> Polygon { get; set; }
+		public float Height { get; private set; }
+		public List<HyperPoint<float>> Polygon
+		{
+			get { return _polygon; }
+			private set
+			{
+				_polygon = value;
+				RecalculateReferencePoint();
+			}
+		}
+
 
 		public bool FinalElement { get { return true; } }
 
@@ -66,7 +75,9 @@ namespace CG_2IV05.Common.BAG
 		}
 
         private ScoreKey score = new ScoreKey(float.MaxValue);
-        public ScoreKey Score
+		private List<HyperPoint<float>> _polygon;
+
+		public ScoreKey Score
         {
             get { return score; }
 
@@ -99,10 +110,7 @@ namespace CG_2IV05.Common.BAG
 			}
 		}
 
-		public HyperPoint<float> ReferencePoint
-		{
-			get { return Polygon[0]; }
-		}
+		public HyperPoint<float> ReferencePoint { get; private set; }
 
 		/// <summary>
 		/// 
@@ -270,34 +278,11 @@ namespace CG_2IV05.Common.BAG
 			get { return FactoryIDs.BuildingID; }
 		}
 
-//        public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
-//        {
-//            Building simpleBuilding = new Building();
-//            List<HyperPoint<float>> newPolygon = new List<HyperPoint<float>>();
-//            if (score.Score < float.MaxValue)
-//            {
-//                HyperPoint<float> pointI = Polygon[scorePointIndex1];
-//                HyperPoint<float> pointJ = Polygon[scorePointIndex2];
-//                HyperPoint<float> newPoint = (pointI + pointJ) / 2;
-//
-//                Polygon.ForEach(x => newPolygon.Add(x));
-//
-//                newPolygon[scorePointIndex1] = newPoint;
-//                newPolygon.RemoveAt(scorePointIndex2);
-//
-//            }
-//            else
-//            {
-//                Polygon.ForEach(x => newPolygon.Add(x));
-//            }
-//
-//            simpleBuilding.Height = Height;
-//            simpleBuilding.Polygon = newPolygon;
-//
-//            simpleBuilding.CreateData(centerDataSet, textureInfo);
-//            simpleBuilding.createBuildingScore();
-//
-//            return simpleBuilding;
-//        }
+		private void RecalculateReferencePoint()
+		{
+			HyperPoint<float> summation = _polygon.Aggregate(new HyperPoint<float>(2), (point, hyperPoint) => point + hyperPoint);
+			HyperPoint<float> center = summation * (1f/_polygon.Count);
+			ReferencePoint = center;
+		}
 	}
 }

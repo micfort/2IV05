@@ -6,7 +6,7 @@ using CG_2IV05.Common.Element;
 
 namespace CG_2IV05.Common
 {
-	class Simplification
+	class Simplification1
 	{
 		public FileElementList CreateDataFromChildren(List<FileElementList> children, List<int> heights, int currentDepth, out float error)
 		{
