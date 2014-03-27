@@ -80,7 +80,7 @@ namespace CG_2IV05.Visualize
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref lookAt);
 
-            GL.PushAttrib(AttribMask.EnableBit);
+            GL.PushAttrib(AttribMask.AllAttribBits);
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.Blend);
             //GL.Disable(EnableCap.Lighting);
@@ -131,8 +131,22 @@ namespace CG_2IV05.Visualize
             GL.TexCoord2(1, 1); GL.Vertex3(x + width, y + width, z);
             GL.End();
 
-            GL.PopAttrib();
+            float floorWidth = 2000;
+            float floorZ = -0.5f;
+            
+            GL.Enable(EnableCap.ColorMaterial);
+            GL.Disable(EnableCap.Lighting);
+            GL.Color3(0.763, 0.763, 0.763);
+            GL.Begin(PrimitiveType.Quads);
+            GL.Vertex3(-floorWidth / 2, -floorWidth / 2, floorZ);
+            GL.Vertex3(floorWidth / 2, -floorWidth / 2, floorZ);
+            GL.Vertex3(floorWidth / 2, floorWidth / 2, floorZ);
+            GL.Vertex3(-floorWidth / 2, floorWidth / 2, floorZ);            
+            GL.End();
+            
             GL.PopMatrix();
+            GL.PopAttrib();
+           
         }
 
     }
