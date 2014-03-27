@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using CG_2IV05.Common.Element;
 using micfort.GHL.Math2;
 
@@ -104,12 +105,7 @@ namespace CG_2IV05.Common
 				FileElementList[] split = elements.SplitList(FilenameGenerator.CreateTempFilenames(4));
 				FileElementList[] usedVersion = new FileElementList[4];
 				int[] heights = new int[4];
-				for (int i = 0; i < split.Length; i++)
-				{
-					Node child = new Node(split[i], this, textureInfo, depth+1, out usedVersion[i], out heights[i]);
-					Children.Add(child);
-					height = Math.Max(heights[i]+1, height);
-				}
+				CreateSubNode(split, usedVersion, textureInfo, depth, out height);
 				Simplification2 simplification = new Simplification2();
 				FileElementList optimizedVersion = simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), new List<int>(heights), depth, out _error);
 				NodeData data = optimizedVersion.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo);
@@ -121,7 +117,42 @@ namespace CG_2IV05.Common
 			}
 		}
 
-
+		private void CreateSubNode(FileElementList[] split, FileElementList[] usedVersion, TextureInfo textureInfo, int depth, out int height)
+		{
+			height = 0;
+			int[] heights = new int[split.Length];
+			if (depth < TreeBuildingSettings.CreateThreadDepth)
+			{
+				ManualResetEvent[] mres = new ManualResetEvent[split.Length];
+				Node[] childs = new Node[split.Length];
+				for (int i = 0; i < split.Length; i++)
+				{
+					mres[i] = new ManualResetEvent(false);
+					Thread t = new Thread((o) =>
+						                      {
+							                      int index = (int) o;
+												  childs[index] = new Node(split[index], this, textureInfo, depth + 1, out usedVersion[index], out heights[index]);
+												  mres[index].Set();
+						                      });
+					t.Start(i);
+				}
+				ManualResetEvent.WaitAll(mres);
+				for (int i = 0; i < split.Length; i++)
+				{
+					Children.Add(childs[i]);
+					height = Math.Max(heights[i] + 1, height);	
+				}
+			}
+			else
+			{
+				for (int i = 0; i < split.Length; i++)
+				{
+					Node child = new Node(split[i], this, textureInfo, depth + 1, out usedVersion[i], out heights[i]);
+					Children.Add(child);
+					height = Math.Max(heights[i] + 1, height);
+				}
+			}
+		}
 
         public List<Node> Children { get; set; }
         public Node Parent { get; set; }

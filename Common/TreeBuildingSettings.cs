@@ -8,7 +8,7 @@ namespace CG_2IV05.Common
 {
 	public class TreeBuildingSettings
 	{
-		public static int MaxTriangleCount = 600000;
+		public static int MaxTriangleCount = 100000;
 		public static int MaxElementCount = 50000;
 		public static int FileCount = 0;
 		public static string NodeFilenameFormat = "data_{0}";
@@ -21,6 +21,7 @@ namespace CG_2IV05.Common
 		public static HyperPoint<float> CenterDataSet;
 		public static bool FindCenterDataSet = true;
 		public static int MinCurrentDepthForData = 0;
+		public static int CreateThreadDepth = 2;
 
 		public static string TmpDirectory = "tmp";
 		public static int TmpFileCount = 0;
