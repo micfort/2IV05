@@ -19,7 +19,7 @@ namespace CG_2IV05.Common
 			_head = new SkipListItem<TKey, TValue>(default(KeyValuePair<TKey, TValue>), MaxLevels);
 		}
 
-		public void Insert(TKey key, TValue value)
+		public SkipListItem<TKey, TValue> Insert(TKey key, TValue value)
 		{
 			int levels = 1; //minimal 1 level (bottom level)
 			while (rand.NextDouble() > probability && levels < MaxLevels)
@@ -46,6 +46,7 @@ namespace CG_2IV05.Common
 					currentItem = currentItem.LinksAfter[curLevel].To;
 				}
 			}
+			return newItem;
 		}
 
 		public bool Remove(TKey key)
