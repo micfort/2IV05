@@ -21,8 +21,8 @@ namespace CG_2IV05.Common
 		public static int generateSizeY = 100;
 		public static HyperPoint<float> CenterDataSet;
 		public static bool FindCenterDataSet = true;
-		public static int MinCurrentDepthForData = 0;
-		public static int CreateThreadDepth = 0;
+		public static int MinCurrentDepthForData = 4;
+		public static int CreateThreadDepth = 1;
 
 		public static string TmpDirectory = "tmp";
 		public static int TmpFileCount = 0;

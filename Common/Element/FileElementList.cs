@@ -151,7 +151,18 @@ namespace CG_2IV05.Common.Element
 		public NodeData CreateData(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
 		{
 			NodeData output = new NodeData();
-			List<NodeData> nodeDataList = this.Select(element => element.CreateData(centerDataSet, textureInfo)).ToList();
+			List<NodeData> nodeDataList = new List<NodeData>();
+			foreach (IElement element in this)
+			{
+				try
+				{
+					nodeDataList.Add(element.CreateData(centerDataSet, textureInfo));
+				}
+				catch (Exception e)
+				{
+					micfort.GHL.Logging.ErrorReporting.Instance.ReportErrorT(LoggingTag.CurrentContext, "Error while creating data", e);
+				}
+			}
 			int verticesCount = nodeDataList.ConvertAll(x => x.Vertices.Length).Sum();
 			int indexesCount = nodeDataList.ConvertAll(x => x.Indexes.Length).Sum();
 
