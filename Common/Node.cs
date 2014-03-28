@@ -67,15 +67,15 @@ namespace CG_2IV05.Common
 		{
 			FileElementList usedList;//dummy variable
 			int height;//dummy variable
-			ConstructorFileElementList(elements, parent, textureInfo, 0, out usedList, out height);
+			ConstructorFileElementList(elements, parent, textureInfo, SplitDirection.Vertical, 0, out usedList, out height);
 		}
 
-		private Node(FileElementList elements, Node parent, TextureInfo textureInfo, int depth, out FileElementList usedList, out int height)
+		private Node(FileElementList elements, Node parent, TextureInfo textureInfo, SplitDirection split, int depth, out FileElementList usedList, out int height)
 		{
-			ConstructorFileElementList(elements, parent, textureInfo, depth, out usedList, out height);
+			ConstructorFileElementList(elements, parent, textureInfo, split, depth, out usedList, out height);
 		}
 
-		private void ConstructorFileElementList(FileElementList elements, Node parent, TextureInfo textureInfo, int depth, out FileElementList usedList, out int height)
+		private void ConstructorFileElementList(FileElementList elements, Node parent, TextureInfo textureInfo, SplitDirection splitDirection, int depth, out FileElementList usedList, out int height)
 		{
 			micfort.GHL.Logging.ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext,
 			                                                        string.Format("Creating node on depth {0} with file {1}",
@@ -109,14 +109,28 @@ namespace CG_2IV05.Common
 			{
 				//Not a leaf
 
+				//split information
+				int splitCount = 2;
+				SplitDirection nextSplitDirection = splitDirection == SplitDirection.Horizontal
+					                                    ? SplitDirection.Vertical
+					                                    : SplitDirection.Horizontal;
+
 				//split the data
-				List<string> splitFilenames = CreateSplitFilenames(4);
+				List<string> splitFilenames = CreateSplitFilenames(splitCount);
 				List<FileElementList> split;
 				//check if neccesary
 				if(NeedSplit(splitFilenames, elements.Filename))
 				{
-					List<string> tmpFilenames = new List<string>(FilenameGenerator.CreateTempFilenames(4));
-					elements.SplitList(tmpFilenames.ToArray());
+					List<string> tmpFilenames = new List<string>(FilenameGenerator.CreateTempFilenames(splitCount));
+					if(splitCount == 2)
+					{
+						elements.SplitListBinary(tmpFilenames.ToArray(), splitDirection);
+					}
+					else
+					{
+						elements.SplitList(tmpFilenames.ToArray());	
+					}
+					
 					for (int i = 0; i < tmpFilenames.Count; i++)
 					{
 						RemoveFileIfExist(splitFilenames[i]);
@@ -127,9 +141,9 @@ namespace CG_2IV05.Common
 				split = splitFilenames.ConvertAll(x => new FileElementList(x));
 
 				//create subnodes
-				FileElementList[] usedVersion = new FileElementList[4];
-				int[] heights = new int[4];
-				CreateSubNode(split.ToArray(), usedVersion, textureInfo, depth, out height);
+				FileElementList[] usedVersion = new FileElementList[splitCount];
+				int[] heights = new int[splitCount];
+				CreateSubNode(split.ToArray(), usedVersion, textureInfo, nextSplitDirection, depth, out height);
 
 				//simplify
 				string simpFilename = CreateSimplifyFilename();
@@ -200,7 +214,7 @@ namespace CG_2IV05.Common
 				File.Delete(filename);
 		}
 
-		private void CreateSubNode(FileElementList[] split, FileElementList[] usedVersion, TextureInfo textureInfo, int depth, out int height)
+		private void CreateSubNode(FileElementList[] split, FileElementList[] usedVersion, TextureInfo textureInfo, SplitDirection splitDirection, int depth, out int height)
 		{
 			height = 0;
 			int[] heights = new int[split.Length];
@@ -217,7 +231,7 @@ namespace CG_2IV05.Common
 												
 							                      int index = (int) o;
 												  LoggingTag.Push(currentLoggingTag + "_" + index.ToString());
-												  childs[index] = new Node(split[index], this, textureInfo, depth + 1, out usedVersion[index], out heights[index]);
+												  childs[index] = new Node(split[index], this, textureInfo, splitDirection, depth + 1, out usedVersion[index], out heights[index]);
 							                      LoggingTag.Pop();
 												  mres[index].Set();
 						                      });
@@ -235,7 +249,7 @@ namespace CG_2IV05.Common
 				for (int i = 0; i < split.Length; i++)
 				{
 					LoggingTag.Push(LoggingTag.CurrentContext + "_" + i.ToString());
-					Node child = new Node(split[i], this, textureInfo, depth + 1, out usedVersion[i], out heights[i]);
+					Node child = new Node(split[i], this, textureInfo, splitDirection, depth + 1, out usedVersion[i], out heights[i]);
 					LoggingTag.Pop();
 					Children.Add(child);
 					height = Math.Max(heights[i] + 1, height);

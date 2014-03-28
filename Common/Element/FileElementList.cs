@@ -6,6 +6,7 @@ using System.Linq;
 using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.OSM;
 using micfort.GHL.Math2;
+using micfort.GHL.Collections;
 
 namespace CG_2IV05.Common.Element
 {
@@ -27,12 +28,14 @@ namespace CG_2IV05.Common.Element
 
 		public FileElementList[] SplitListBinary(string[] filenames, SplitDirection direction)
 		{
+			int count = this.Count();
+
 			HyperPoint<float> min = this.Min;
 			HyperPoint<float> max = this.Max;
 			HyperPoint<float> center = (max + min) * 0.5f;
 
-			//todo calculate approximate median
-			float split = center[(int)direction];
+			//float split = center[(int)direction];
+			float split = SplitPoint(count, (int) direction);
 
 			FileElementListWriter[] output = new FileElementListWriter[2];
 			for (int i = 0; i < output.Length; i++)
@@ -130,6 +133,21 @@ namespace CG_2IV05.Common.Element
 		{
 			return File.GetLastWriteTimeUtc(filename);
 		}
+
+		private float SplitPoint(int count, int dimension)
+		{
+			double[] items = new double[count];
+			int i = 0;
+			foreach (IElement element in this)
+			{
+				items[i] = element.ReferencePoint[dimension];
+				i++;
+			}
+
+			double output;
+			alglib.samplemedian(items, out output);
+			return Convert.ToSingle(output);
+		} 
 
 		#region Implementation of IElement
 
