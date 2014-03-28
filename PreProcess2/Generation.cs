@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CG_2IV05.Common;
+using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.Element;
 using micfort.GHL.Math2;
 
-namespace CG_2IV05.TreeBuilding
+namespace CG_2IV05.PreProcess2
 {
 	class Generation
 	{
-		public static List<Building> CreateData()
+		public static void CreateData(Action<Building> handler)
 		{
 			int stepsize = 10;
-			List<Building> output = new List<Building>();
 			for (int i = 0; i < TreeBuildingSettings.generateSizeX; i++)
 			{
 				for (int j = 0; j < TreeBuildingSettings.generateSizeY; j++)
@@ -30,10 +30,9 @@ namespace CG_2IV05.TreeBuilding
 						                                  };
 					float height = 1;
 					Building b = new Building(polygon, height);
-					output.Add(b);
+					handler(b);
 				}
 			}
-			return output;
 		}
 	}
 }

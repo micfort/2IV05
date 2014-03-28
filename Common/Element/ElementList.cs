@@ -1,17 +1,19 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common.Element
 {
-	public class ElementList : IElement
+	public class ElementList : IListElement
 	{
 		public List<IElement> Elements { get; set; }
 
         public ElementList()
         {
-            Elements = new List<IElement>();
+			Elements = new List<IElement>();
         } 
 
 		public ElementList[] SplitList()
@@ -56,7 +58,7 @@ namespace CG_2IV05.Common.Element
 
 		public NodeData CreateDataFromChildren(List<Node> Children, HyperPoint<float> centerDataSet, TextureInfo textureInfo, out float error)
 		{
-            SortedList<ScoreKey, IElement> sortedElements = new SortedList<ScoreKey, IElement>();
+			SortedList<ScoreKey, IElement> sortedElements = new SortedList<ScoreKey, IElement>();
 		    int triangleCount = 0;
             foreach(Node node in Children)
             {
@@ -72,13 +74,13 @@ namespace CG_2IV05.Common.Element
 		    
             while (triangleCount > TreeBuildingSettings.MaxTriangleCount)
             {
-                IElement element = sortedElements.First().Value;
+				IElement element = sortedElements.First().Value;
 
                 if (element.Score.Score == float.MaxValue)
                     break;
 
                 triangleCount -= element.TriangleCount;
-                element = element.GetSimplifiedVersion(centerDataSet, textureInfo);
+                element = element.GetSimplifiedVersion();
                 sortedElements.RemoveAt(0);
                 sortedElements.Add(element.Score, element);
 
@@ -155,11 +157,34 @@ namespace CG_2IV05.Common.Element
 			return output;
 		}
 
-	    public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
-	    {
-	        throw new NotImplementedException();
-	    }
+		#endregion
 
-	    #endregion
+		#region Implementation of IEnumerable
+
+		/// <summary>
+		/// Returns an enumerator that iterates through the collection.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+		/// </returns>
+		/// <filterpriority>1</filterpriority>
+		public IEnumerator<IElement> GetEnumerator()
+		{
+			return Elements.GetEnumerator();
+		}
+
+		/// <summary>
+		/// Returns an enumerator that iterates through a collection.
+		/// </summary>
+		/// <returns>
+		/// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+		/// </returns>
+		/// <filterpriority>2</filterpriority>
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		#endregion
 	}
 }

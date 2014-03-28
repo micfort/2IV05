@@ -1,15 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CG_2IV05.Common.EarClipping;
+using CG_2IV05.Common.Element;
 using micfort.GHL.Math2;
 
-namespace CG_2IV05.Common.Element
+namespace CG_2IV05.Common.BAG
 {
+	public class BuildingFactory: IElementFactory
+	{
+		#region Implementation of IElementFactory
+
+		public IElement ReadFromStream(Stream stream)
+		{
+			float height = BinaryToStream.ReadFloatFromStream(stream);
+			List<HyperPoint<float>> poly = PolygonHelper.ReadPolyFromStream(stream);
+			return new Building(poly, height);
+		}
+
+		public int FactoryID
+		{
+			get { return FactoryIDs.BuildingID; }
+		}
+
+		public IElement Merge(List<IElement> elements)
+		{
+			if(elements.Any(x => !(x is Building)))
+				throw new ArgumentException("elements should be buildings", "elements");
+
+			List<Building> buildings = elements.ConvertAll(x => x as Building);
+			List<HyperPoint<float>> points = buildings.Aggregate(new List<HyperPoint<float>>(), (list, building) =>
+				                                                                                    {
+					                                                                                    list.AddRange(building.Polygon);
+					                                                                                    return list;
+				                                                                                    });
+			List<HyperPoint<float>> convex = PolygonHelper.CreateConvexHull(points);
+			float height = buildings.Average(x => x.Height);
+			return new Building(convex, height);
+		}
+
+		public bool CanMerge(List<IElement> elements)
+		{
+			return true;
+		}
+
+		#endregion
+	}
+
 	public class Building : IElement
 	{
-		public float Height { get; set; }
-		public List<HyperPoint<float>> Polygon { get; set; }
+		public float Height { get; private set; }
+		public List<HyperPoint<float>> Polygon
+		{
+			get { return _polygon; }
+			private set
+			{
+				_polygon = value;
+				RecalculateReferencePoint();
+			}
+		}
+
 
 		public bool FinalElement { get { return true; } }
 
@@ -20,11 +71,13 @@ namespace CG_2IV05.Common.Element
 		{
 			this.Polygon = polygon;
 			this.Height = height;
-			createBuildingScore();
+			score = new ScoreKey(0f);
 		}
 
         private ScoreKey score = new ScoreKey(float.MaxValue);
-        public ScoreKey Score
+		private List<HyperPoint<float>> _polygon;
+
+		public ScoreKey Score
         {
             get { return score; }
 
@@ -57,10 +110,7 @@ namespace CG_2IV05.Common.Element
 			}
 		}
 
-		public HyperPoint<float> ReferencePoint
-		{
-			get { return Polygon[0]; }
-		}
+		public HyperPoint<float> ReferencePoint { get; private set; }
 
 		/// <summary>
 		/// 
@@ -78,6 +128,16 @@ namespace CG_2IV05.Common.Element
 							   Vertices = new HyperPoint<float>[0],
 							   TextCoord = new HyperPoint<float>[0],
 							   Normals = new HyperPoint<float>[0]
+					       };
+			}
+			if(Polygon.Count < 3)
+			{
+				return new NodeData()
+					       {
+						       Indexes = new int[0],
+						       Vertices = new HyperPoint<float>[0],
+						       TextCoord = new HyperPoint<float>[0],
+						       Normals = new HyperPoint<float>[0]
 					       };
 			}
 			NodeData data = new NodeData();
@@ -205,21 +265,34 @@ namespace CG_2IV05.Common.Element
 	        scorePointIndex2 = minDistanceIndex2;
         }
 
-		public IElement GetSimplifiedVersion(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
+		public IElement GetSimplifiedVersion()
         {
             if (score.Score < float.MaxValue)
             {
-                HyperPoint<float> pointI = Polygon[scorePointIndex1];
-                HyperPoint<float> pointJ = Polygon[scorePointIndex2];
-                HyperPoint<float> newPoint = (pointI + pointJ)/2;
+				Polygon = PolygonHelper.CreateConvexHull(Polygon);
 
-                Polygon[scorePointIndex1] = newPoint;
-                Polygon.RemoveAt(scorePointIndex2);
-
-                createBuildingScore();
+	            score = new ScoreKey(float.MaxValue);
             }
 
             return this;
         }
+
+		public void SaveToStream(Stream stream)
+		{
+			BinaryToStream.WriteToStream(Height, stream);
+			PolygonHelper.WriteToStream(stream, Polygon);
+		}
+
+		public int FactoryID
+		{
+			get { return FactoryIDs.BuildingID; }
+		}
+
+		private void RecalculateReferencePoint()
+		{
+			HyperPoint<float> summation = _polygon.Aggregate(new HyperPoint<float>(2), (point, hyperPoint) => point + hyperPoint);
+			HyperPoint<float> center = summation * (1f/_polygon.Count);
+			ReferencePoint = center;
+		}
 	}
 }

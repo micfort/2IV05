@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using CG_2IV05.Common;
+using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.Element;
 using CG_2IV05.Common.OSM;
+using micfort.GHL.Logging;
 using micfort.GHL.Math2;
 using micfort.GHL.Serialization;
 
@@ -20,6 +22,11 @@ namespace CG_2IV05.TreeBuilding
         {
             micfort.GHL.GHLWindowsInit.Init();
 
+	        ErrorReporting.Instance.Engine =
+		        new MultipleLoggingEngine(new TextWriterLoggingEngine(Console.Out),
+		                                  new TextWriterLoggingEngine(new StreamWriter("treebuilding.log")));
+			LoggingTag.Push("TB");
+
             ParseCommandLine(args);
 
 			if (!Directory.Exists(TreeBuildingSettings.DirectoryOutput))
@@ -27,42 +34,39 @@ namespace CG_2IV05.TreeBuilding
 				Directory.CreateDirectory(TreeBuildingSettings.DirectoryOutput);
             }
 
-            List<Building> buildings;
-	        List<IElement> roads;
-            if (TreeBuildingSettings.Generate)
-            {
-				Console.Out.WriteLine("Generating Buildings");
-                buildings = Generation.CreateData();
-				roads = new List<IElement>();
-            }
-            else
-            {
-				Console.Out.WriteLine("Reading Buildings");
-				buildings = BAG.ReadBuildings(TreeBuildingSettings.InputFilename);
-	            Console.Out.WriteLine("Reading OSM data");
-				using (FileStream file = File.OpenRead(@"Eindhoven.osm.pbf"))
-				{
-					roads = OSM.Read(file).ConvertAll(x => (IElement)x);
-				}
-            }
+			if (!Directory.Exists(TreeBuildingSettings.TmpDirectory))
+			{
+				Directory.CreateDirectory(TreeBuildingSettings.TmpDirectory);
+			}
 
-			ElementList list = new ElementList();
-	        list.Elements = new List<IElement>();
-	        buildings.ForEach(x => list.Elements.Add(x));
-	        roads.ForEach(x => list.Elements.Add(x));
+			if (!Directory.Exists(TreeBuildingSettings.DirectoryWorking))
+			{
+				Directory.CreateDirectory(TreeBuildingSettings.DirectoryWorking);
+			}
+
+            FileElementList list = new FileElementList(TreeBuildingSettings.InputFilename);
 
 			SetCenterDateSet(list);
 
-            Console.Out.WriteLine("Create Nodes");
-	        Node root = new Node(list, null, textureInfo);
+			ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, "Create nodes");
+			LoggingTag.Push("Node_0");
+			Node root = new Node(list, null, textureInfo);
             CleanTag(root);
+			LoggingTag.Pop();
+
             Tree tree = new Tree();
             tree.Root = root;
-            Console.Out.WriteLine("Writing Tree");
+
+			ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, "Writing Tree");
 			using (FileStream file = File.Open(string.Format(TreeBuildingSettings.TreeOutputFileFormat, TreeBuildingSettings.DirectoryOutput), FileMode.Create, FileAccess.ReadWrite))
             {
                 SerializableType<Tree>.SerializeToStream(tree, file, BinarySerializableTypeEngine.BinairSerializer);
             }
+
+			if (Directory.Exists(TreeBuildingSettings.TmpDirectory))
+			{
+				Directory.Delete(TreeBuildingSettings.TmpDirectory, true);
+			}
 
 	        Console.Out.WriteLine("Done. Press any key to close.");
 	        Console.ReadKey();
@@ -75,7 +79,7 @@ namespace CG_2IV05.TreeBuilding
             node.Children.ForEach(CleanTag);
         }
 
-		public static void SetCenterDateSet(ElementList list)
+		public static void SetCenterDateSet(FileElementList list)
         {
 			if (TreeBuildingSettings.FindCenterDataSet)
 			{
@@ -88,7 +92,7 @@ namespace CG_2IV05.TreeBuilding
             }
             else
             {
-				TreeBuildingSettings.CenterDataSet = new HyperPoint<float>(0, 0, 0);
+				TreeBuildingSettings.CenterDataSet = new HyperPoint<float>(0, 0);
             }
         }
 
@@ -127,6 +131,11 @@ namespace CG_2IV05.TreeBuilding
                 {
 					TreeBuildingSettings.FindCenterDataSet = true;
                 }
+				else if(args[i] == "--min-depth" || args[i] == "-d")
+	            {
+					i++;
+					TreeBuildingSettings.MinCurrentDepthForData = int.Parse(args[i]);
+	            }
             }
         }
     }

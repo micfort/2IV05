@@ -1,6 +1,8 @@
 ﻿extern alias osm;
 using System;
+using System.IO;
 using micfort.GHL.Math2;
+using osm::OsmSharp.Collections.Tags;
 
 namespace CG_2IV05.Common.OSM
 {
@@ -66,6 +68,32 @@ namespace CG_2IV05.Common.OSM
 
 			return new HyperPoint<double>(X, Y);
 
+		}
+	}
+
+	public static class TagsCollectionStream
+	{
+		public static void WriteToStream(TagsCollectionBase c, Stream outputStream)
+		{
+			BinaryToStream.WriteToStream(c.Count, outputStream);
+			foreach (Tag tag in c)
+			{
+				BinaryToStream.WriteToStream(tag.Key, outputStream);
+				BinaryToStream.WriteToStream(tag.Value, outputStream);
+			}
+		}
+
+		public static TagsCollection ReadTagsCollectionFromStream(Stream inputStream)
+		{
+			TagsCollection c = new TagsCollection();
+			int count = BinaryToStream.ReadIntFromStream(inputStream);
+			for (int i = 0; i < count; i++)
+			{
+				string key = BinaryToStream.ReadStringFromStream(inputStream);
+				string value = BinaryToStream.ReadStringFromStream(inputStream);
+				c.Add(key, value);
+			}
+			return c;
 		}
 	}
 }

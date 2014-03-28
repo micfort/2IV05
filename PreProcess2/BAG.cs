@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Xml;
+using CG_2IV05.Common.BAG;
 using micfort.GHL.Math2;
 using CG_2IV05.Common;
-using CG_2IV05.Common.Element;
 
-namespace CG_2IV05.TreeBuilding
+namespace CG_2IV05.PreProcess2
 {
-	class BAG
+	class BAGXML
 	{
-		public static List<Building> ReadBuildings(string filename)
+		public static void ReadBuildings(Stream stream, Action<Building> handler)
 		{
 			int buildingCount = 0;
-			List<Building> output = new List<Building>();
-			XmlReader reader = XmlReader.Create(filename);
+			XmlReader reader = XmlReader.Create(stream);
 			while (reader.Read())
 			{
 				if (reader.NodeType == XmlNodeType.Element)
@@ -28,11 +26,11 @@ namespace CG_2IV05.TreeBuilding
 						{
 							Console.Out.WriteLine("Processing building {0:N0}", buildingCount);
 						}
-						output.Add(ReadBuilding(reader));
+						Building b = ReadBuilding(reader);
+						handler(b);
 					}
 				}
 			}
-			return output;
 		}
 
 		private static Building ReadBuilding(XmlReader reader)
