@@ -70,6 +70,7 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="SkyBox.cs" />
     <Compile Include="VBO.cs" />
     <Compile Include="VBOLoader.cs" />
   </ItemGroup>
@@ -83,6 +84,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="skybox\sk_back.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="skybox\sk_front.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="skybox\sk_left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="skybox\sk_right.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="skybox\sk_top.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Texture.fw.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
