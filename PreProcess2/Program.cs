@@ -16,72 +16,75 @@ namespace CG_2IV05.PreProcess2
 		private static string Bin1Filename = string.Empty;
 		private static string Bin2Filename = string.Empty;
 		private static bool Generate = false;
+		private static bool Input = false;
 		static void Main(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
 
 			ParseCommandLine(args);
-
-			using (FileElementListWriter writer = new FileElementListWriter(outputFilename))
+			if(Input)
 			{
-				if (BagFilename != string.Empty && File.Exists(BagFilename))
+				using (FileElementListWriter writer = new FileElementListWriter(outputFilename))
 				{
-					Console.Out.WriteLine("Reading Bag file: {0}", BagFilename);
-					using (Stream stream = File.OpenRead(BagFilename))
+					if (BagFilename != string.Empty && File.Exists(BagFilename))
 					{
-						var reader = ReaderFactory.Open(stream);
-						while (reader.MoveToNextEntry())
+						Console.Out.WriteLine("Reading Bag file: {0}", BagFilename);
+						using (Stream stream = File.OpenRead(BagFilename))
 						{
-							Console.Out.WriteLine("File: {0}", reader.Entry.FilePath);
-							using (Stream s = reader.OpenEntryStream())
+							var reader = ReaderFactory.Open(stream);
+							while (reader.MoveToNextEntry())
 							{
-								BAGXML.ReadBuildings(s, building => writer.WriteElement(building));
+								Console.Out.WriteLine("File: {0}", reader.Entry.FilePath);
+								using (Stream s = reader.OpenEntryStream())
+								{
+									BAGXML.ReadBuildings(s, building => writer.WriteElement(building));
+								}
 							}
 						}
 					}
-				}
-				if (pbfFilename != string.Empty && File.Exists(pbfFilename))
-				{
-					Console.Out.WriteLine("Reading pbf file: {0}", pbfFilename);
-					using (FileStream file = File.OpenRead(pbfFilename))
+					if (pbfFilename != string.Empty && File.Exists(pbfFilename))
 					{
-						OSM.Read(file, element => writer.WriteElement(element));
-					}
-				}
-				if (Bin1Filename != string.Empty && File.Exists(Bin1Filename))
-				{
-					Console.Out.WriteLine("Reading binair file 1: {0}", Bin1Filename);
-					FileElementList list = new FileElementList(Bin1Filename);
-					int i = 0;
-					foreach (IElement element in list)
-					{
-						if (i % 100000 == 0)
+						Console.Out.WriteLine("Reading pbf file: {0}", pbfFilename);
+						using (FileStream file = File.OpenRead(pbfFilename))
 						{
-							Console.Out.WriteLine("Processing element {0:N0}", i);
+							OSM.Read(file, element => writer.WriteElement(element));
 						}
-						writer.WriteElement(element);
-						i++;
 					}
-				}
-				if (Bin2Filename != string.Empty && File.Exists(Bin2Filename))
-				{
-					Console.Out.WriteLine("Reading binair file 2: {0}", Bin2Filename);
-					FileElementList list = new FileElementList(Bin2Filename);
-					int i = 0;
-					foreach (IElement element in list)
+					if (Bin1Filename != string.Empty && File.Exists(Bin1Filename))
 					{
-						if (i % 100000 == 0)
+						Console.Out.WriteLine("Reading binair file 1: {0}", Bin1Filename);
+						FileElementList list = new FileElementList(Bin1Filename);
+						int i = 0;
+						foreach (IElement element in list)
 						{
-							Console.Out.WriteLine("Processing element {0:N0}", i);
+							if (i%100000 == 0)
+							{
+								Console.Out.WriteLine("Processing element {0:N0}", i);
+							}
+							writer.WriteElement(element);
+							i++;
 						}
-						writer.WriteElement(element);
-						i++;
 					}
-				}
-				if (Generate)
-				{
-					Console.Out.WriteLine("Generate buildings");
-					Generation.CreateData(element => writer.WriteElement(element));
+					if (Bin2Filename != string.Empty && File.Exists(Bin2Filename))
+					{
+						Console.Out.WriteLine("Reading binair file 2: {0}", Bin2Filename);
+						FileElementList list = new FileElementList(Bin2Filename);
+						int i = 0;
+						foreach (IElement element in list)
+						{
+							if (i%100000 == 0)
+							{
+								Console.Out.WriteLine("Processing element {0:N0}", i);
+							}
+							writer.WriteElement(element);
+							i++;
+						}
+					}
+					if (Generate)
+					{
+						Console.Out.WriteLine("Generate buildings");
+						Generation.CreateData(element => writer.WriteElement(element));
+					}
 				}
 			}
 			{
@@ -112,25 +115,30 @@ namespace CG_2IV05.PreProcess2
 				{
 					i++;
 					pbfFilename = args[i];
+					Input = true;
 				}
 				else if (args[i] == "--BAG")
 				{
 					i++;
 					BagFilename = args[i];
+					Input = true;
 				}
 				else if (args[i] == "--BIN1")
 				{
 					i++;
 					Bin1Filename = args[i];
+					Input = true;
 				}
 				else if (args[i] == "--BIN2")
 				{
 					i++;
 					Bin2Filename = args[i];
+					Input = true;
 				}
 				else if (args[i] == "--GEN")
 				{
 					Generate = true;
+					Input = true;
 				}
 			}
 		}
