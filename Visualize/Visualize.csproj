@@ -46,6 +46,12 @@
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.1.1.1508.5724\lib\NET40\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\packages\OpenTK.GLControl.1.1.1508.5724\lib\NET40\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\sharpcompress.0.10.3\lib\net40\SharpCompress.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -59,6 +65,24 @@
   <ItemGroup>
     <Compile Include="Extends.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Interface\GameControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\GameControl.Designer.cs">
+      <DependentUpon>GameControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\SettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\SettingsControl.Designer.cs">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="NodeWithData.cs" />
     <Compile Include="NodeManager.cs" />
     <Compile Include="OnDemand.cs" />
@@ -104,6 +128,15 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\GameControl.resx">
+      <DependentUpon>GameControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\SettingsControl.resx">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>

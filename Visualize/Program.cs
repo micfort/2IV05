@@ -11,12 +11,12 @@ namespace CG_2IV05.Visualize
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static void Main2(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
 			micfort.GHL.Logging.ErrorReporting.Instance.Engine = new TextWriterLoggingEngine(Console.Out);
 			Game g = new Game();
-			g.Run();	
+		//	g.Run();	
 		}
 	}
 }

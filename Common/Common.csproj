@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BAG\Borough.cs" />
     <Compile Include="BinaryToStream.cs" />
     <Compile Include="EarClipping\EarClippingTriangulator.cs" />
     <Compile Include="EarClipping\PolygonPoint.cs" />
