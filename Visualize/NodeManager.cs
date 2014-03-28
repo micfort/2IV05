@@ -25,8 +25,8 @@ namespace CG_2IV05.Visualize
 		private bool running = false;
 		private AutoResetEvent threadFinished = new AutoResetEvent(false);
 		private Thread thread;
-		private float _maxDistanceError = 1000000;
-		private float _distanceModifier = 10;
+		private float _maxDistanceError = 100000;
+		private float _distanceModifier = 50;
 
 		public HyperPoint<float> Position { get; set; }
 		public Tree Tree { get; set; }
@@ -96,7 +96,7 @@ namespace CG_2IV05.Visualize
 				foreach (ReplaceNode replaceNode in newLoadedList)
 				{
 					ErrorReporting.Instance.ReportDebugT(this,
-					                                     "Unload nodes from disc " +
+					                                     "Unload nodes " +
 					                                     replaceNode.OriginalNodes.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
 					lock (ReleaseNodes)
 					{
@@ -151,11 +151,14 @@ namespace CG_2IV05.Visualize
 				{
 					List<NodeWithData> unloadList = new List<NodeWithData>() { VBOList.Find(x => x.node == node) };
 					List<NodeWithData> newLoadList = new List<NodeWithData>();
+					foreach (Node child in node.Children)
+					{
+						DetermineUnloadListForLoadingParent(child, unloadList);
+					}
 					loadList.Add(new ReplaceNode() { OriginalNodes = unloadList, ReplaceBy = newLoadList });
 				}
-				return;
 			}
-			if(distanceError < node.Error && node.Children != null && node.Children.Count > 0)
+			else if(distanceError < node.Error && node.Children != null && node.Children.Count > 0)
 			{
 				if(VBOList.Exists(x => x.node == node))
 				{
@@ -183,7 +186,7 @@ namespace CG_2IV05.Visualize
 					List<NodeWithData> unloadList = new List<NodeWithData>();
 					foreach (Node child in node.Children)
 					{
-						DetermineLoadListForLoadingParent(child, unloadList);
+						DetermineUnloadListForLoadingParent(child, unloadList);
 					}
 					loadList.Add(new ReplaceNode() {OriginalNodes = unloadList, ReplaceBy = newLoadList});
 				}
@@ -210,7 +213,7 @@ namespace CG_2IV05.Visualize
 			}
 		}
 
-		private void DetermineLoadListForLoadingParent(Node node, List<NodeWithData> unLoadList)
+		private void DetermineUnloadListForLoadingParent(Node node, List<NodeWithData> unLoadList)
 		{
 			if(VBOList.Exists(x => x.node == node))
 			{
@@ -220,7 +223,7 @@ namespace CG_2IV05.Visualize
 			{
 				foreach (Node child in node.Children)
 				{
-					DetermineLoadListForLoadingParent(child, unLoadList);
+					DetermineUnloadListForLoadingParent(child, unLoadList);
 				}
 			}
 		}

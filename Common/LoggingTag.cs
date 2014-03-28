@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,8 @@ namespace CG_2IV05.Common
 {
 	public class LoggingTag
 	{
-		private static Dictionary<int, Stack<string>> _loggingContexts = new Dictionary<int, Stack<string>>();
+		private static ConcurrentDictionary<int, Stack<string>> _loggingContexts =
+			new ConcurrentDictionary<int, Stack<string>>();
 
 		public static void Pop()
 		{
@@ -41,7 +43,7 @@ namespace CG_2IV05.Common
 
 		private static void CreateStackIfNeccesary()
 		{
-			if(!_loggingContexts.ContainsKey(CurrentContextID))
+			if (!_loggingContexts.ContainsKey(CurrentContextID))
 			{
 				_loggingContexts[CurrentContextID] = new Stack<string>();
 				_loggingContexts[CurrentContextID].Push(CurrentContextID.ToString());
