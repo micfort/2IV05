@@ -15,6 +15,7 @@ namespace CG_2IV05.PreProcess2
 		private static string BagFilename = string.Empty;
 		private static string Bin1Filename = string.Empty;
 		private static string Bin2Filename = string.Empty;
+		private static bool Generate = false;
 		static void Main(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
@@ -77,6 +78,11 @@ namespace CG_2IV05.PreProcess2
 						i++;
 					}
 				}
+				if (Generate)
+				{
+					Console.Out.WriteLine("Generate buildings");
+					Generation.CreateData(element => writer.WriteElement(element));
+				}
 			}
 			{
 				FileElementList list = new FileElementList(outputFilename);
@@ -121,6 +127,10 @@ namespace CG_2IV05.PreProcess2
 				{
 					i++;
 					Bin2Filename = args[i];
+				}
+				else if (args[i] == "--GEN")
+				{
+					Generate = true;
 				}
 			}
 		}
