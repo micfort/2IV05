@@ -36,6 +36,10 @@ namespace CG_2IV05.Visualize.Interface
             this.ErrorControl = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.currentLocationTB = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.boroughLB = new System.Windows.Forms.ListBox();
             this.button2 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -49,10 +53,6 @@ namespace CG_2IV05.Visualize.Interface
             this.label3 = new System.Windows.Forms.Label();
             this.LocationX = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.currentLocationTB = new System.Windows.Forms.TextBox();
             this.ErrorBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxErrorControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ErrorControl)).BeginInit();
@@ -61,14 +61,13 @@ namespace CG_2IV05.Visualize.Interface
             // 
             // ErrorBox
             // 
-            this.ErrorBox.AutoSize = true;
             this.ErrorBox.Controls.Add(this.maxErrorControl);
             this.ErrorBox.Controls.Add(this.label9);
             this.ErrorBox.Controls.Add(this.ErrorControl);
             this.ErrorBox.Controls.Add(this.label1);
-            this.ErrorBox.Location = new System.Drawing.Point(3, 3);
+            this.ErrorBox.Location = new System.Drawing.Point(10, 3);
             this.ErrorBox.Name = "ErrorBox";
-            this.ErrorBox.Size = new System.Drawing.Size(280, 89);
+            this.ErrorBox.Size = new System.Drawing.Size(286, 89);
             this.ErrorBox.TabIndex = 0;
             this.ErrorBox.TabStop = false;
             this.ErrorBox.Text = "Error";
@@ -149,12 +148,49 @@ namespace CG_2IV05.Visualize.Interface
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.LocationX);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(3, 94);
+            this.groupBox1.Location = new System.Drawing.Point(10, 94);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(286, 437);
+            this.groupBox1.Size = new System.Drawing.Size(286, 441);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Location";
+            // 
+            // currentLocationTB
+            // 
+            this.currentLocationTB.Enabled = false;
+            this.currentLocationTB.Location = new System.Drawing.Point(139, 44);
+            this.currentLocationTB.Name = "currentLocationTB";
+            this.currentLocationTB.Size = new System.Drawing.Size(100, 20);
+            this.currentLocationTB.TabIndex = 18;
+            this.currentLocationTB.Text = "test";
+            this.currentLocationTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(136, 20);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(85, 13);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "Current Location";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(136, 190);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(55, 13);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "Boroughs:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 190);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(57, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "Provinces:";
             // 
             // boroughLB
             // 
@@ -166,7 +202,7 @@ namespace CG_2IV05.Visualize.Interface
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(139, 395);
+            this.button2.Location = new System.Drawing.Point(139, 399);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(141, 23);
             this.button2.TabIndex = 13;
@@ -273,43 +309,6 @@ namespace CG_2IV05.Visualize.Interface
             this.label2.TabIndex = 0;
             this.label2.Text = "Current Position";
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 190);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(57, 13);
-            this.label6.TabIndex = 15;
-            this.label6.Text = "Provinces:";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(136, 190);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(55, 13);
-            this.label10.TabIndex = 16;
-            this.label10.Text = "Boroughs:";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(136, 20);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(85, 13);
-            this.label11.TabIndex = 17;
-            this.label11.Text = "Current Location";
-            // 
-            // currentLocationTB
-            // 
-            this.currentLocationTB.Enabled = false;
-            this.currentLocationTB.Location = new System.Drawing.Point(139, 44);
-            this.currentLocationTB.Name = "currentLocationTB";
-            this.currentLocationTB.Size = new System.Drawing.Size(100, 20);
-            this.currentLocationTB.TabIndex = 18;
-            this.currentLocationTB.Text = "test";
-            this.currentLocationTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // SettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -318,7 +317,7 @@ namespace CG_2IV05.Visualize.Interface
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.ErrorBox);
             this.Name = "SettingsControl";
-            this.Size = new System.Drawing.Size(292, 534);
+            this.Size = new System.Drawing.Size(299, 538);
             this.ErrorBox.ResumeLayout(false);
             this.ErrorBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxErrorControl)).EndInit();

@@ -40,6 +40,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
@@ -53,7 +54,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.gameControl);
             this.splitContainer1.Size = new System.Drawing.Size(984, 561);
-            this.splitContainer1.SplitterDistance = 290;
+            this.splitContainer1.SplitterDistance = 300;
             this.splitContainer1.TabIndex = 0;
             // 
             // settingsControl
@@ -61,7 +62,7 @@
             this.settingsControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.settingsControl.Location = new System.Drawing.Point(0, 0);
             this.settingsControl.Name = "settingsControl";
-            this.settingsControl.Size = new System.Drawing.Size(290, 561);
+            this.settingsControl.Size = new System.Drawing.Size(300, 561);
             this.settingsControl.TabIndex = 0;
             // 
             // gameControl
@@ -71,7 +72,7 @@
             this.gameControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gameControl.Location = new System.Drawing.Point(0, 0);
             this.gameControl.Name = "gameControl";
-            this.gameControl.Size = new System.Drawing.Size(690, 561);
+            this.gameControl.Size = new System.Drawing.Size(680, 561);
             this.gameControl.TabIndex = 0;
             this.gameControl.VSync = false;
             // 

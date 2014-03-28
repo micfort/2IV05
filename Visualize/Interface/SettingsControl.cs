@@ -140,6 +140,10 @@ namespace CG_2IV05.Visualize.Interface
             {
                 boroughLB.Items.Add(borough);
             }
+            if (boroughLB.Items.Count > 0)
+            {
+                boroughLB.SelectedIndex = 0;
+            }
         }
     }
 }
