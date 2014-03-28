@@ -130,6 +130,16 @@ namespace CG_2IV05.Common.BAG
 							   Normals = new HyperPoint<float>[0]
 					       };
 			}
+			if(Polygon.Count < 3)
+			{
+				return new NodeData()
+					       {
+						       Indexes = new int[0],
+						       Vertices = new HyperPoint<float>[0],
+						       TextCoord = new HyperPoint<float>[0],
+						       Normals = new HyperPoint<float>[0]
+					       };
+			}
 			NodeData data = new NodeData();
 			data.Vertices = new HyperPoint<float>[Polygon.Count * 4 + Polygon.Count]; //high and low point for both points and one extra for each top
 			data.Normals = new HyperPoint<float>[Polygon.Count * 4 + Polygon.Count]; //high and low point for both points and one extra for each top
