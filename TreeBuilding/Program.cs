@@ -8,6 +8,7 @@ using CG_2IV05.Common;
 using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.Element;
 using CG_2IV05.Common.OSM;
+using micfort.GHL.Logging;
 using micfort.GHL.Math2;
 using micfort.GHL.Serialization;
 
@@ -20,6 +21,11 @@ namespace CG_2IV05.TreeBuilding
         static void Main(string[] args)
         {
             micfort.GHL.GHLWindowsInit.Init();
+
+	        ErrorReporting.Instance.Engine =
+		        new MultipleLoggingEngine(new TextWriterLoggingEngine(Console.Out),
+		                                  new TextWriterLoggingEngine(new StreamWriter("treebuilding.log")));
+			LoggingTag.Push("TB");
 
             ParseCommandLine(args);
 
@@ -37,14 +43,16 @@ namespace CG_2IV05.TreeBuilding
 
 			SetCenterDateSet(list);
 
-            Console.Out.WriteLine("Create Nodes");
+			ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, "Create nodes");
+			LoggingTag.Push("Node_0");
 			Node root = new Node(list, null, textureInfo);
             CleanTag(root);
+			LoggingTag.Pop();
 
             Tree tree = new Tree();
             tree.Root = root;
-            
-			Console.Out.WriteLine("Writing Tree");
+
+			ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, "Writing Tree");
 			using (FileStream file = File.Open(string.Format(TreeBuildingSettings.TreeOutputFileFormat, TreeBuildingSettings.DirectoryOutput), FileMode.Create, FileAccess.ReadWrite))
             {
                 SerializableType<Tree>.SerializeToStream(tree, file, BinarySerializableTypeEngine.BinairSerializer);

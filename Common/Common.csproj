@@ -73,6 +73,7 @@
     <Compile Include="Element\FactoryIDs.cs" />
     <Compile Include="FilenameGenerator.cs" />
     <Compile Include="HyperPointSerializable.cs" />
+    <Compile Include="LoggingTag.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeData.cs" />
     <Compile Include="OSM\Helper.cs" />

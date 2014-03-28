@@ -77,8 +77,9 @@ namespace CG_2IV05.Common
 
 		private void ConstructorFileElementList(FileElementList elements, Node parent, TextureInfo textureInfo, int depth, out FileElementList usedList, out int height)
 		{
-			Console.Out.WriteLine("Creating node on depth {0} with file {1}", depth, Path.GetFileName(elements.Filename));
-
+			micfort.GHL.Logging.ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext,
+			                                                        string.Format("Creating node on depth {0} with file {1}",
+			                                                                      depth, Path.GetFileName(elements.Filename)));
 			Children = new List<Node>();
 			NodeDataFile = FilenameGenerator.CreateFilename();
 			Parent = parent;
@@ -127,11 +128,15 @@ namespace CG_2IV05.Common
 				Node[] childs = new Node[split.Length];
 				for (int i = 0; i < split.Length; i++)
 				{
+					string currentLoggingTag = LoggingTag.CurrentContext;
 					mres[i] = new ManualResetEvent(false);
 					Thread t = new Thread((o) =>
 						                      {
+												
 							                      int index = (int) o;
+												  LoggingTag.Push(currentLoggingTag + "_" + index.ToString());
 												  childs[index] = new Node(split[index], this, textureInfo, depth + 1, out usedVersion[index], out heights[index]);
+							                      LoggingTag.Pop();
 												  mres[index].Set();
 						                      });
 					t.Start(i);
@@ -147,7 +152,9 @@ namespace CG_2IV05.Common
 			{
 				for (int i = 0; i < split.Length; i++)
 				{
+					LoggingTag.Push(LoggingTag.CurrentContext + "_" + i.ToString());
 					Node child = new Node(split[i], this, textureInfo, depth + 1, out usedVersion[i], out heights[i]);
+					LoggingTag.Pop();
 					Children.Add(child);
 					height = Math.Max(heights[i] + 1, height);
 				}
