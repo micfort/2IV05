@@ -121,6 +121,16 @@ namespace CG_2IV05.Common.Element
 			return output;
 		}
 
+		public DateTime GetDate()
+		{
+			return File.GetLastWriteTimeUtc(Filename);
+		}
+
+		public static DateTime GetDate(string filename)
+		{
+			return File.GetLastWriteTimeUtc(filename);
+		}
+
 		#region Implementation of IElement
 
 		public bool FinalElement

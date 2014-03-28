@@ -53,9 +53,8 @@ namespace CG_2IV05.Common
 			#endregion
 		}
 
-		public FileElementList CreateDataFromChildren(List<FileElementList> children, List<int> heights, int currentDepth, out float error)
+		public FileElementList CreateDataFromChildren(List<FileElementList> children, string filename, List<int> heights, int currentDepth, out float error)
 		{
-			string filename = FilenameGenerator.CreateTempFilename();
 			if (currentDepth >= TreeBuildingSettings.MinCurrentDepthForData)
 			{
 				error = 0;

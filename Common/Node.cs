@@ -81,7 +81,7 @@ namespace CG_2IV05.Common
 			                                                        string.Format("Creating node on depth {0} with file {1}",
 			                                                                      depth, Path.GetFileName(elements.Filename)));
 			Children = new List<Node>();
-			NodeDataFile = FilenameGenerator.CreateFilename();
+			NodeDataFile = CreateNodeDataFilename();
 			Parent = parent;
 			Tag = elements;
 			Min = new HyperPoint<float>(elements.Min - TreeBuildingSettings.CenterDataSet, 0);
@@ -92,30 +92,112 @@ namespace CG_2IV05.Common
 			{
 				//Leaf
 				Error = 0;
-				NodeData data = elements.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo);
-				using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Create, FileAccess.ReadWrite))
+				if (NeedNodeData(elements.Filename, FilenameGenerator.GetOutputPathToFile(NodeDataFile)))
 				{
-					data.SaveToStream(file);
+					RemoveFileIfExist(FilenameGenerator.GetOutputPathToFile(NodeDataFile));
+					string tmpfilename = FilenameGenerator.CreateTempFilename();
+					NodeData data = elements.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo); //create data
+					using (FileStream file = File.Open(tmpfilename, FileMode.Create, FileAccess.ReadWrite))
+					{
+						data.SaveToStream(file);
+					}
+					File.Move(tmpfilename, FilenameGenerator.GetOutputPathToFile(NodeDataFile));
 				}
 				usedList = elements;
-				
 			}
 			else
 			{
 				//Not a leaf
-				FileElementList[] split = elements.SplitList(FilenameGenerator.CreateTempFilenames(4));
+
+				//split the data
+				List<string> splitFilenames = CreateSplitFilenames(4);
+				List<FileElementList> split;
+				//check if neccesary
+				if(NeedSplit(splitFilenames, elements.Filename))
+				{
+					List<string> tmpFilenames = new List<string>(FilenameGenerator.CreateTempFilenames(4));
+					elements.SplitList(tmpFilenames.ToArray());
+					for (int i = 0; i < tmpFilenames.Count; i++)
+					{
+						RemoveFileIfExist(splitFilenames[i]);
+						File.Move(tmpFilenames[i], splitFilenames[i]);
+					}
+				}
+				//create the readers
+				split = splitFilenames.ConvertAll(x => new FileElementList(x));
+
+				//create subnodes
 				FileElementList[] usedVersion = new FileElementList[4];
 				int[] heights = new int[4];
-				CreateSubNode(split, usedVersion, textureInfo, depth, out height);
-				Simplification2 simplification = new Simplification2();
-				FileElementList optimizedVersion = simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), new List<int>(heights), depth, out _error);
-				NodeData data = optimizedVersion.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo);
-				using (FileStream file = File.Open(FilenameGenerator.GetOutputPathToFile(NodeDataFile), FileMode.Create, FileAccess.ReadWrite))
+				CreateSubNode(split.ToArray(), usedVersion, textureInfo, depth, out height);
+
+				//simplify
+				string simpFilename = CreateSimplifyFilename();
+				if(NeedSimplify(new List<FileElementList>(usedVersion).ConvertAll(x=> x.Filename), simpFilename)) //check if needed
 				{
-					data.SaveToStream(file);
+					RemoveFileIfExist(simpFilename);
+					string tmpfilename = FilenameGenerator.CreateTempFilename();
+					Simplification2 simplification = new Simplification2();
+					simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), tmpfilename, new List<int>(heights), depth, out _error); //simplify
+					File.Move(tmpfilename, simpFilename);
+				}
+				FileElementList optimizedVersion = new FileElementList(simpFilename);//open file element list
+				if (NeedNodeData(optimizedVersion.Filename, FilenameGenerator.GetOutputPathToFile(NodeDataFile)))
+				{
+					RemoveFileIfExist(FilenameGenerator.GetOutputPathToFile(NodeDataFile));
+					string tmpfilename = FilenameGenerator.CreateTempFilename();
+					NodeData data = optimizedVersion.CreateData(new HyperPoint<float>(TreeBuildingSettings.CenterDataSet, 0), textureInfo); //create data
+					using (FileStream file = File.Open(tmpfilename, FileMode.Create, FileAccess.ReadWrite))
+					{
+						data.SaveToStream(file);
+					}
+					File.Move(tmpfilename, FilenameGenerator.GetOutputPathToFile(NodeDataFile));
 				}
 				usedList = optimizedVersion;
 			}
+		}
+
+		private List<string> CreateSplitFilenames(int i)
+		{
+			List<string> output = new List<string>(i);
+			for (int j = 0; j < i; j++)
+			{
+				output.Add(FilenameGenerator.GetWorkingFilename("split_" + LoggingTag.CurrentContext + "_" + j.ToString()));
+			}
+			return output;
+		}
+
+		private string CreateSimplifyFilename()
+		{
+			return FilenameGenerator.GetWorkingFilename("simp_" + LoggingTag.CurrentContext);
+		}
+
+		private string CreateNodeDataFilename()
+		{
+			return "data_" + LoggingTag.CurrentContext;
+		}
+
+		private bool NeedSplit(List<string> outputFilenames, string inputFilename)
+		{
+			DateTime inputDate = FileElementList.GetDate(inputFilename);
+			return outputFilenames.Any(x => FileElementList.GetDate(x) <= inputDate);
+		}
+
+		private bool NeedSimplify(List<string> inputFilenames, string outputFilename)
+		{
+			DateTime outputDate = FileElementList.GetDate(outputFilename);
+			return inputFilenames.Any(x => outputDate <= FileElementList.GetDate(x));
+		}
+
+		private bool NeedNodeData(string inputFilenames, string outputFilename)
+		{
+			return FileElementList.GetDate(outputFilename) <= FileElementList.GetDate(inputFilenames);
+		}
+
+		private void RemoveFileIfExist(string filename)
+		{
+			if(File.Exists(filename))
+				File.Delete(filename);
 		}
 
 		private void CreateSubNode(FileElementList[] split, FileElementList[] usedVersion, TextureInfo textureInfo, int depth, out int height)

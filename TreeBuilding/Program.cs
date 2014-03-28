@@ -39,6 +39,11 @@ namespace CG_2IV05.TreeBuilding
 				Directory.CreateDirectory(TreeBuildingSettings.TmpDirectory);
 			}
 
+			if (!Directory.Exists(TreeBuildingSettings.DirectoryWorking))
+			{
+				Directory.CreateDirectory(TreeBuildingSettings.DirectoryWorking);
+			}
+
             FileElementList list = new FileElementList(TreeBuildingSettings.InputFilename);
 
 			SetCenterDateSet(list);

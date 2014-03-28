@@ -39,5 +39,10 @@ namespace CG_2IV05.Common
 			}
 			return output;
 		}
+
+		public static string GetWorkingFilename(string file)
+		{
+			return string.Format("{0}//{1}", TreeBuildingSettings.DirectoryWorking, file);
+		}
 	}
 }
