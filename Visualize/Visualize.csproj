@@ -46,6 +46,9 @@
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.1.1.1508.5724\lib\NET40\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\packages\OpenTK.GLControl.1.1.1508.5724\lib\NET40\OpenTK.GLControl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -59,11 +62,34 @@
   <ItemGroup>
     <Compile Include="Extends.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Interface\GameControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\GameControl.Designer.cs">
+      <DependentUpon>GameControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\SettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\SettingsControl.Designer.cs">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="NodeWithData.cs" />
     <Compile Include="NodeManager.cs" />
     <Compile Include="OnDemand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +102,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\CG_2IV05.Visualize.Interface.GameControl.datasource" />
+    <None Include="Properties\DataSources\CG_2IV05.Visualize.Interface.MainWindow.datasource" />
+    <None Include="Properties\DataSources\CG_2IV05.Visualize.Interface.SettingsControl.datasource" />
+    <None Include="Properties\DataSources\CG_2IV05.Visualize.Properties.Resources.datasource" />
+    <None Include="Properties\DataSources\Extends.datasource" />
+    <None Include="Properties\DataSources\Game.datasource" />
+    <None Include="Properties\DataSources\NodeManager.datasource" />
+    <None Include="Properties\DataSources\NodeWithData.datasource" />
+    <None Include="Properties\DataSources\OpenTK.Vector3.datasource" />
+    <None Include="Properties\DataSources\Program.datasource" />
+    <None Include="Properties\DataSources\ReplaceNode.datasource" />
+    <None Include="Properties\DataSources\Settings.datasource" />
+    <None Include="Properties\DataSources\SkyBox.datasource" />
+    <None Include="Properties\DataSources\VBO.datasource" />
+    <None Include="Properties\DataSources\VBOLoader.datasource" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
@@ -104,6 +145,19 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\GameControl.resx">
+      <DependentUpon>GameControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\SettingsControl.resx">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
