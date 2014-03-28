@@ -16,20 +16,9 @@ namespace CG_2IV05.Visualize.Interface
 
         public MainWindow()
         {
-            this.game = new Game();
             InitializeComponent();
-            
         }
 
-        private void MainWindow_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void settingsControl1_Load(object sender, EventArgs e)
-        {
-
-        }
 
         static void Main(string[] args)
         {
@@ -38,6 +27,16 @@ namespace CG_2IV05.Visualize.Interface
             MainWindow window = new MainWindow();
             window.ShowDialog();
             
+        }
+
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
+            this.game = new Game();
+            if (Site == null || !Site.DesignMode)
+            {
+                this.settingsControl.InitLocations(game);
+                this.gameControl.initGame(game, settingsControl);
+            }
         }
     }
 }

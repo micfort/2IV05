@@ -36,13 +36,12 @@ namespace CG_2IV05.Visualize.Interface
             this.ErrorControl = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.boroughLB = new System.Windows.Forms.ListBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.boroughSearchField = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.provinceLB = new System.Windows.Forms.ListBox();
             this.LocationZ = new System.Windows.Forms.TextBox();
             this.LocationY = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -50,6 +49,10 @@ namespace CG_2IV05.Visualize.Interface
             this.label3 = new System.Windows.Forms.Label();
             this.LocationX = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.currentLocationTB = new System.Windows.Forms.TextBox();
             this.ErrorBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxErrorControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ErrorControl)).BeginInit();
@@ -65,7 +68,7 @@ namespace CG_2IV05.Visualize.Interface
             this.ErrorBox.Controls.Add(this.label1);
             this.ErrorBox.Location = new System.Drawing.Point(3, 3);
             this.ErrorBox.Name = "ErrorBox";
-            this.ErrorBox.Size = new System.Drawing.Size(200, 89);
+            this.ErrorBox.Size = new System.Drawing.Size(280, 89);
             this.ErrorBox.TabIndex = 0;
             this.ErrorBox.TabStop = false;
             this.ErrorBox.Text = "Error";
@@ -79,7 +82,7 @@ namespace CG_2IV05.Visualize.Interface
             0,
             0});
             this.maxErrorControl.Name = "maxErrorControl";
-            this.maxErrorControl.Size = new System.Drawing.Size(120, 20);
+            this.maxErrorControl.Size = new System.Drawing.Size(100, 20);
             this.maxErrorControl.TabIndex = 3;
             this.maxErrorControl.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.maxErrorControl.Value = new decimal(new int[] {
@@ -107,7 +110,7 @@ namespace CG_2IV05.Visualize.Interface
             0,
             0});
             this.ErrorControl.Name = "ErrorControl";
-            this.ErrorControl.Size = new System.Drawing.Size(120, 20);
+            this.ErrorControl.Size = new System.Drawing.Size(100, 20);
             this.ErrorControl.TabIndex = 1;
             this.ErrorControl.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ErrorControl.Value = new decimal(new int[] {
@@ -129,13 +132,16 @@ namespace CG_2IV05.Visualize.Interface
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.listBox1);
+            this.groupBox1.Controls.Add(this.currentLocationTB);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.boroughLB);
+            this.groupBox1.Controls.Add(this.button2);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.boroughSearchField);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.provinceLB);
             this.groupBox1.Controls.Add(this.LocationZ);
             this.groupBox1.Controls.Add(this.LocationY);
             this.groupBox1.Controls.Add(this.label5);
@@ -143,72 +149,66 @@ namespace CG_2IV05.Visualize.Interface
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.LocationX);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(3, 89);
+            this.groupBox1.Location = new System.Drawing.Point(3, 94);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 429);
+            this.groupBox1.Size = new System.Drawing.Size(286, 437);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Location";
             // 
+            // boroughLB
+            // 
+            this.boroughLB.FormattingEnabled = true;
+            this.boroughLB.Location = new System.Drawing.Point(139, 207);
+            this.boroughLB.Name = "boroughLB";
+            this.boroughLB.Size = new System.Drawing.Size(141, 186);
+            this.boroughLB.TabIndex = 14;
+            // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(7, 355);
+            this.button2.Location = new System.Drawing.Point(139, 395);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(146, 23);
+            this.button2.Size = new System.Drawing.Size(141, 23);
             this.button2.TabIndex = 13;
             this.button2.Text = "Go To Location";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(56, 182);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "Search";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 211);
+            this.label8.Location = new System.Drawing.Point(7, 125);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(53, 13);
             this.label8.TabIndex = 11;
             this.label8.Text = "Locations";
             // 
-            // textBox1
+            // boroughSearchField
             // 
-            this.textBox1.Location = new System.Drawing.Point(57, 160);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 10;
+            this.boroughSearchField.Location = new System.Drawing.Point(6, 160);
+            this.boroughSearchField.Name = "boroughSearchField";
+            this.boroughSearchField.Size = new System.Drawing.Size(127, 20);
+            this.boroughSearchField.TabIndex = 10;
+            this.boroughSearchField.TextChanged += new System.EventHandler(this.boroughSearchField_TextChanged);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 160);
+            this.label7.Location = new System.Drawing.Point(7, 144);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(44, 13);
             this.label7.TabIndex = 9;
             this.label7.Text = "Search:";
             // 
-            // listBox1
+            // provinceLB
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(6, 227);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(147, 121);
-            this.listBox1.TabIndex = 8;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 144);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(84, 13);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "Select Location:";
+            this.provinceLB.FormattingEnabled = true;
+            this.provinceLB.Items.AddRange(new object[] {
+            "All Provinces"});
+            this.provinceLB.Location = new System.Drawing.Point(6, 207);
+            this.provinceLB.Name = "provinceLB";
+            this.provinceLB.Size = new System.Drawing.Size(127, 186);
+            this.provinceLB.TabIndex = 8;
+            this.provinceLB.SelectedIndexChanged += new System.EventHandler(this.ProvinceLB_SelectedIndexChanged);
             // 
             // LocationZ
             // 
@@ -217,6 +217,7 @@ namespace CG_2IV05.Visualize.Interface
             this.LocationZ.Name = "LocationZ";
             this.LocationZ.Size = new System.Drawing.Size(100, 20);
             this.LocationZ.TabIndex = 6;
+            this.LocationZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // LocationY
             // 
@@ -225,6 +226,7 @@ namespace CG_2IV05.Visualize.Interface
             this.LocationY.Name = "LocationY";
             this.LocationY.Size = new System.Drawing.Size(100, 20);
             this.LocationY.TabIndex = 5;
+            this.LocationY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label5
             // 
@@ -260,6 +262,7 @@ namespace CG_2IV05.Visualize.Interface
             this.LocationX.Name = "LocationX";
             this.LocationX.Size = new System.Drawing.Size(100, 20);
             this.LocationX.TabIndex = 1;
+            this.LocationX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
             // 
@@ -270,6 +273,43 @@ namespace CG_2IV05.Visualize.Interface
             this.label2.TabIndex = 0;
             this.label2.Text = "Current Position";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 190);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(57, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "Provinces:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(136, 190);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(55, 13);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "Boroughs:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(136, 20);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(85, 13);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "Current Location";
+            // 
+            // currentLocationTB
+            // 
+            this.currentLocationTB.Enabled = false;
+            this.currentLocationTB.Location = new System.Drawing.Point(139, 44);
+            this.currentLocationTB.Name = "currentLocationTB";
+            this.currentLocationTB.Size = new System.Drawing.Size(100, 20);
+            this.currentLocationTB.TabIndex = 18;
+            this.currentLocationTB.Text = "test";
+            this.currentLocationTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // SettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,8 +318,7 @@ namespace CG_2IV05.Visualize.Interface
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.ErrorBox);
             this.Name = "SettingsControl";
-            this.Size = new System.Drawing.Size(206, 521);
-            this.Load += new System.EventHandler(this.SettingsControl_Load);
+            this.Size = new System.Drawing.Size(292, 534);
             this.ErrorBox.ResumeLayout(false);
             this.ErrorBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxErrorControl)).EndInit();
@@ -299,13 +338,11 @@ namespace CG_2IV05.Visualize.Interface
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox boroughSearchField;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ListBox provinceLB;
         private System.Windows.Forms.TextBox LocationX;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.NumericUpDown maxErrorControl;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox LocationZ;
@@ -313,5 +350,10 @@ namespace CG_2IV05.Visualize.Interface
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ListBox boroughLB;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox currentLocationTB;
+        private System.Windows.Forms.Label label11;
     }
 }

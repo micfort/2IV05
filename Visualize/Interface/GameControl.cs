@@ -15,16 +15,16 @@ namespace CG_2IV05.Visualize.Interface
         private Game game;
         private SettingsControl settings;
 
-        public GameControl(Game game, SettingsControl settings)
+        public GameControl()
         {
-            this.game = game;
-            this.settings = settings;
             InitializeComponent();
         }
 
-        private void GameControl_Load(object sender, EventArgs e)
+        public void initGame(Game game, SettingsControl settings)
         {
-            if (Site != null && Site.DesignMode) return;
+            this.game = game;
+            this.settings = settings;
+
             Application.Idle += GameControl_Idle;
             this.Resize += game.game_Resize;
             this.HandleDestroyed += GameControl_unload;

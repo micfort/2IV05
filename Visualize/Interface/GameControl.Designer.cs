@@ -36,7 +36,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "GameControl";
             this.Size = new System.Drawing.Size(11, 10);
-            this.Load += new System.EventHandler(this.GameControl_Load);
             this.ResumeLayout(false);
 
         }
