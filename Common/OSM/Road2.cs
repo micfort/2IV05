@@ -12,6 +12,59 @@ namespace CG_2IV05.Common.OSM
 {
 	public class Road2Factory: IOSMWayFactory
 	{
+		private static Tuple<string, string> CreateKey(string tag, string name)
+		{
+			return new Tuple<string, string>(tag, name);
+		} 
+
+		private int FindRemoveHeight(string tag, string type)
+		{
+			Tuple<string, string> key = new Tuple<string, string>(tag, type);
+			if(removeHeights.ContainsKey(key))
+			{
+				return removeHeights[key];
+			}
+			else
+			{
+				return int.MaxValue;
+			}
+		}
+
+		private Dictionary<Tuple<string, string>, int> removeHeights = new Dictionary<Tuple<string, string>, int>()
+			                                                              {
+				                                                              //unknown
+				                                                              {CreateKey("highway", "construction"), 1},
+				                                                              {CreateKey("highway", "unsurfaced"), 1},
+				                                                              //asfalt
+				                                                              {CreateKey("highway", "motorway"), int.MaxValue},
+				                                                              {CreateKey("highway", "trunk"), int.MaxValue},
+				                                                              {CreateKey("highway", "primary"), 5},
+				                                                              {CreateKey("highway", "secondary"), 4},
+				                                                              {CreateKey("highway", "tertiary"), 3},
+				                                                              {CreateKey("highway", "unclassified"), 1},
+				                                                              {CreateKey("highway", "residential"), 1},
+				                                                              {CreateKey("highway", "service"), 1},
+				                                                              {CreateKey("highway", "motorway_link"), 3},
+				                                                              {CreateKey("highway", "trunk_link"), 4},
+				                                                              {CreateKey("highway", "primary_link"), 3},
+				                                                              {CreateKey("highway", "secondary_link"), 2},
+				                                                              {CreateKey("highway", "tertiary_link"), 1},
+				                                                              {CreateKey("highway", "living_street"), 1},
+
+				                                                              //cycle way
+				                                                              {CreateKey("highway", "cycleway"), 1},
+				                                                              //looppad
+				                                                              {CreateKey("highway", "footway"), 1},
+				                                                              {CreateKey("highway", "pedestrian"),1},
+				                                                              //track
+				                                                              {CreateKey("highway", "track"), 1},
+				                                                              {CreateKey("highway", "path"), 1},
+				                                                              {CreateKey("highway", "bridleway"), 1},
+				                                                              //steps
+				                                                              {CreateKey("highway", "steps"), 1},
+
+			                                                              };
+
 		#region Implementation of IOSMWayFactory
 
 		public IOSMWayElement Create(Way way, List<HyperPoint<float>> poly)
@@ -56,9 +109,13 @@ namespace CG_2IV05.Common.OSM
 			return false;
 		}
 
-		public void RemoveDetail(List<IElement> elements, int height)
+		public bool RemoveItem(IElement element, int height)
 		{
-			return;
+			if(!(element is Road2))
+				throw new ArgumentException("element should be a road2", "element");
+
+			Road2 road = element as Road2;
+			return FindRemoveHeight("highway", road.TagsCollection["highway"]) <= height;
 		}
 
 		#endregion
@@ -87,6 +144,11 @@ namespace CG_2IV05.Common.OSM
 			_points = poly;
 			_pointsExtra = new List<HyperPoint<float>>(poly);
 			InsertSteps(_pointsExtra, 2.0f, 3.0f);
+		}
+
+		public TagsCollectionBase TagsCollection
+		{
+			get { return _tagsCollection; }
 		}
 
 		#region Implementation of IOSMWayElement

@@ -97,9 +97,9 @@ namespace CG_2IV05.Common.OSM
 			return false;
 		}
 
-		public void RemoveDetail(List<IElement> elements, int height)
+		public bool RemoveItem(IElement element, int height)
 		{
-			return;
+			return false;
 		}
 
 		#endregion

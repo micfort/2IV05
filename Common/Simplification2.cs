@@ -116,8 +116,16 @@ namespace CG_2IV05.Common
 						}
 						elements.ForEach(x => itemLists[x.FactoryID].Add(new Item(x)));
 						factorys.ForEach(x => itemLists[x].ForEach(y => y.referenced = new List<Combination>()));
+						
+						//remove elements
+						foreach (int factoryID in factorys)
+						{
+							IElementFactory factory = FactoryIDs.GetFactory(factoryID);
+							int height = heights.Max();
+							itemLists[factoryID].RemoveAll(x => factory.RemoveItem(x.element, height));
+						}
+						
 						SkipList<Combination> closestElementsList = new SkipList<Combination>();
-
 						InitilizeClosestElement(closestElementsList, factorys, itemLists);
 
 						while (triangleCount > TreeBuildingSettings.MaxTriangleCount && closestElementsList.Any())

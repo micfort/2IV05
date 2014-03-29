@@ -45,9 +45,9 @@ namespace CG_2IV05.Common.BAG
 			return true;
 		}
 
-		public void RemoveDetail(List<IElement> elements, int height)
+		public bool RemoveItem(IElement element, int height)
 		{
-			return;
+			return false;
 		}
 
 		#endregion

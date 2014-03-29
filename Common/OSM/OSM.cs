@@ -16,7 +16,7 @@ namespace CG_2IV05.Common.OSM
 {
 	public class OSM
 	{
-		private static List<IOSMWayFactory> factories = new List<IOSMWayFactory>() {new LandUseFactory(), new RoadFactory()};
+		private static List<IOSMWayFactory> factories = new List<IOSMWayFactory>() {new LandUseFactory(), new Road2Factory()};
 
 		public static void Read(Stream file, Action<IElement> handler)
 		{
