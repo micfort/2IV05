@@ -153,15 +153,11 @@ namespace CG_2IV05.Common
 				{
 					RemoveFileIfExist(simpFilename);
 					string tmpfilename = FilenameGenerator.CreateTempFilename();
-					simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), tmpfilename, new List<int>(heights), depth, out _error); //simplify
+					simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), tmpfilename, new List<int>(heights), depth); //simplify
 					File.Move(tmpfilename, simpFilename);
-					optimizedVersion = new FileElementList(simpFilename);//open file element list
 				}
-				else
-				{
-					optimizedVersion = new FileElementList(simpFilename);//open file element list
-					Error = simplification.DetermineError(elements, optimizedVersion, depth); //determine error afterwards
-				}
+				optimizedVersion = new FileElementList(simpFilename);//open file element list
+				Error = simplification.DetermineError(elements, optimizedVersion, depth); //determine error afterwards
 				
 				if (NeedNodeData(optimizedVersion.Filename, FilenameGenerator.GetOutputPathToFile(NodeDataFile)))
 				{

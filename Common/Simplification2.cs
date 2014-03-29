@@ -65,11 +65,10 @@ namespace CG_2IV05.Common
 			}
 		}
 
-		public FileElementList CreateDataFromChildren(List<FileElementList> children, string filename, List<int> heights, int currentDepth, out float error)
+		public FileElementList CreateDataFromChildren(List<FileElementList> children, string filename, List<int> heights, int currentDepth)
 		{
 			if (currentDepth >= TreeBuildingSettings.MinCurrentDepthForData)
 			{
-				error = 0;
 				using (FileElementListWriter writer = new FileElementListWriter(filename))
 				{
 					if (heights.Exists(x => x == 0))
@@ -82,9 +81,7 @@ namespace CG_2IV05.Common
 							{
 								foreach (IElement element in children[i])
 								{
-									error += element.TriangleCount;
-									writer.WriteElement(element.GetSimplifiedVersion(heights.Max()));
-									error -= element.TriangleCount;
+									writer.WriteElement(element.GetSimplifiedVersion(heights.Max()+1));
 								}
 							}
 							else
@@ -121,7 +118,7 @@ namespace CG_2IV05.Common
 						foreach (int factoryID in factorys)
 						{
 							IElementFactory factory = FactoryIDs.GetFactory(factoryID);
-							int height = heights.Max();
+							int height = heights.Max()+1;
 							itemLists[factoryID].RemoveAll(x => factory.RemoveItem(x.element, height));
 						}
 						
@@ -137,16 +134,11 @@ namespace CG_2IV05.Common
 							triangleCount -= combination.first.element.TriangleCount;
 							triangleCount -= combination.second.element.TriangleCount;
 
-							error += combination.first.element.TriangleCount;
-							error += combination.second.element.TriangleCount;
-
 							Item newItem = combination.Merge();
 							newItem.referenced = new List<Combination>();
 
 							//add to triangle count
 							triangleCount += newItem.element.TriangleCount;
-
-							error -= newItem.element.TriangleCount;
 
 							UpdateLists(closestElementsList, combination, newItem, itemLists);
 						}
@@ -163,7 +155,6 @@ namespace CG_2IV05.Common
 			}
 			else
 			{
-				error = float.PositiveInfinity;
 				FileElementListWriter.CreateEmptyFile(filename);
 			}
 			return new FileElementList(filename);

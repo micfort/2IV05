@@ -69,7 +69,7 @@ namespace CG_2IV05.Common.OSM
 
 		public IOSMWayElement Create(Way way, List<HyperPoint<float>> poly)
 		{
-			return new Road(way, poly);
+			return new Road2(way, poly, true);
 		}
 
 		public bool CheckKeyAcceptance(TagsCollectionBase Tags)
@@ -182,16 +182,17 @@ namespace CG_2IV05.Common.OSM
 
 		public NodeData CreateData(HyperPoint<float> centerDataSet, TextureInfo textureInfo)
 		{
+			List<HyperPoint<float>> points = UseExtraPoints ? _pointsExtra : _points;
 			NodeData data = new NodeData();
-			data.Vertices = new HyperPoint<float>[_points.Count*2];
-			data.Normals = new HyperPoint<float>[_points.Count*2];
-			data.TextCoord = new HyperPoint<float>[_points.Count*2];
+			data.Vertices = new HyperPoint<float>[points.Count * 2];
+			data.Normals = new HyperPoint<float>[points.Count * 2];
+			data.TextCoord = new HyperPoint<float>[points.Count * 2];
 			data.Indexes = new int[TriangleCount*3];
 			
 			HyperPoint<float> up = new HyperPoint<float>(0, 0, 1);
 			HyperPoint<float> textureItem = textureInfo.GetTexture("highway", _tagsCollection["highway"]);
 
-			for (int i = 0; i < _points.Count; i++)
+			for (int i = 0; i < points.Count; i++)
 			{
 				float width = 2;
 				if (_tagsCollection.ContainsKey("lanes"))
@@ -204,25 +205,25 @@ namespace CG_2IV05.Common.OSM
 				}
 
 				HyperPoint<float> cross;
-				HyperPoint<float> current = new HyperPoint<float>(_points[i], 0);
+				HyperPoint<float> current = new HyperPoint<float>(points[i], 0);
 				if(i == 0)
 				{
-					HyperPoint<float> next = new HyperPoint<float>(_points[i + 1], 0);
+					HyperPoint<float> next = new HyperPoint<float>(points[i + 1], 0);
 
 					HyperPoint<float> diff = next - current;
 					cross = HyperPoint<float>.Cross3D(up, diff.Normilize());
 				}
-				else if(i == _points.Count-1)
+				else if (i == points.Count - 1)
 				{
-					HyperPoint<float> last = new HyperPoint<float>(_points[i - 1], 0);
+					HyperPoint<float> last = new HyperPoint<float>(points[i - 1], 0);
 
 					HyperPoint<float> diff = last - current;
 					cross = HyperPoint<float>.Cross3D(diff.Normilize(), up);
 				}
 				else
 				{
-					HyperPoint<float> last = new HyperPoint<float>(_points[i - 1], 0);
-					HyperPoint<float> next = new HyperPoint<float>(_points[i + 1], 0);
+					HyperPoint<float> last = new HyperPoint<float>(points[i - 1], 0);
+					HyperPoint<float> next = new HyperPoint<float>(points[i + 1], 0);
 
 					HyperPoint<float> firstDiff = last - current;
 					HyperPoint<float> secondDiff = next - current;
@@ -251,7 +252,7 @@ namespace CG_2IV05.Common.OSM
 					data.TextCoord[i * 2 + 1] = textureInfo.GetLeftBottom(textureItem);
 				}
 
-				if(i != _points.Count-1)
+				if (i != points.Count - 1)
 				{
 					int currentLeft = i * 2 + 0;
 					int currentRight = i * 2 + 1;

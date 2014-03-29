@@ -104,7 +104,7 @@ namespace CG_2IV05.Visualize.Interface
 			// 
 			this.ErrorControl.Location = new System.Drawing.Point(69, 20);
 			this.ErrorControl.Maximum = new decimal(new int[] {
-            1000,
+            100000000,
             0,
             0,
             0});

@@ -79,17 +79,7 @@ namespace CG_2IV05.Common.OSM
 
 		public IElement Merge(List<IElement> elements)
 		{
-			if (elements.Any(x => !(x is LandUse)))
-				throw new ArgumentException("elements should be LandUses", "elements");
-
-			List<LandUse> buildings = elements.ConvertAll(x => x as LandUse);
-			List<HyperPoint<float>> points = buildings.Aggregate(new List<HyperPoint<float>>(), (list, building) =>
-				                                                                                    {
-					                                                                                    list.AddRange(building.Polygon);
-					                                                                                    return list;
-				                                                                                    });
-			List<HyperPoint<float>> convex = PolygonHelper.CreateConvexHull(points);
-			return new LandUse(buildings[0].TagsCollection, convex);
+			throw new NotImplementedException();
 		}
 
 		public bool CanMerge(List<IElement> elements)
@@ -210,7 +200,7 @@ namespace CG_2IV05.Common.OSM
 
 		public IElement GetSimplifiedVersion(int height)
 		{
-			_points = PolygonHelper.CreateConvexHull(_points);
+			//_points = PolygonHelper.CreateConvexHull(_points);
 			return this;
 		}
 
