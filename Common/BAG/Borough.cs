@@ -67,5 +67,10 @@ namespace CG_2IV05.Common.BAG
             }
             return null;
         }
+
+        public void UpdateLocationByCenter(HyperPoint<float> center)
+        {
+            this.location -= center;
+        }
     }
 }

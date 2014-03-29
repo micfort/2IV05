@@ -34,8 +34,8 @@ namespace CG_2IV05.Visualize.Interface
             this.game = new Game();
             if (Site == null || !Site.DesignMode)
             {
-                this.settingsControl.InitLocations(game);
                 this.gameControl.initGame(game, settingsControl);
+                this.settingsControl.InitLocations(game);
             }
         }
     }
