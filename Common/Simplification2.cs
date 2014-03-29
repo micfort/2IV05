@@ -53,6 +53,18 @@ namespace CG_2IV05.Common
 			#endregion
 		}
 
+		public float DetermineError(FileElementList OriginalList, FileElementList UsedList, int currentDepth)
+		{
+			if(currentDepth >= TreeBuildingSettings.MinCurrentDepthForData)
+			{
+				return OriginalList.TriangleCount - UsedList.TriangleCount;
+			}
+			else
+			{
+				return float.PositiveInfinity;
+			}
+		}
+
 		public FileElementList CreateDataFromChildren(List<FileElementList> children, string filename, List<int> heights, int currentDepth, out float error)
 		{
 			if (currentDepth >= TreeBuildingSettings.MinCurrentDepthForData)
@@ -79,9 +91,7 @@ namespace CG_2IV05.Common
 							{
 								foreach (IElement element in children[i])
 								{
-									error += element.TriangleCount;
 									writer.WriteElement(element);
-									error -= element.TriangleCount;
 								}
 							}
 						}
@@ -119,11 +129,16 @@ namespace CG_2IV05.Common
 							triangleCount -= combination.first.element.TriangleCount;
 							triangleCount -= combination.second.element.TriangleCount;
 
+							error += combination.first.element.TriangleCount;
+							error += combination.second.element.TriangleCount;
+
 							Item newItem = combination.Merge();
 							newItem.referenced = new List<Combination>();
 
 							//add to triangle count
 							triangleCount += newItem.element.TriangleCount;
+
+							error -= newItem.element.TriangleCount;
 
 							UpdateLists(closestElementsList, combination, newItem, itemLists);
 						}

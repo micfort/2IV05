@@ -241,7 +241,8 @@ namespace CG_2IV05.Visualize
 			HyperPoint<float> abs_p = new HyperPoint<float>(Math.Abs(p.X), Math.Abs(p.Y), Math.Abs(p.Z));
 			HyperPoint<float> sub = abs_p - b;
 			HyperPoint<float> max = new HyperPoint<float>(Math.Max(sub.X, 0f), Math.Max(sub.Y, 0f), Math.Max(sub.Z, 0f));
-			return max.GetLength();
+			double distance = Math.Sqrt(max.X*max.X + max.Y*max.Y + max.Z*max.Z);
+			return Convert.ToSingle(distance);
 		}
 
 		#region Implementation of IDisposable

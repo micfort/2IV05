@@ -147,15 +147,22 @@ namespace CG_2IV05.Common
 
 				//simplify
 				string simpFilename = CreateSimplifyFilename();
+				FileElementList optimizedVersion;
+				Simplification2 simplification = new Simplification2();
 				if(NeedSimplify(new List<FileElementList>(usedVersion).ConvertAll(x=> x.Filename), simpFilename)) //check if needed
 				{
 					RemoveFileIfExist(simpFilename);
 					string tmpfilename = FilenameGenerator.CreateTempFilename();
-					Simplification2 simplification = new Simplification2();
 					simplification.CreateDataFromChildren(new List<FileElementList>(usedVersion), tmpfilename, new List<int>(heights), depth, out _error); //simplify
 					File.Move(tmpfilename, simpFilename);
+					optimizedVersion = new FileElementList(simpFilename);//open file element list
 				}
-				FileElementList optimizedVersion = new FileElementList(simpFilename);//open file element list
+				else
+				{
+					optimizedVersion = new FileElementList(simpFilename);//open file element list
+					Error = simplification.DetermineError(elements, optimizedVersion, depth); //determine error afterwards
+				}
+				
 				if (NeedNodeData(optimizedVersion.Filename, FilenameGenerator.GetOutputPathToFile(NodeDataFile)))
 				{
 					RemoveFileIfExist(FilenameGenerator.GetOutputPathToFile(NodeDataFile));

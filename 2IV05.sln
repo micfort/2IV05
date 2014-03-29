@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3C3318
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreProcess2", "PreProcess2\PreProcess2.csproj", "{D338BA7E-FF37-4A2B-867A-0E49E40E3FB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewer", "TreeViewer\TreeViewer.csproj", "{138E23CB-3867-4149-A3A7-2C6021EB1F5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{D338BA7E-FF37-4A2B-867A-0E49E40E3FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D338BA7E-FF37-4A2B-867A-0E49E40E3FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D338BA7E-FF37-4A2B-867A-0E49E40E3FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{138E23CB-3867-4149-A3A7-2C6021EB1F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{138E23CB-3867-4149-A3A7-2C6021EB1F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{138E23CB-3867-4149-A3A7-2C6021EB1F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{138E23CB-3867-4149-A3A7-2C6021EB1F5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

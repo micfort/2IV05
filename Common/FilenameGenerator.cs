@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CG_2IV05.Common
 {
-	class FilenameGenerator
+	public class FilenameGenerator
 	{
 		private static object _lockObject = new object();
 		public static string CreateFilename()

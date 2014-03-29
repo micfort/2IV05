@@ -55,33 +55,32 @@ namespace CG_2IV05.Visualize.Interface
         {
             if (game.manager != null)
             {
-                game.manager.DistanceModifier = float.Parse(maxErrorControl.Text);
+                game.manager.MaxDistanceError = float.Parse(maxErrorControl.Text);
             }
         }
 
         private void loadBoroughLocations()
         {
             Console.Out.WriteLine("Reading Boroughs file: {0}", BOROUGH_FILENAME);
-            using (Stream stream = File.OpenRead(BOROUGH_FILENAME))
-            {
-                XmlReader reader = XmlReader.Create(stream);
-                while (reader.Read())
-                {
-                    if (reader.Name == "Borough")
-                    {
-                        Borough borough = Borough.loadBorough(reader);
-                        if (boroughs.ContainsKey(borough.Province))
-                        {
-                            boroughs[borough.Province].Add(borough);
-                        }
-                        else
-                        {
-                            boroughs.Add(borough.Province, new List<Borough>() {borough});
-                        }
-                    }
-                }
-            }
-            
+			using (Stream stream = File.OpenRead(BOROUGH_FILENAME))
+			{
+				XmlReader reader = XmlReader.Create(stream);
+				while (reader.Read())
+				{
+					if (reader.Name == "Borough")
+					{
+						Borough borough = Borough.loadBorough(reader);
+						if (boroughs.ContainsKey(borough.Province))
+						{
+							boroughs[borough.Province].Add(borough);
+						}
+						else
+						{
+							boroughs.Add(borough.Province, new List<Borough>() { borough });
+						}
+					}
+				}
+			}
         }
 
         private void ProvinceLB_SelectedIndexChanged(object sender, EventArgs e)

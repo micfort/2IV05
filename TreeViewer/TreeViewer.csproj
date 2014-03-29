@@ -4,17 +4,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3A36F5FD-08CF-4AF5-9ABF-D1E89CA1AD85}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{138E23CB-3867-4149-A3A7-2C6021EB1F5B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CG_2IV05.Common</RootNamespace>
-    <AssemblyName>Common</AssemblyName>
+    <RootNamespace>TreeViewer</RootNamespace>
+    <AssemblyName>TreeViewer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,9 +23,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,24 +34,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="alglibnet2">
-      <HintPath>..\Lib\alglibnet2.dll</HintPath>
-    </Reference>
-    <Reference Include="micfort.GHL.PCL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="micfort.GHL.PCL">
       <HintPath>..\packages\micfort.GHL.PCL.0.123\lib\portable-win+net40+sl50+wp80+MonoAndroid10+MonoTouch10\micfort.GHL.PCL.dll</HintPath>
     </Reference>
-    <Reference Include="micfort.GHL.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="micfort.GHL.Windows">
       <HintPath>..\packages\micfort.GHL.Windows.0.123\lib\net40\micfort.GHL.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="OsmSharp">
-      <HintPath>..\Lib\OsmSharp.dll</HintPath>
-      <Aliases>osm</Aliases>
+    <Reference Include="OpenTK">
+      <HintPath>..\packages\OpenTK.1.1.1508.5724\lib\NET40\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OsmSharp.Osm">
-      <HintPath>..\Lib\OsmSharp.Osm.dll</HintPath>
-      <Aliases>osm</Aliases>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\packages\OpenTK.GLControl.1.1.1508.5724\lib\NET40\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\QuickGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph.Graphviz, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\QuickGraph.Graphviz.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,46 +60,50 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BAG\Borough.cs" />
-    <Compile Include="BinaryToStream.cs" />
-    <Compile Include="EarClipping\EarClippingTriangulator.cs" />
-    <Compile Include="EarClipping\PolygonPoint.cs" />
-    <Compile Include="BAG\Building.cs" />
-    <Compile Include="Element\FileElementList.cs" />
-    <Compile Include="Element\ElementList.cs" />
-    <Compile Include="Element\FileElementListWriter.cs" />
-    <Compile Include="Element\IElementFactory.cs" />
-    <Compile Include="Element\IElement.cs" />
-    <Compile Include="Element\FactoryIDs.cs" />
-    <Compile Include="FilenameGenerator.cs" />
-    <Compile Include="HyperPointSerializable.cs" />
-    <Compile Include="LoadListAlgorithm.cs" />
-    <Compile Include="LoggingTag.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="NodeData.cs" />
-    <Compile Include="OSM\Helper.cs" />
-    <Compile Include="OSM\IOSMWayElement.cs" />
-    <Compile Include="OSM\IOSMWayFactory.cs" />
-    <Compile Include="OSM\LandUse.cs" />
-    <Compile Include="OSM\OSM.cs" />
-    <Compile Include="OSM\Road.cs" />
-    <Compile Include="PolygonHelper.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GraphVisualizer.cs" />
+    <Compile Include="NodeWithData.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Simplification1.cs" />
-    <Compile Include="Simplification2.cs" />
-    <Compile Include="SkipList.cs" />
-    <Compile Include="TextureInfo.cs" />
-    <Compile Include="Tree.cs" />
-    <Compile Include="TreeBuildingSettings.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BinaryElement\" />
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{3a36f5fd-08cf-4af5-9abf-d1e89ca1ad85}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
