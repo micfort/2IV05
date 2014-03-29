@@ -47,7 +47,7 @@ namespace CG_2IV05.Visualize.Interface
         {
             if(game.manager != null)
             {
-                game.manager.DistanceModifier = float.Parse(ErrorControl.Text);
+                game.manager.DistanceModifier = Convert.ToSingle(ErrorControl.Value);
             }
         }
 
@@ -55,7 +55,7 @@ namespace CG_2IV05.Visualize.Interface
         {
             if (game.manager != null)
             {
-                game.manager.MaxDistanceError = float.Parse(maxErrorControl.Text);
+				game.manager.MaxDistanceError = Convert.ToSingle(maxErrorControl.Value);
             }
         }
 

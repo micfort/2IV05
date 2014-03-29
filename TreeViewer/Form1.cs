@@ -116,8 +116,8 @@ namespace TreeViewer
 			FileInfo fileInfo = new FileInfo(FilenameGenerator.GetOutputPathToFile(CurrentNode.NodeDataFile));
 
 			StringBuilder sb = new StringBuilder();
-			sb.AppendFormat("Min: {0}\r\n", CurrentNode.Min);
-			sb.AppendFormat("Max: {0}\r\n", CurrentNode.Max);
+			sb.AppendFormat("Min: {0}; {1}\r\n", CurrentNode.Min.X, CurrentNode.Min.Y);
+			sb.AppendFormat("Max: {0}; {1}\r\n", CurrentNode.Max.X, CurrentNode.Max.Y);
 			sb.AppendFormat("Error: {0}\r\n", CurrentNode.Error);
 			sb.AppendFormat("Number of Childeren: {0}\r\n", CurrentNode.Children.Count);
 			sb.AppendFormat("Node data: {0}\r\n", CurrentNode.NodeDataFile);
@@ -160,6 +160,8 @@ namespace TreeViewer
 			position.Y = float.Parse(tbPosY.Text);
 			position.Z = float.Parse(tbPosZ.Text);
 
+			this.LoadedData = new List<NodeWithData>();
+
 			LoadListAlgorithm<NodeWithData> loadListAlgorithm = new LoadListAlgorithm<NodeWithData>();
 			loadListAlgorithm.DistanceModifier = float.Parse(tbErrorPerMeter.Text);
 			loadListAlgorithm.MaxDistanceError = float.Parse(tbMaxError.Text);
@@ -170,6 +172,28 @@ namespace TreeViewer
 				LoadedData.AddRange(replaceNode.ReplaceBy);
 			}
 			UpdateImage();
+		}
+
+		private void btnChild0_Click(object sender, EventArgs e)
+		{
+			if(CurrentNode.Children.Count > 0)
+			{
+				CurrentNode = CurrentNode.Children[0];
+				UpdateChilds();
+				UpdateInformation();
+				UpdateImage();
+			}
+		}
+
+		private void btnChild1_Click(object sender, EventArgs e)
+		{
+			if(CurrentNode.Children.Count > 1)
+			{
+				CurrentNode = CurrentNode.Children[1];
+				UpdateChilds();
+				UpdateInformation();
+				UpdateImage();
+			}
 		}
 	}
 

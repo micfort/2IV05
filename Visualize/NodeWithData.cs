@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CG_2IV05.Visualize
 {
-    public class NodeWithData
+    public class NodeWithData: INodeWithData
     {
         public VBO vbo;
         public Node node;
@@ -37,5 +37,14 @@ namespace CG_2IV05.Visualize
 			vbo = null;
 		}
 
+	    #region Implementation of INodeWithData
+
+	    public Node Node
+	    {
+		    get { return node; }
+		    set { node = value; }
+	    }
+
+	    #endregion
     }
 }

@@ -76,8 +76,8 @@ namespace CG_2IV05.Visualize.Interface
 			// 
 			this.maxErrorControl.Location = new System.Drawing.Point(69, 50);
 			this.maxErrorControl.Maximum = new decimal(new int[] {
-            10000000,
-            0,
+            1410065408,
+            2,
             0,
             0});
 			this.maxErrorControl.Name = "maxErrorControl";
@@ -85,7 +85,7 @@ namespace CG_2IV05.Visualize.Interface
 			this.maxErrorControl.TabIndex = 3;
 			this.maxErrorControl.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.maxErrorControl.Value = new decimal(new int[] {
-            1000,
+            10000000,
             0,
             0,
             0});
@@ -113,7 +113,7 @@ namespace CG_2IV05.Visualize.Interface
 			this.ErrorControl.TabIndex = 1;
 			this.ErrorControl.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.ErrorControl.Value = new decimal(new int[] {
-            10,
+            1000,
             0,
             0,
             0});

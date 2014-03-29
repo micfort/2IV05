@@ -37,6 +37,10 @@
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.tbErrorPerMeter = new System.Windows.Forms.TextBox();
+			this.tbMaxError = new System.Windows.Forms.TextBox();
 			this.btnUpdateLoadedItems = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -44,10 +48,8 @@
 			this.tbPosY = new System.Windows.Forms.TextBox();
 			this.tbPosZ = new System.Windows.Forms.TextBox();
 			this.tbPosX = new System.Windows.Forms.TextBox();
-			this.tbMaxError = new System.Windows.Forms.TextBox();
-			this.tbErrorPerMeter = new System.Windows.Forms.TextBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
+			this.btnChild0 = new System.Windows.Forms.Button();
+			this.btnChild1 = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -66,10 +68,10 @@
 			// tbInfo
 			// 
 			this.tbInfo.Enabled = false;
-			this.tbInfo.Location = new System.Drawing.Point(12, 123);
+			this.tbInfo.Location = new System.Drawing.Point(12, 152);
 			this.tbInfo.Multiline = true;
 			this.tbInfo.Name = "tbInfo";
-			this.tbInfo.Size = new System.Drawing.Size(202, 162);
+			this.tbInfo.Size = new System.Drawing.Size(202, 192);
 			this.tbInfo.TabIndex = 1;
 			// 
 			// btnParent
@@ -84,7 +86,7 @@
 			// 
 			// btnChild
 			// 
-			this.btnChild.Location = new System.Drawing.Point(139, 96);
+			this.btnChild.Location = new System.Drawing.Point(139, 123);
 			this.btnChild.Name = "btnChild";
 			this.btnChild.Size = new System.Drawing.Size(75, 23);
 			this.btnChild.TabIndex = 4;
@@ -96,7 +98,7 @@
 			// 
 			this.cbChilds.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbChilds.FormattingEnabled = true;
-			this.cbChilds.Location = new System.Drawing.Point(12, 96);
+			this.cbChilds.Location = new System.Drawing.Point(12, 125);
 			this.cbChilds.Name = "cbChilds";
 			this.cbChilds.Size = new System.Drawing.Size(121, 21);
 			this.cbChilds.TabIndex = 5;
@@ -144,12 +146,46 @@
 			this.groupBox1.Controls.Add(this.tbPosY);
 			this.groupBox1.Controls.Add(this.tbPosZ);
 			this.groupBox1.Controls.Add(this.tbPosX);
-			this.groupBox1.Location = new System.Drawing.Point(14, 291);
+			this.groupBox1.Location = new System.Drawing.Point(14, 350);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(200, 247);
+			this.groupBox1.Size = new System.Drawing.Size(200, 189);
 			this.groupBox1.TabIndex = 9;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "groupBox1";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(6, 154);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(52, 13);
+			this.label5.TabIndex = 10;
+			this.label5.Text = "Max Error";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(6, 131);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(76, 13);
+			this.label4.TabIndex = 9;
+			this.label4.Text = "Error per meter";
+			// 
+			// tbErrorPerMeter
+			// 
+			this.tbErrorPerMeter.Location = new System.Drawing.Point(94, 128);
+			this.tbErrorPerMeter.Name = "tbErrorPerMeter";
+			this.tbErrorPerMeter.Size = new System.Drawing.Size(100, 20);
+			this.tbErrorPerMeter.TabIndex = 8;
+			this.tbErrorPerMeter.Text = "10";
+			// 
+			// tbMaxError
+			// 
+			this.tbMaxError.Location = new System.Drawing.Point(94, 151);
+			this.tbMaxError.Name = "tbMaxError";
+			this.tbMaxError.Size = new System.Drawing.Size(100, 20);
+			this.tbMaxError.TabIndex = 7;
+			this.tbMaxError.Text = "10000";
 			// 
 			// btnUpdateLoadedItems
 			// 
@@ -212,46 +248,34 @@
 			this.tbPosX.TabIndex = 0;
 			this.tbPosX.Text = "0";
 			// 
-			// tbMaxError
+			// btnChild0
 			// 
-			this.tbMaxError.Location = new System.Drawing.Point(94, 151);
-			this.tbMaxError.Name = "tbMaxError";
-			this.tbMaxError.Size = new System.Drawing.Size(100, 20);
-			this.tbMaxError.TabIndex = 7;
-			this.tbMaxError.Text = "10000";
+			this.btnChild0.Location = new System.Drawing.Point(12, 96);
+			this.btnChild0.Name = "btnChild0";
+			this.btnChild0.Size = new System.Drawing.Size(100, 23);
+			this.btnChild0.TabIndex = 11;
+			this.btnChild0.Text = "Go to child 0";
+			this.btnChild0.UseVisualStyleBackColor = true;
+			this.btnChild0.Click += new System.EventHandler(this.btnChild0_Click);
 			// 
-			// tbErrorPerMeter
+			// btnChild1
 			// 
-			this.tbErrorPerMeter.Location = new System.Drawing.Point(94, 128);
-			this.tbErrorPerMeter.Name = "tbErrorPerMeter";
-			this.tbErrorPerMeter.Size = new System.Drawing.Size(100, 20);
-			this.tbErrorPerMeter.TabIndex = 8;
-			this.tbErrorPerMeter.Text = "10";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(6, 131);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(76, 13);
-			this.label4.TabIndex = 9;
-			this.label4.Text = "Error per meter";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(6, 154);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(52, 13);
-			this.label5.TabIndex = 10;
-			this.label5.Text = "Max Error";
+			this.btnChild1.Location = new System.Drawing.Point(118, 96);
+			this.btnChild1.Name = "btnChild1";
+			this.btnChild1.Size = new System.Drawing.Size(96, 23);
+			this.btnChild1.TabIndex = 12;
+			this.btnChild1.Text = "Go to child 1";
+			this.btnChild1.UseVisualStyleBackColor = true;
+			this.btnChild1.Click += new System.EventHandler(this.btnChild1_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(885, 550);
+			this.Controls.Add(this.btnChild1);
 			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.btnChild0);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.tbPosition);
 			this.Controls.Add(this.cbChilds);
@@ -292,6 +316,8 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox tbErrorPerMeter;
 		private System.Windows.Forms.TextBox tbMaxError;
+		private System.Windows.Forms.Button btnChild0;
+		private System.Windows.Forms.Button btnChild1;
 	}
 }
 

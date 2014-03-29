@@ -15,18 +15,16 @@ using Timer = System.Timers.Timer;
 
 namespace CG_2IV05.Visualize
 {
-	public struct ReplaceNode
-	{
-		public List<NodeWithData> OriginalNodes;
-		public List<NodeWithData> ReplaceBy;
-	}
 	public class NodeManager:IDisposable
 	{
 		private bool running = false;
 		private AutoResetEvent threadFinished = new AutoResetEvent(false);
 		private Thread thread;
-		private float _maxDistanceError = 100000;
-		private float _distanceModifier = 50;
+		private LoadListAlgorithm<NodeWithData> loadListAlgorithm = new LoadListAlgorithm<NodeWithData>()
+			                                                            {
+				                                                            DistanceModifier = 1000,
+																			MaxDistanceError = 10000000
+			                                                            };
 
 		public HyperPoint<float> Position { get; set; }
 		public Tree Tree { get; set; }
@@ -35,14 +33,14 @@ namespace CG_2IV05.Visualize
 		public VBOLoader Loader { get; set; }
 		public float DistanceModifier
 		{
-			get { return _distanceModifier; }
-			set { _distanceModifier = value; }
+			get { return loadListAlgorithm.DistanceModifier; }
+			set { loadListAlgorithm.DistanceModifier = value; }
 		}
 
 		public float MaxDistanceError
 		{
-			get { return _maxDistanceError; }
-			set { _maxDistanceError = value; }
+			get { return loadListAlgorithm.MaxDistanceError; }
+			set { loadListAlgorithm.MaxDistanceError = value; }
 		}
 
 		public void Start()
@@ -66,8 +64,8 @@ namespace CG_2IV05.Visualize
 		{
 			while (running)
 			{
-				List<ReplaceNode> newLoadedList = this.DetermineCompleteLoadList(Tree, Position);
-				foreach (ReplaceNode replaceNode in newLoadedList)
+				List<ReplaceNode<NodeWithData>> newLoadedList = loadListAlgorithm.DetermineCompleteLoadList(Tree, Position, VBOList);
+				foreach (ReplaceNode<NodeWithData> replaceNode in newLoadedList)
 				{
 					ErrorReporting.Instance.ReportDebugT(this,
 					                                     "Load nodes from disc " +
@@ -78,7 +76,7 @@ namespace CG_2IV05.Visualize
 					}
 				}
 
-				foreach (ReplaceNode replaceNode in newLoadedList)
+				foreach (ReplaceNode<NodeWithData> replaceNode in newLoadedList)
 				{
 					lock (VBOList)
 					{
@@ -93,7 +91,7 @@ namespace CG_2IV05.Visualize
 					}
 				}
 
-				foreach (ReplaceNode replaceNode in newLoadedList)
+				foreach (ReplaceNode<NodeWithData> replaceNode in newLoadedList)
 				{
 					ErrorReporting.Instance.ReportDebugT(this,
 					                                     "Unload nodes " +
@@ -133,116 +131,6 @@ namespace CG_2IV05.Visualize
 		public List<Node> DiffOldItems(List<Node> oldList, List<Node> newList)
 		{
 			return DiffNewItems(newList, oldList);
-		}
-
-		public List<ReplaceNode> DetermineCompleteLoadList(Tree tree, HyperPoint<float> position)
-		{
-			List<ReplaceNode> replaceList = new List<ReplaceNode>();
-			DetermineLoadList(tree.Root, position, replaceList);
-			return replaceList;
-		}
-
-		private void DetermineLoadList(Node node, HyperPoint<float> position, List<ReplaceNode> loadList)
-		{
-			float distanceError = DistanceToNode(node, position) * DistanceModifier;
-			if (distanceError > MaxDistanceError)
-			{
-				if(VBOList.Exists(x => x.node == node))
-				{
-					List<NodeWithData> unloadList = new List<NodeWithData>() { VBOList.Find(x => x.node == node) };
-					List<NodeWithData> newLoadList = new List<NodeWithData>();
-					foreach (Node child in node.Children)
-					{
-						DetermineUnloadListForLoadingParent(child, unloadList);
-					}
-					loadList.Add(new ReplaceNode() { OriginalNodes = unloadList, ReplaceBy = newLoadList });
-				}
-			}
-			else if(distanceError < node.Error && node.Children != null && node.Children.Count > 0)
-			{
-				if(VBOList.Exists(x => x.node == node))
-				{
-					List<NodeWithData> unloadList = new List<NodeWithData>() {VBOList.Find(x => x.node == node)};
-					List<NodeWithData> newLoadList = new List<NodeWithData>();
-					foreach (Node child in node.Children)
-					{
-						DetermineLoadListForUnloadingParent(child, position, newLoadList);
-					}
-					loadList.Add(new ReplaceNode(){OriginalNodes = unloadList, ReplaceBy = newLoadList});
-				}
-				else
-				{
-					foreach (Node child in node.Children)
-					{
-						DetermineLoadList(child, position, loadList);
-					}
-				}
-			}
-			else
-			{
-				if(!VBOList.Exists(x => x.node == node))
-				{
-					List<NodeWithData> newLoadList = new List<NodeWithData>() {new NodeWithData(null, node)};
-					List<NodeWithData> unloadList = new List<NodeWithData>();
-					foreach (Node child in node.Children)
-					{
-						DetermineUnloadListForLoadingParent(child, unloadList);
-					}
-					loadList.Add(new ReplaceNode() {OriginalNodes = unloadList, ReplaceBy = newLoadList});
-				}
-			}
-		}
-
-		private void DetermineLoadListForUnloadingParent(Node node, HyperPoint<float> position, List<NodeWithData> loadList)
-		{
-			float distanceError = DistanceToNode(node, position) * DistanceModifier;
-			if (distanceError > MaxDistanceError)
-			{
-				return;
-			}
-			if (distanceError < node.Error && node.Children != null && node.Children.Count > 0)
-			{
-				foreach (Node child in node.Children)
-				{
-					DetermineLoadListForUnloadingParent(child, position, loadList);
-				}
-			}
-			else
-			{
-				loadList.Add(new NodeWithData(null, node));
-			}
-		}
-
-		private void DetermineUnloadListForLoadingParent(Node node, List<NodeWithData> unLoadList)
-		{
-			if(VBOList.Exists(x => x.node == node))
-			{
-				unLoadList.Add(VBOList.Find(x => x.node == node));
-			}
-			else
-			{
-				foreach (Node child in node.Children)
-				{
-					DetermineUnloadListForLoadingParent(child, unLoadList);
-				}
-			}
-		}
-
-		private float DistanceToNode(Node node, HyperPoint<float> position)
-		{
-			//todo set bounding box of node
-			return DistanceToSquare(node.Min, node.Max, position);
-		}
-
-		private float DistanceToSquare(HyperPoint<float> p1, HyperPoint<float> p2, HyperPoint<float> position)
-		{
-			HyperPoint<float> b = p2 - p1;
-			HyperPoint<float> p = position - p1;
-			HyperPoint<float> abs_p = new HyperPoint<float>(Math.Abs(p.X), Math.Abs(p.Y), Math.Abs(p.Z));
-			HyperPoint<float> sub = abs_p - b;
-			HyperPoint<float> max = new HyperPoint<float>(Math.Max(sub.X, 0f), Math.Max(sub.Y, 0f), Math.Max(sub.Z, 0f));
-			double distance = Math.Sqrt(max.X*max.X + max.Y*max.Y + max.Z*max.Z);
-			return Convert.ToSingle(distance);
 		}
 
 		#region Implementation of IDisposable
