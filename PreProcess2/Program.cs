@@ -15,6 +15,7 @@ namespace CG_2IV05.PreProcess2
 		private static string BagFilename = string.Empty;
 		private static string Bin1Filename = string.Empty;
 		private static string Bin2Filename = string.Empty;
+		private static string UpgradeRoad = string.Empty;
 		private static bool Generate = false;
 		private static bool Input = false;
 		static void Main(string[] args)
@@ -80,6 +81,30 @@ namespace CG_2IV05.PreProcess2
 							i++;
 						}
 					}
+					if (UpgradeRoad != string.Empty && File.Exists(UpgradeRoad))
+					{
+						Console.Out.WriteLine("Reading binair file for upgrade: {0}", UpgradeRoad);
+						FileElementList list = new FileElementList(UpgradeRoad);
+						int i = 0;
+						foreach (IElement element in list)
+						{
+							if (i % 100000 == 0)
+							{
+								Console.Out.WriteLine("Processing element {0:N0}", i);
+							}
+							if(element.FactoryID == FactoryIDs.RoadID)
+							{
+								Road road = (Road)element;
+								Road2 road2 = road.ConvertToRoad2();
+								writer.WriteElement(road2);
+							}
+							else
+							{
+								writer.WriteElement(element);	
+							}
+							i++;
+						}
+					}
 					if (Generate)
 					{
 						Console.Out.WriteLine("Generate buildings");
@@ -133,6 +158,12 @@ namespace CG_2IV05.PreProcess2
 				{
 					i++;
 					Bin2Filename = args[i];
+					Input = true;
+				}
+				else if (args[i] == "--upgrade-road")
+				{
+					i++;
+					UpgradeRoad = args[i];
 					Input = true;
 				}
 				else if (args[i] == "--GEN")

@@ -78,6 +78,7 @@
     <Compile Include="LoggingTag.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeData.cs" />
+    <Compile Include="OSM\Road2.cs" />
     <Compile Include="OSM\Helper.cs" />
     <Compile Include="OSM\IOSMWayElement.cs" />
     <Compile Include="OSM\IOSMWayFactory.cs" />

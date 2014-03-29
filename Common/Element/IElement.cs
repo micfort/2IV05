@@ -18,7 +18,7 @@ namespace CG_2IV05.Common.Element
 
 		HyperPoint<float> ReferencePoint { get; }
 		NodeData CreateData(HyperPoint<float> centerDataSet, TextureInfo textureInfo);
-        IElement GetSimplifiedVersion();
+        IElement GetSimplifiedVersion(int height);
 
 		void SaveToStream(Stream stream);
 		int FactoryID { get; }

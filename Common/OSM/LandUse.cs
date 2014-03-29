@@ -79,12 +79,27 @@ namespace CG_2IV05.Common.OSM
 
 		public IElement Merge(List<IElement> elements)
 		{
-			throw new NotImplementedException("more difficult");
+			if (elements.Any(x => !(x is LandUse)))
+				throw new ArgumentException("elements should be LandUses", "elements");
+
+			List<LandUse> buildings = elements.ConvertAll(x => x as LandUse);
+			List<HyperPoint<float>> points = buildings.Aggregate(new List<HyperPoint<float>>(), (list, building) =>
+				                                                                                    {
+					                                                                                    list.AddRange(building.Polygon);
+					                                                                                    return list;
+				                                                                                    });
+			List<HyperPoint<float>> convex = PolygonHelper.CreateConvexHull(points);
+			return new LandUse(buildings[0].TagsCollection, convex);
 		}
 
 		public bool CanMerge(List<IElement> elements)
 		{
 			return false;
+		}
+
+		public void RemoveDetail(List<IElement> elements, int height)
+		{
+			return;
 		}
 
 		#endregion
@@ -105,6 +120,17 @@ namespace CG_2IV05.Common.OSM
 		{
 			_tagsCollection = tags;
 			this._points = poly;
+		}
+
+		public List<HyperPoint<float>> Polygon
+		{
+			get { return _points; }
+			set { _points = value; }
+		}
+
+		public TagsCollectionBase TagsCollection
+		{
+			get { return _tagsCollection; }
 		}
 
 		#region Implementation of IElement
@@ -182,8 +208,9 @@ namespace CG_2IV05.Common.OSM
 			return output;
 		}
 
-		public IElement GetSimplifiedVersion()
+		public IElement GetSimplifiedVersion(int height)
 		{
+			_points = PolygonHelper.CreateConvexHull(_points);
 			return this;
 		}
 

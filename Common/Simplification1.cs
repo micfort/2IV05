@@ -27,7 +27,7 @@ namespace CG_2IV05.Common
 								foreach (IElement element in children[i])
 								{
 									error += element.TriangleCount;
-									writer.WriteElement(element.GetSimplifiedVersion());
+									writer.WriteElement(element.GetSimplifiedVersion(heights.Max()));
 									error -= element.TriangleCount;
 								}
 							}

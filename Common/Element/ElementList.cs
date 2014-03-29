@@ -80,7 +80,7 @@ namespace CG_2IV05.Common.Element
                     break;
 
                 triangleCount -= element.TriangleCount;
-                element = element.GetSimplifiedVersion();
+                element = element.GetSimplifiedVersion(0);
                 sortedElements.RemoveAt(0);
                 sortedElements.Add(element.Score, element);
 

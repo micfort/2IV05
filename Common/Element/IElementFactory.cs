@@ -12,5 +12,6 @@ namespace CG_2IV05.Common.Element
 		int FactoryID { get; }
 		IElement Merge(List<IElement> elements);
 		bool CanMerge(List<IElement> elements);
+		void RemoveDetail(List<IElement> elements, int height);
 	}
 }

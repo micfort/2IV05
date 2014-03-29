@@ -10,7 +10,7 @@ using micfort.GHL.Math2;
 
 namespace CG_2IV05.Common.OSM
 {
-	public class RoadFactory: IOSMWayFactory
+	public class Road2Factory: IOSMWayFactory
 	{
 		#region Implementation of IOSMWayFactory
 
@@ -37,7 +37,8 @@ namespace CG_2IV05.Common.OSM
 		{
 			List<HyperPoint<float>> poly = PolygonHelper.ReadPolyFromStream(stream);
 			TagsCollectionBase tags = TagsCollectionStream.ReadTagsCollectionFromStream(stream);
-			return new Road(tags, poly);
+			bool useExtraPoints = BinaryToStream.ReadBoolFromStream(stream);
+			return new Road2(tags, poly, useExtraPoints);
 		}
 
 		public int FactoryID
@@ -63,31 +64,29 @@ namespace CG_2IV05.Common.OSM
 		#endregion
 	}
 
-	public class Road: IOSMWayElement
+	public class Road2: IOSMWayElement
 	{
-		private int scorePointIndex;
 		private TagsCollectionBase _tagsCollection;
 		private List<HyperPoint<float>> _points;
+		private List<HyperPoint<float>> _pointsExtra;
+		private bool UseExtraPoints { get; set; }
 
-		public Road(Way way, List<HyperPoint<float>> poly)
+		public Road2(Way way, List<HyperPoint<float>> poly, bool useExtraPoints)
 		{
-			Score = new ScoreKey(float.MaxValue);
+			UseExtraPoints = useExtraPoints;
 			_tagsCollection = way.Tags;
 			_points = poly;
-			SetScore();
+			_pointsExtra = new List<HyperPoint<float>>(poly);
+			InsertSteps(_pointsExtra, 2.0f, 3.0f);
 		}
 
-		public Road(TagsCollectionBase collection, List<HyperPoint<float>> poly)
+		public Road2(TagsCollectionBase collection, List<HyperPoint<float>> poly, bool useExtraPoints)
 		{
-			Score = new ScoreKey(float.MaxValue);
+			UseExtraPoints = useExtraPoints;
 			_tagsCollection = collection;
 			_points = poly;
-			SetScore();
-		}
-
-		public Road2 ConvertToRoad2()
-		{
-			return new Road2(_tagsCollection, _points, true);
+			_pointsExtra = new List<HyperPoint<float>>(poly);
+			InsertSteps(_pointsExtra, 2.0f, 3.0f);
 		}
 
 		#region Implementation of IOSMWayElement
@@ -99,7 +98,7 @@ namespace CG_2IV05.Common.OSM
 
 		public int TriangleCount
 		{
-			get { return (_points.Count - 1)*2; }
+			get { return ((UseExtraPoints?_pointsExtra.Count:_points.Count) - 1) * 2; }
 		}
 
 		public ScoreKey Score { get; private set; }
@@ -213,18 +212,7 @@ namespace CG_2IV05.Common.OSM
 
 	    public IElement GetSimplifiedVersion(int height)
 	    {
-			if (Score.Score < float.MaxValue)
-			{
-				HyperPoint<float> pointI = _points[scorePointIndex];
-				HyperPoint<float> pointJ = _points[scorePointIndex+1];
-				HyperPoint<float> newPoint = (pointI + pointJ) / 2;
-
-				_points[scorePointIndex] = newPoint;
-				_points.RemoveAt(scorePointIndex+1);
-
-				SetScore();
-			}
-
+		    this.UseExtraPoints = false;
 			return this;
 	    }
 
@@ -232,42 +220,15 @@ namespace CG_2IV05.Common.OSM
 		{
 			PolygonHelper.WriteToStream(stream, _points);
 			TagsCollectionStream.WriteToStream(_tagsCollection, stream);
+			BinaryToStream.WriteToStream(UseExtraPoints, stream);
 		}
 
 		public int FactoryID
 		{
-			get { return FactoryIDs.RoadID; }
+			get { return FactoryIDs.Road2ID; }
 		}
 
 		#endregion
-
-		private void SetScore()
-		{
-			if (_points.Count <= 2)
-			{
-				Score.Score = float.MaxValue;
-				return;
-			}
-
-			float minDistance = float.MaxValue;
-			int minDistanceIndex = 0;
-
-			for (int i = 0; i < _points.Count-1; i++)
-			{
-				HyperPoint<float> pointI = _points[i];
-				HyperPoint<float> pointJ = _points[i+1];
-
-				float distance = (pointI - pointJ).GetLengthSquared();
-				if (distance < minDistance)
-				{
-					minDistance = distance;
-					minDistanceIndex = i;
-				}
-			}
-
-			Score.Score = minDistance / 3;
-			scorePointIndex = minDistanceIndex;
-		}
 
 		private void InsertSteps(List<HyperPoint<float>> poly, float createStepSize, float maximumStep)
 		{

@@ -15,6 +15,7 @@ namespace CG_2IV05.Common.Element
 		//OSM IDs
 		public const int RoadID = 201;
 		public const int LandUseID = 202;
+		public const int Road2ID = 203;
 
 		private static readonly Dictionary<int, IElementFactory> factories = new Dictionary<int, IElementFactory>()
 			                                                            {
@@ -25,6 +26,7 @@ namespace CG_2IV05.Common.Element
 																			//OSM IDs
 																			{RoadID, new RoadFactory()},
 																			{LandUseID, new LandUseFactory()},
+																			{Road2ID, new Road2Factory()}
 			                                                            }; 
 
 		public static IElementFactory GetFactory(int ID)

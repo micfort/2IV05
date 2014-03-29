@@ -45,6 +45,11 @@ namespace CG_2IV05.Common.BAG
 			return true;
 		}
 
+		public void RemoveDetail(List<IElement> elements, int height)
+		{
+			return;
+		}
+
 		#endregion
 	}
 
@@ -265,7 +270,7 @@ namespace CG_2IV05.Common.BAG
 	        scorePointIndex2 = minDistanceIndex2;
         }
 
-		public IElement GetSimplifiedVersion()
+		public IElement GetSimplifiedVersion(int height)
         {
             if (score.Score < float.MaxValue)
             {
