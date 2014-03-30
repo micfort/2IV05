@@ -44,6 +44,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\micfort.GHL.Windows.0.123\lib\net40\micfort.GHL.Windows.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\Visualize\bin\Debug\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="OsmSharp">
       <HintPath>..\Lib\OsmSharp.dll</HintPath>
       <Aliases>osm</Aliases>
@@ -62,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BAG\Borough.cs" />
+    <Compile Include="BAG\BoroughList.cs" />
     <Compile Include="BinaryToStream.cs" />
     <Compile Include="EarClipping\EarClippingTriangulator.cs" />
     <Compile Include="EarClipping\PolygonPoint.cs" />

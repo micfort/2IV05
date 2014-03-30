@@ -317,5 +317,13 @@ namespace CG_2IV05.Visualize
             manager.Position = CameraPos.ToHyperPoint();
             lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + CurDirection, Vector3.UnitZ);
 	    }
+
+        public HyperPoint<float> getDataCenter()
+        {
+            if(tree.centerData != null)
+                return tree.centerData.Value;
+
+            return new HyperPoint<float>(0,0,0);
+        } 
 	}
 }

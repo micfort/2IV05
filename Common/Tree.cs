@@ -11,5 +11,6 @@ namespace CG_2IV05.Common
 	public class Tree
 	{
 		public Node Root { get; set; }
+	    public HyperPointSerializable<float> centerData;
 	}
 }

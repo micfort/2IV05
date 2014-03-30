@@ -76,8 +76,8 @@ namespace CG_2IV05.Visualize.Interface
 			// 
 			this.maxErrorControl.Location = new System.Drawing.Point(69, 50);
 			this.maxErrorControl.Maximum = new decimal(new int[] {
-            1410065408,
-            2,
+            1215752192,
+            23,
             0,
             0});
 			this.maxErrorControl.Name = "maxErrorControl";
@@ -104,8 +104,8 @@ namespace CG_2IV05.Visualize.Interface
 			// 
 			this.ErrorControl.Location = new System.Drawing.Point(69, 20);
 			this.ErrorControl.Maximum = new decimal(new int[] {
-            100000000,
-            0,
+            -727379968,
+            232,
             0,
             0});
 			this.ErrorControl.Name = "ErrorControl";
@@ -162,7 +162,6 @@ namespace CG_2IV05.Visualize.Interface
 			this.currentLocationTB.Name = "currentLocationTB";
 			this.currentLocationTB.Size = new System.Drawing.Size(100, 20);
 			this.currentLocationTB.TabIndex = 18;
-			this.currentLocationTB.Text = "test";
 			this.currentLocationTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
 			// label11
