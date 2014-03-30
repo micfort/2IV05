@@ -56,6 +56,7 @@ namespace CG_2IV05.TreeBuilding
 
             Tree tree = new Tree();
             tree.Root = root;
+	        tree.centerData = TreeBuildingSettings.CenterDataSet;
 
 			ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, "Writing Tree");
 			using (FileStream file = File.Open(string.Format(TreeBuildingSettings.TreeOutputFileFormat, TreeBuildingSettings.DirectoryOutput), FileMode.Create, FileAccess.ReadWrite))

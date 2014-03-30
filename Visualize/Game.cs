@@ -321,9 +321,9 @@ namespace CG_2IV05.Visualize
         public HyperPoint<float> getDataCenter()
         {
             if(tree.centerData != null)
-                return tree.centerData.Value;
+                return tree.centerData;
 
-            return new HyperPoint<float>(0,0,0);
+            return new HyperPoint<float>(0,0);
         } 
 	}
 }
