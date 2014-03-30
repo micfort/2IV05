@@ -70,7 +70,7 @@ namespace CG_2IV05.Common.BAG
 
         public void UpdateLocationByCenter(HyperPoint<float> center)
         {
-            this.location -= center;
+            this.location -= new HyperPoint<float>(center, 0);
         }
     }
 }

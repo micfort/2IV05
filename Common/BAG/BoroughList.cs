@@ -22,7 +22,7 @@ namespace CG_2IV05.Common.BAG
             allBoroughs = new List<Borough>();
         }
 
-        public void loadBoroughLocations(HyperPointSerializable<float> center)
+        public void loadBoroughLocations(HyperPoint<float> center)
         {
             Console.Out.WriteLine("Reading Boroughs file: {0}", BOROUGH_FILENAME);
             using (Stream stream = File.OpenRead(BOROUGH_FILENAME))
@@ -33,7 +33,7 @@ namespace CG_2IV05.Common.BAG
                     if (reader.Name == "Borough")
                     {
                         Borough borough = Borough.loadBorough(reader);
-                        borough.UpdateLocationByCenter(center.Value);
+                        borough.UpdateLocationByCenter(center);
                         if (boroughs.ContainsKey(borough.Province))
                         {
                             boroughs[borough.Province].Add(borough);
