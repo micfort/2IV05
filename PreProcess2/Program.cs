@@ -124,6 +124,7 @@ namespace CG_2IV05.PreProcess2
 					count++;
 				}
 			}
+            Console.Out.WriteLine("Finished: Press a key to exit");
 			Console.ReadKey();
 		}
 
