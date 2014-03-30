@@ -45,6 +45,7 @@ namespace CG_2IV05.Common
 					currentItem = currentItem.LinksAfter[curLevel].To;
 				}
 			}
+			newItem.InSkipList = true;
 			return newItem;
 		}
 
@@ -112,6 +113,8 @@ namespace CG_2IV05.Common
 			return curLevel >= 0 ? currentItem : null;
 		}
 
+		public List<T> List { get { return new List<T>(this); } } 
+
 		#region Implementation of IEnumerable
 
 		/// <summary>
@@ -144,6 +147,13 @@ namespace CG_2IV05.Common
 	public class SkipListItem<T>
 		where T: IComparable<T>
 	{
+		private bool _InSkipList = false;
+		public bool InSkipList
+		{
+			get { return _InSkipList; }
+			set { _InSkipList = value; }
+		}
+
 		public List<SkipListLink<T>> LinksBefore { get; set; }
 		public List<SkipListLink<T>> LinksAfter { get; set; }
 		public T Item { get; set; }
@@ -190,10 +200,18 @@ namespace CG_2IV05.Common
 
 		public void RemoveFromList()
 		{
-			for (int i = 0; i < LinksBefore.Count; i++)
+			if(_InSkipList)
 			{
-				LinksBefore[i].From.LinksAfter[i].To = LinksAfter[i].To;
-				if (LinksAfter[i].To != null) LinksAfter[i].To.LinksBefore[i].From = LinksBefore[i].From;
+				for (int i = 0; i < LinksBefore.Count; i++)
+				{
+					LinksBefore[i].From.LinksAfter[i].To = LinksAfter[i].To;
+					if (LinksAfter[i].To != null) LinksAfter[i].To.LinksBefore[i].From = LinksBefore[i].From;
+				}
+				_InSkipList = false;
+			}
+			else
+			{
+				throw new InvalidOperationException("item isn't in a list");
 			}
 		}
 	}

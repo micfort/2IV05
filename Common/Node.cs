@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using CG_2IV05.Common.Element;
 using micfort.GHL.Math2;
+using micfort.GHL.Logging;
 
 namespace CG_2IV05.Common
 {
@@ -77,16 +78,13 @@ namespace CG_2IV05.Common
 
 		private void ConstructorFileElementList(FileElementList elements, Node parent, TextureInfo textureInfo, SplitDirection splitDirection, int depth, out FileElementList usedList, out int height)
 		{
-			micfort.GHL.Logging.ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext,
-			                                                        string.Format("Creating node on depth {0} with file {1}",
-			                                                                      depth, Path.GetFileName(elements.Filename)));
+
 			Children = new List<Node>();
 			NodeDataFile = CreateNodeDataFilename();
 			Parent = parent;
 			Tag = elements;
 			Min = new HyperPoint<float>(elements.Min - TreeBuildingSettings.CenterDataSet, 0);
 			Max = new HyperPoint<float>(elements.Max - TreeBuildingSettings.CenterDataSet, 0);
-			height = 0;
 
 			if (elements.FinalElement || elements.TriangleCount < TreeBuildingSettings.MaxTriangleCount)
 			{
@@ -104,6 +102,7 @@ namespace CG_2IV05.Common
 					File.Move(tmpfilename, FilenameGenerator.GetOutputPathToFile(NodeDataFile));
 				}
 				usedList = elements;
+				height = 0;
 			}
 			else
 			{
@@ -118,6 +117,7 @@ namespace CG_2IV05.Common
 				//split the data
 				List<string> splitFilenames = CreateSplitFilenames(splitCount);
 				List<FileElementList> split;
+				ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, string.Format("Split data"));
 				//check if neccesary
 				if(NeedSplit(splitFilenames, elements.Filename))
 				{
@@ -142,10 +142,11 @@ namespace CG_2IV05.Common
 
 				//create subnodes
 				FileElementList[] usedVersion = new FileElementList[splitCount];
-				int[] heights = new int[splitCount];
-				CreateSubNode(split.ToArray(), usedVersion, textureInfo, nextSplitDirection, depth, out height);
+				int[] heights;
+				CreateSubNode(split.ToArray(), usedVersion, textureInfo, nextSplitDirection, depth, out heights);
 
 				//simplify
+				ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, string.Format("Simplify data"));
 				string simpFilename = CreateSimplifyFilename();
 				FileElementList optimizedVersion;
 				Simplification2 simplification = new Simplification2();
@@ -158,7 +159,8 @@ namespace CG_2IV05.Common
 				}
 				optimizedVersion = new FileElementList(simpFilename);//open file element list
 				Error = simplification.DetermineError(elements, optimizedVersion, depth); //determine error afterwards
-				
+
+				ErrorReporting.Instance.ReportInfoT(LoggingTag.CurrentContext, string.Format("Create output data"));
 				if (NeedNodeData(optimizedVersion.Filename, FilenameGenerator.GetOutputPathToFile(NodeDataFile)))
 				{
 					RemoveFileIfExist(FilenameGenerator.GetOutputPathToFile(NodeDataFile));
@@ -171,6 +173,7 @@ namespace CG_2IV05.Common
 					File.Move(tmpfilename, FilenameGenerator.GetOutputPathToFile(NodeDataFile));
 				}
 				usedList = optimizedVersion;
+				height = heights.Max() + 1;
 			}
 		}
 
@@ -217,12 +220,12 @@ namespace CG_2IV05.Common
 				File.Delete(filename);
 		}
 
-		private void CreateSubNode(FileElementList[] split, FileElementList[] usedVersion, TextureInfo textureInfo, SplitDirection splitDirection, int depth, out int height)
+		private void CreateSubNode(FileElementList[] split, FileElementList[] usedVersion, TextureInfo textureInfo, SplitDirection splitDirection, int depth, out int[] heights)
 		{
-			height = 0;
-			int[] heights = new int[split.Length];
+			heights = new int[split.Length];
 			if (depth < TreeBuildingSettings.CreateThreadDepth)
 			{
+				int[] outHeights = new int[split.Length];
 				ManualResetEvent[] mres = new ManualResetEvent[split.Length];
 				Node[] childs = new Node[split.Length];
 				for (int i = 0; i < split.Length; i++)
@@ -233,8 +236,8 @@ namespace CG_2IV05.Common
 						                      {
 												
 							                      int index = (int) o;
-												  LoggingTag.Push(currentLoggingTag + "_" + index.ToString());
-												  childs[index] = new Node(split[index], this, textureInfo, splitDirection, depth + 1, out usedVersion[index], out heights[index]);
+												  LoggingTag.Push(currentLoggingTag + index.ToString());
+												  childs[index] = new Node(split[index], this, textureInfo, splitDirection, depth + 1, out usedVersion[index], out outHeights[index]);
 							                      LoggingTag.Pop();
 												  mres[index].Set();
 						                      });
@@ -244,18 +247,17 @@ namespace CG_2IV05.Common
 				for (int i = 0; i < split.Length; i++)
 				{
 					Children.Add(childs[i]);
-					height = Math.Max(heights[i] + 1, height);	
+					heights[i] = outHeights[i];
 				}
 			}
 			else
 			{
 				for (int i = 0; i < split.Length; i++)
 				{
-					LoggingTag.Push(LoggingTag.CurrentContext + "_" + i.ToString());
+					LoggingTag.Push(LoggingTag.CurrentContext + i.ToString());
 					Node child = new Node(split[i], this, textureInfo, splitDirection, depth + 1, out usedVersion[i], out heights[i]);
 					LoggingTag.Pop();
 					Children.Add(child);
-					height = Math.Max(heights[i] + 1, height);
 				}
 			}
 		}

@@ -57,6 +57,7 @@
     <Compile Include="NodeDataTest.cs" />
     <Compile Include="PolygonTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Simplication2Test.cs" />
     <Compile Include="SkipListTest.cs" />
   </ItemGroup>
   <ItemGroup>

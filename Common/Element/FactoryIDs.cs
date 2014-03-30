@@ -10,6 +10,7 @@ namespace CG_2IV05.Common.Element
 	{
 		//Local IDs
 		public const int ElementListID = 001;
+		public const int TestID = 002;
 		//BAG IDs
 		public const int BuildingID = 101;
 		//OSM IDs
@@ -17,7 +18,7 @@ namespace CG_2IV05.Common.Element
 		public const int LandUseID = 202;
 		public const int Road2ID = 203;
 
-		private static readonly Dictionary<int, IElementFactory> factories = new Dictionary<int, IElementFactory>()
+		private static Dictionary<int, IElementFactory> factories = new Dictionary<int, IElementFactory>()
 			                                                            {
 																			//local IDs
 																			{ElementListID, null},
@@ -37,6 +38,14 @@ namespace CG_2IV05.Common.Element
 		public static List<int> GetFactoryIDs()
 		{
 			return factories.Keys.ToList();
+		}
+
+		public static void AddElementFactory(IElementFactory factory)
+		{
+			if(!factories.ContainsKey(factory.FactoryID))
+			{
+				factories[factory.FactoryID] = factory;
+			}
 		}
 	}
 }

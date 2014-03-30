@@ -88,5 +88,39 @@ namespace CG_2IV05.Test
 			Assert.AreEqual(true, skipList.Contains(11));
 			Assert.AreEqual(false, skipList.Contains(12));
 		}
+
+		[Test]
+		[Repeat(100)]
+		public void testRemoveWithReference()
+		{
+			SkipList<int> skipList = new SkipList<int>();
+			skipList.Insert(10);
+			skipList.Insert(11);
+			SkipListItem<int> item = skipList.Insert(12);
+			skipList.Insert(11);
+
+			item.RemoveFromList();
+
+			var enumerator = skipList.GetEnumerator();
+			Assert.AreEqual(true, enumerator.MoveNext()); Assert.AreEqual(10, enumerator.Current);
+			Assert.AreEqual(true, enumerator.MoveNext()); Assert.AreEqual(11, enumerator.Current);
+			Assert.AreEqual(true, enumerator.MoveNext()); Assert.AreEqual(11, enumerator.Current);
+		}
+
+		[Test]
+		[Repeat(100)]
+		[ExpectedException(typeof(InvalidOperationException))]
+		public void TestRemoveTwice()
+		{
+			SkipList<int> skipList = new SkipList<int>();
+			SkipListItem<int> item1 = skipList.Insert(11);
+			SkipListItem<int> item2 = skipList.Insert(12);
+
+			item1.RemoveFromList();
+			item2.RemoveFromList();
+			Assert.AreEqual(false, item1.InSkipList);
+			Assert.AreEqual(false, item2.InSkipList);
+			item1.RemoveFromList();
+		}
 	}
 }
