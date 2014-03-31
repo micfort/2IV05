@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.OSM;
 using micfort.GHL.Math2;
@@ -268,7 +269,7 @@ namespace CG_2IV05.Common.Element
 		private FileStream _s;
 		public FileElementListEnumerator(string filename)
 		{
-			this._s = File.OpenRead(filename);
+			this._s = new FileStream(filename, FileMode.Open, FileSystemRights.Read, FileShare.Read, 1024*1024, FileOptions.SequentialScan);
 			Reset();
 			Current = null;
 		}

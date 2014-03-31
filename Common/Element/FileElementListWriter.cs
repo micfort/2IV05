@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using micfort.GHL.Math2;
 
@@ -19,13 +20,15 @@ namespace CG_2IV05.Common.Element
 		{
 			if(append && File.Exists(filename))
 			{
-				_stream = new FileStream(filename, FileMode.Append, FileAccess.ReadWrite);
+				_stream = new FileStream(filename, FileMode.Append, FileSystemRights.Modify, FileShare.None, 1024*1024,
+				                         FileOptions.None);
 				ReadMetaData();
 				_stream.Position = _stream.Length;
 			}
 			else
 			{
-				_stream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite);
+				_stream = new FileStream(filename, FileMode.Create, FileSystemRights.Modify, FileShare.None, 1024*1024,
+				                         FileOptions.None);
 				WriteMetadata();
 			}
 			
