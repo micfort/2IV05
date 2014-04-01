@@ -76,7 +76,7 @@ namespace CG_2IV05.Common
 			{
 				using (FileElementListWriter writer = new FileElementListWriter(filename))
 				{
-					if (heights.Exists(x => x == 0))
+					if (heights.Exists(x => x == 0) && TreeBuildingSettings.SimplifySingleElements)
 					{
 						#region First step (convex hulls)
 
@@ -193,7 +193,7 @@ namespace CG_2IV05.Common
 			//for every factory
 			foreach (int factoryID in factorys)
 			{
-				if(factoryID == FactoryIDs.BuildingID || factoryID == FactoryIDs.TestID)//debug (this only can be done for buildings, the other can't be merged yet)
+				if(factoryID == FactoryIDs.BuildingID || factoryID == FactoryIDs.TestID || factoryID == FactoryIDs.TestViewID)//debug (this only can be done for buildings, the other can't be merged yet)
 				{
 					//get the correct list
 					List<Item> items = itemsLists[factoryID];

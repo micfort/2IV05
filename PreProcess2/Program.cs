@@ -17,6 +17,7 @@ namespace CG_2IV05.PreProcess2
 		private static string Bin2Filename = string.Empty;
 		private static string UpgradeRoad = string.Empty;
 		private static bool Generate = false;
+		private static bool GenerateSquares = false;
 		private static bool Input = false;
 		static void Main(string[] args)
 		{
@@ -110,6 +111,11 @@ namespace CG_2IV05.PreProcess2
 						Console.Out.WriteLine("Generate buildings");
 						Generation.CreateData(element => writer.WriteElement(element));
 					}
+					if (GenerateSquares)
+					{
+						Console.Out.WriteLine("Generate squares");
+						Generation.CreateSquares(element => writer.WriteElement(element));
+					}
 				}
 			}
 			{
@@ -164,6 +170,11 @@ namespace CG_2IV05.PreProcess2
 				{
 					i++;
 					UpgradeRoad = args[i];
+					Input = true;
+				}
+				else if( args[i] == "--gen-squares")
+				{
+					GenerateSquares = true;
 					Input = true;
 				}
 				else if (args[i] == "--GEN")

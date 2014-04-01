@@ -22,7 +22,9 @@ namespace CG_2IV05.Visualize
 		private Thread thread;
 		private LoadListAlgorithm<NodeWithData> loadListAlgorithm = new LoadListAlgorithm<NodeWithData>()
 			                                                            {
-				                                                            DistanceModifier = 1000,
+																			//DistanceModifierConstant = -1000,
+				                                                            DistanceModifierLinear = 1000,
+																			//DistanceModifierQuadratic = 0.5f,
 																			MaxDistanceError = 10000000
 			                                                            };
 
@@ -33,8 +35,8 @@ namespace CG_2IV05.Visualize
 		public VBOLoader Loader { get; set; }
 		public float DistanceModifier
 		{
-			get { return loadListAlgorithm.DistanceModifier; }
-			set { loadListAlgorithm.DistanceModifier = value; }
+			get { return loadListAlgorithm.DistanceModifierLinear; }
+			set { loadListAlgorithm.DistanceModifierLinear = value; }
 		}
 
 		public float MaxDistanceError

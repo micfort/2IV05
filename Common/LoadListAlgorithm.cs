@@ -17,13 +17,16 @@ namespace CG_2IV05.Common
 		Node Node { get; set; }
 	}
 	public class LoadListAlgorithm<TNodeWithData>
-		where TNodeWithData : INodeWithData, new()
+		where TNodeWithData : class, INodeWithData, new()
 	{
-		public float DistanceModifier { get; set; }
+		public float DistanceModifierConstant { get; set; }
+		public float DistanceModifierLinear { get; set; }
+		public float DistanceModifierQuadratic { get; set; }
 		public float MaxDistanceError { get; set; }
 
 		public List<ReplaceNode<TNodeWithData>> DetermineCompleteLoadList(Tree tree, HyperPoint<float> position, List<TNodeWithData> LoadedList)
 		{
+			position.Z = 0;
 			List<ReplaceNode<TNodeWithData>> replaceList = new List<ReplaceNode<TNodeWithData>>();
 			DetermineLoadList(tree.Root, position, replaceList, LoadedList);
 			return replaceList;
@@ -31,19 +34,14 @@ namespace CG_2IV05.Common
 
 		private void DetermineLoadList(Node node, HyperPoint<float> position, List<ReplaceNode<TNodeWithData>> loadList, List<TNodeWithData> LoadedList)
 		{
-			float distanceError = DistanceToNode(node, position) * DistanceModifier;
+			float distanceError = CalculateDistanceError(node, position);
 			if (distanceError > MaxDistanceError)
 			{
-				if (LoadedList.Exists(x => x.Node == node))
-				{
-					List<TNodeWithData> unloadList = new List<TNodeWithData>() { LoadedList.Find(x => x.Node == node) };
-					List<TNodeWithData> newLoadList = new List<TNodeWithData>();
-					foreach (Node child in node.Children)
-					{
-						DetermineUnloadListForLoadingParent(child, unloadList, LoadedList);
-					}
-					loadList.Add(new ReplaceNode<TNodeWithData>() { OriginalNodes = unloadList, ReplaceBy = newLoadList });
-				}
+				List<TNodeWithData> unloadList = new List<TNodeWithData>();
+				List<TNodeWithData> newLoadList = new List<TNodeWithData>();
+				DetermineUnloadListForError(node, unloadList, LoadedList);
+
+				if (unloadList.Any()) loadList.Add(new ReplaceNode<TNodeWithData>() { OriginalNodes = unloadList, ReplaceBy = newLoadList });
 			}
 			else if (distanceError < node.Error && node.Children != null && node.Children.Count > 0)
 			{
@@ -53,7 +51,7 @@ namespace CG_2IV05.Common
 					List<TNodeWithData> newLoadList = new List<TNodeWithData>();
 					foreach (Node child in node.Children)
 					{
-						DetermineLoadListForUnloadingParent(child, position, newLoadList, LoadedList);
+						DetermineLoadListForUnloadingParent(child, position, newLoadList, unloadList, LoadedList);
 					}
 					loadList.Add(new ReplaceNode<TNodeWithData>() { OriginalNodes = unloadList, ReplaceBy = newLoadList });
 				}
@@ -80,18 +78,18 @@ namespace CG_2IV05.Common
 			}
 		}
 
-		private void DetermineLoadListForUnloadingParent(Node node, HyperPoint<float> position, List<TNodeWithData> loadList, List<TNodeWithData> LoadedList)
+		private void DetermineLoadListForUnloadingParent(Node node, HyperPoint<float> position, List<TNodeWithData> loadList, List<TNodeWithData> unloadList, List<TNodeWithData> LoadedList)
 		{
-			float distanceError = DistanceToNode(node, position) * DistanceModifier;
+			float distanceError = CalculateDistanceError(node, position);
 			if (distanceError > MaxDistanceError)
 			{
-				return;
+				DetermineUnloadListForError(node, unloadList, LoadedList);
 			}
-			if (distanceError < node.Error && node.Children != null && node.Children.Count > 0)
+			else if (distanceError < node.Error && node.Children != null && node.Children.Count > 0)
 			{
 				foreach (Node child in node.Children)
 				{
-					DetermineLoadListForUnloadingParent(child, position, loadList, LoadedList);
+					DetermineLoadListForUnloadingParent(child, position, loadList, unloadList, LoadedList);
 				}
 			}
 			else
@@ -106,13 +104,28 @@ namespace CG_2IV05.Common
 			{
 				unLoadList.Add(LoadedList.Find(x => x.Node == node));
 			}
-			else
+			foreach (Node child in node.Children)
 			{
-				foreach (Node child in node.Children)
-				{
-					DetermineUnloadListForLoadingParent(child, unLoadList, LoadedList);
-				}
+				DetermineUnloadListForLoadingParent(child, unLoadList, LoadedList);
 			}
+		}
+
+		private void DetermineUnloadListForError(Node node, List<TNodeWithData> unLoadList, List<TNodeWithData> LoadedList)
+		{
+			var nwd = LoadedList.Find(x => x.Node == node);
+			if (nwd != null)
+			{
+				unLoadList.Add(nwd);
+			}
+			node.Children.ForEach(x => DetermineUnloadListForError(x, unLoadList, LoadedList));
+		}
+
+		private float CalculateDistanceError(Node node, HyperPoint<float> position)
+		{
+			float distance = DistanceToNode(node, position);
+			float distanceError = distance * distance * DistanceModifierQuadratic + distance * DistanceModifierLinear + DistanceModifierConstant;
+			distanceError = Math.Max(0, distanceError);
+			return distanceError;
 		}
 
 		private float DistanceToNode(Node node, HyperPoint<float> position)

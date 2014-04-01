@@ -101,6 +101,7 @@ namespace CG_2IV05.Visualize
 			GL.Enable(EnableCap.Normalize);
 			GL.Enable(EnableCap.Texture2D);
 			GL.ShadeModel(ShadingModel.Flat);
+			
 
 			GL.Enable(EnableCap.Lighting);
 			GL.Enable(EnableCap.Light0);
@@ -266,7 +267,7 @@ namespace CG_2IV05.Visualize
             {
                 speed = 50.0f;
             }
-            manager.Position = CameraPos.ToHyperPoint();
+			manager.Position = CameraPos.ToHyperPoint();
             lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + CurDirection, Vector3.UnitZ);
         }
 

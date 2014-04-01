@@ -137,6 +137,10 @@ namespace CG_2IV05.TreeBuilding
 					i++;
 					TreeBuildingSettings.MinCurrentDepthForData = int.Parse(args[i]);
 	            }
+				else if (args[i] == "--simplify-single" || args[i] == "-s")
+				{
+					TreeBuildingSettings.SimplifySingleElements = false;
+				}
             }
         }
     }

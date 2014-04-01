@@ -94,6 +94,7 @@
     <Compile Include="Simplification1.cs" />
     <Compile Include="Simplification2.cs" />
     <Compile Include="SkipList.cs" />
+    <Compile Include="TestElement\TestElement.cs" />
     <Compile Include="TextureInfo.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="TreeBuildingSettings.cs" />
