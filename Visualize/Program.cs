@@ -15,7 +15,13 @@ namespace CG_2IV05.Visualize
 		static void Main(string[] args)
 		{
 			micfort.GHL.GHLWindowsInit.Init();
-			ErrorReporting.Instance.Engine = new TextWriterLoggingEngine(Console.Out);
+			ErrorReporting.Instance.Engine = new MultipleLoggingEngine(new TextWriterLoggingEngine(Console.Out),
+			                                                           new TextWriterLoggingEngine(
+				                                                           new StreamWriter(new FileStream("visualize.log",
+				                                                                                           FileMode.OpenOrCreate,
+				                                                                                           FileAccess.ReadWrite,
+				                                                                                           FileShare.Delete, 1024*4,
+				                                                                                           FileOptions.WriteThrough))));
 
 			ParseCommandLine(args);
 

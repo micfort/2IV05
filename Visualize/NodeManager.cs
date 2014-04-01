@@ -68,8 +68,15 @@ namespace CG_2IV05.Visualize
 		{
 			while (running)
 			{
-				List<ReplaceNode<NodeWithData>> replaceList = loadListAlgorithm.DetermineCompleteLoadList(Tree, Position, VBOList);
-				loadAlgorithm.LoadItems(VBOList, ReleaseNodes, replaceList, Position);
+				try
+				{
+					List<ReplaceNode<NodeWithData>> replaceList = loadListAlgorithm.DetermineCompleteLoadList(Tree, Position, VBOList);
+					loadAlgorithm.LoadItems(VBOList, ReleaseNodes, replaceList, Position);
+				}
+				catch (Exception e)
+				{
+					ErrorReporting.Instance.ReportErrorT("Node manager", "an exception is thrown", e);
+				}
 				Thread.Sleep(1000 / 30);
 			}
 			threadFinished.Set();
