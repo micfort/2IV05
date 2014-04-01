@@ -47,11 +47,7 @@ namespace CG_2IV05.Common.BAG
                 }
             }
 
-            allBoroughs = allBoroughs.OrderBy(b => (b.Location - new HyperPoint<float>(0, 0)).GetLength()).ToList();
-            foreach (Borough b in allBoroughs)
-            {
-                Console.Out.WriteLine(b.Name + ": " + b.Location.GetLength());
-            }
+            allBoroughs = allBoroughs.OrderBy(b => b.Name).ToList();
             initBoroughKDTree();
         }
 

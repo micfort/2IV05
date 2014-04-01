@@ -324,12 +324,12 @@ namespace CG_2IV05.Visualize
             {
                 this.mouseControl = true;
             }
-            else if (e.Button == MouseButtons.Left)
-            {
-                this.CameraPos.Z = 1.75f;
-                manager.Position = CameraPos.ToHyperPoint();
-                lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
-            }
+//            else if (e.Button == MouseButtons.Left)
+//            {
+//                this.CameraPos.Z = 1.75f;
+//                manager.Position = CameraPos.ToHyperPoint();
+//                lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
+//            }
 	    }
         
         public void OnMouseUp(object sender, MouseEventArgs e)
