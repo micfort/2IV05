@@ -16,6 +16,9 @@ namespace TreeViewer
 		#region Implementation of INodeWithData
 
 		public Node Node { get; set; }
+		public void LoadNodeFromDisc()
+		{
+		}
 
 		#endregion
 	}

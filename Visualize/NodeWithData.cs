@@ -22,15 +22,6 @@ namespace CG_2IV05.Visualize
             this.vbo = vbo;
         }
 
-        public void loadNodeFromDisc()
-        {
-			if(vbo == null)
-			{
-				vbo = OnDemand<VBO>.Create();
-			}
-            vbo.LoadData(node.ReadRawData());
-        }
-
 		public void ReleaseVBO()
 		{
 			OnDemand<VBO>.Release(vbo);
@@ -44,6 +35,15 @@ namespace CG_2IV05.Visualize
 		    get { return node; }
 		    set { node = value; }
 	    }
+
+		public void LoadNodeFromDisc()
+		{
+			if (vbo == null)
+			{
+				vbo = OnDemand<VBO>.Create();
+			}
+			vbo.LoadData(node.ReadRawData());
+		}
 
 	    #endregion
     }

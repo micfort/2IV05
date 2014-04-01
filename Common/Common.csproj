@@ -78,6 +78,7 @@
     <Compile Include="Element\FactoryIDs.cs" />
     <Compile Include="FilenameGenerator.cs" />
     <Compile Include="HyperPointSerializable.cs" />
+    <Compile Include="LoadAlgorithms.cs" />
     <Compile Include="LoadListAlgorithm.cs" />
     <Compile Include="LoggingTag.cs" />
     <Compile Include="Node.cs" />

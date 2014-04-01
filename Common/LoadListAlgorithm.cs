@@ -15,6 +15,8 @@ namespace CG_2IV05.Common
 	public interface INodeWithData
 	{
 		Node Node { get; set; }
+
+		void LoadNodeFromDisc();
 	}
 	public class LoadListAlgorithm<TNodeWithData>
 		where TNodeWithData : class, INodeWithData, new()
@@ -122,27 +124,10 @@ namespace CG_2IV05.Common
 
 		private float CalculateDistanceError(Node node, HyperPoint<float> position)
 		{
-			float distance = DistanceToNode(node, position);
+			float distance = node.DistanceToNode(position);
 			float distanceError = distance * distance * DistanceModifierQuadratic + distance * DistanceModifierLinear + DistanceModifierConstant;
 			distanceError = Math.Max(0, distanceError);
 			return distanceError;
-		}
-
-		private float DistanceToNode(Node node, HyperPoint<float> position)
-		{
-			//todo set bounding box of node
-			return DistanceToSquare(node.Min, node.Max, position);
-		}
-
-		private float DistanceToSquare(HyperPoint<float> p1, HyperPoint<float> p2, HyperPoint<float> position)
-		{
-			HyperPoint<float> b = p2 - p1;
-			HyperPoint<float> p = position - p1;
-			HyperPoint<float> abs_p = new HyperPoint<float>(Math.Abs(p.X), Math.Abs(p.Y), Math.Abs(p.Z));
-			HyperPoint<float> sub = abs_p - b;
-			HyperPoint<float> max = new HyperPoint<float>(Math.Max(sub.X, 0f), Math.Max(sub.Y, 0f), Math.Max(sub.Z, 0f));
-			double distance = Math.Sqrt(max.X * max.X + max.Y * max.Y + max.Z * max.Z);
-			return Convert.ToSingle(distance);
 		}
 	}
 }

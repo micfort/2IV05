@@ -36,7 +36,7 @@ namespace CG_2IV05.Visualize
 				context = new GraphicsContext(GraphicsMode.Default, window.WindowInfo);
 				context.MakeCurrent(window.WindowInfo);
 			}
-			data.loadNodeFromDisc();
+			data.LoadNodeFromDisc();
 		    lock (VBOList)
 		    {
 				VBOList.Add(data);    
