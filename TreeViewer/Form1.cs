@@ -30,14 +30,13 @@ namespace TreeViewer
 
 		private void btnOpen_Click(object sender, EventArgs e)
 		{
-			//OpenFileDialog dialog = new OpenFileDialog();
-			//if(dialog.ShowDialog() == DialogResult.OK)
+			OpenFileDialog dialog = new OpenFileDialog();
+			if(dialog.ShowDialog() == DialogResult.OK)
 			{
-				string treePath = @"D:\S120397\School\2IV05 ACCG\2IV05\TreeBuilding\bin\Debug\output\tree";
-				using (FileStream file = File.OpenRead(treePath))
+				using (FileStream file = File.OpenRead(dialog.FileName))
 				{
 					this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
-					TreeBuildingSettings.DirectoryOutput = Path.GetDirectoryName(treePath);
+					TreeBuildingSettings.DirectoryOutput = Path.GetDirectoryName(dialog.FileName);
 				}
 
 				this.CurrentNode = this.tree.Root;
@@ -130,6 +129,12 @@ namespace TreeViewer
 
 		private void UpdateImage()
 		{
+			Image img = GetImage();
+			pictureBox1.Image = img;
+		}
+
+		private Image GetImage()
+		{
 			AdjacencyGraph<Node, Edge> adjacencyGraph = new AdjacencyGraph<Node, Edge>();
 			adjacencyGraph.AddVertex(this.tree.Root);
 			AddEdges(adjacencyGraph, this.tree.Root);
@@ -149,8 +154,7 @@ namespace TreeViewer
 			// render
 			graphviz.Generate(visualiser, "");
 
-			Image img = visualiser.OutputImage;
-			pictureBox1.Image = img;
+			return visualiser.OutputImage;
 		}
 
 		private void btnUpdateLoadedItems_Click(object sender, EventArgs e)
@@ -193,6 +197,16 @@ namespace TreeViewer
 				UpdateChilds();
 				UpdateInformation();
 				UpdateImage();
+			}
+		}
+
+		private void btnSaveImage_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog dialog = new SaveFileDialog();
+			dialog.Filter = "Image Files(*.png;*.bmp;*.jpg;*.gif)|*.png;*.bmp;*.jpg;*.gif|All files (*.*)|*.*";
+			if(dialog.ShowDialog() == DialogResult.OK)
+			{
+				GetImage().Save(dialog.FileName);
 			}
 		}
 	}

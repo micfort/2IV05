@@ -50,6 +50,7 @@
 			this.tbPosX = new System.Windows.Forms.TextBox();
 			this.btnChild0 = new System.Windows.Forms.Button();
 			this.btnChild1 = new System.Windows.Forms.Button();
+			this.btnSaveImage = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -268,11 +269,22 @@
 			this.btnChild1.UseVisualStyleBackColor = true;
 			this.btnChild1.Click += new System.EventHandler(this.btnChild1_Click);
 			// 
+			// btnSaveImage
+			// 
+			this.btnSaveImage.Location = new System.Drawing.Point(133, 12);
+			this.btnSaveImage.Name = "btnSaveImage";
+			this.btnSaveImage.Size = new System.Drawing.Size(75, 23);
+			this.btnSaveImage.TabIndex = 13;
+			this.btnSaveImage.Text = "Save image";
+			this.btnSaveImage.UseVisualStyleBackColor = true;
+			this.btnSaveImage.Click += new System.EventHandler(this.btnSaveImage_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(885, 550);
+			this.Controls.Add(this.btnSaveImage);
 			this.Controls.Add(this.btnChild1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnChild0);
@@ -318,6 +330,7 @@
 		private System.Windows.Forms.TextBox tbMaxError;
 		private System.Windows.Forms.Button btnChild0;
 		private System.Windows.Forms.Button btnChild1;
+		private System.Windows.Forms.Button btnSaveImage;
 	}
 }
 
