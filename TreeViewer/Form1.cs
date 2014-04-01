@@ -163,7 +163,7 @@ namespace TreeViewer
 			this.LoadedData = new List<NodeWithData>();
 
 			LoadListAlgorithm<NodeWithData> loadListAlgorithm = new LoadListAlgorithm<NodeWithData>();
-			loadListAlgorithm.DistanceModifier = float.Parse(tbErrorPerMeter.Text);
+			loadListAlgorithm.DistanceModifierLinear = float.Parse(tbErrorPerMeter.Text);
 			loadListAlgorithm.MaxDistanceError = float.Parse(tbMaxError.Text);
 			List<ReplaceNode<NodeWithData>> loadItems = loadListAlgorithm.DetermineCompleteLoadList(this.tree, position, LoadedData);
 			foreach (ReplaceNode<NodeWithData> replaceNode in loadItems)

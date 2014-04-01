@@ -299,5 +299,21 @@ namespace CG_2IV05.Common
                 return NodeDataRaw.ReadFromStream(file);
             }
         }
+
+		public float DistanceToNode(HyperPoint<float> position)
+		{
+			return DistanceToSquare(Min, Max, position);
+		}
+
+		private float DistanceToSquare(HyperPoint<float> p1, HyperPoint<float> p2, HyperPoint<float> position)
+		{
+			HyperPoint<float> b = p2 - p1;
+			HyperPoint<float> p = position - p1;
+			HyperPoint<float> abs_p = new HyperPoint<float>(Math.Abs(p.X), Math.Abs(p.Y), Math.Abs(p.Z));
+			HyperPoint<float> sub = abs_p - b;
+			HyperPoint<float> max = new HyperPoint<float>(Math.Max(sub.X, 0f), Math.Max(sub.Y, 0f), Math.Max(sub.Z, 0f));
+			double distance = Math.Sqrt(max.X * max.X + max.Y * max.Y + max.Z * max.Z);
+			return Convert.ToSingle(distance);
+		}
     }
 }

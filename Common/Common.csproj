@@ -78,6 +78,7 @@
     <Compile Include="Element\FactoryIDs.cs" />
     <Compile Include="FilenameGenerator.cs" />
     <Compile Include="HyperPointSerializable.cs" />
+    <Compile Include="LoadAlgorithms.cs" />
     <Compile Include="LoadListAlgorithm.cs" />
     <Compile Include="LoggingTag.cs" />
     <Compile Include="Node.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Simplification1.cs" />
     <Compile Include="Simplification2.cs" />
     <Compile Include="SkipList.cs" />
+    <Compile Include="TestElement\TestElement.cs" />
     <Compile Include="TextureInfo.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="TreeBuildingSettings.cs" />

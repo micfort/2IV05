@@ -62,11 +62,10 @@ namespace CG_2IV05.Visualize
 			vbos = new List<NodeWithData>();
 			releaseNodes = new List<NodeWithData>();
 
-            string treePath = @"D:\Documents\CSE\Additional Computer Graphics Components\Visualizing the Netherlands\2IV05\data sets\tree\tree";
-			using (FileStream file = File.OpenRead(treePath))
+			using (FileStream file = File.OpenRead(VisualizeSettings.TreePath)) 
 			{
 				this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
-				TreeBuildingSettings.DirectoryOutput = Path.GetDirectoryName(treePath);
+				TreeBuildingSettings.DirectoryOutput = Path.GetDirectoryName(VisualizeSettings.TreePath);
 			}
 
 			//using (FileStream file = File.OpenRead(@"output\data_13"))

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using CG_2IV05.Common.BAG;
 using CG_2IV05.Common.OSM;
+using CG_2IV05.Common.TestElement;
 
 namespace CG_2IV05.Common.Element
 {
@@ -11,6 +12,7 @@ namespace CG_2IV05.Common.Element
 		//Local IDs
 		public const int ElementListID = 001;
 		public const int TestID = 002;
+		public const int TestViewID = 003;
 		//BAG IDs
 		public const int BuildingID = 101;
 		//OSM IDs
@@ -18,10 +20,12 @@ namespace CG_2IV05.Common.Element
 		public const int LandUseID = 202;
 		public const int Road2ID = 203;
 
+
 		private static Dictionary<int, IElementFactory> factories = new Dictionary<int, IElementFactory>()
 			                                                            {
 																			//local IDs
 																			{ElementListID, null},
+																			{TestViewID, new TestElementFactory()},
 																			//BAG IDs 
 				                                                            {BuildingID, new BuildingFactory()},
 																			//OSM IDs

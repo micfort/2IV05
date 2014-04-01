@@ -22,9 +22,13 @@ namespace CG_2IV05.Visualize
 		private Thread thread;
 		private LoadListAlgorithm<NodeWithData> loadListAlgorithm = new LoadListAlgorithm<NodeWithData>()
 			                                                            {
-				                                                            DistanceModifier = 1000,
+																			//DistanceModifierConstant = -1000,
+				                                                            DistanceModifierLinear = 1000,
+																			//DistanceModifierQuadratic = 0.5f,
 																			MaxDistanceError = 10000000
 			                                                            };
+
+		private ILoadAlgorithm<NodeWithData> loadAlgorithm = new ClosestLoadAlgorithm<NodeWithData>(); 
 
 		public HyperPoint<float> Position { get; set; }
 		public Tree Tree { get; set; }
@@ -33,8 +37,8 @@ namespace CG_2IV05.Visualize
 		public VBOLoader Loader { get; set; }
 		public float DistanceModifier
 		{
-			get { return loadListAlgorithm.DistanceModifier; }
-			set { loadListAlgorithm.DistanceModifier = value; }
+			get { return loadListAlgorithm.DistanceModifierLinear; }
+			set { loadListAlgorithm.DistanceModifierLinear = value; }
 		}
 
 		public float MaxDistanceError
@@ -47,7 +51,7 @@ namespace CG_2IV05.Visualize
 		{
 			NodeWithData nodeWithData = new NodeWithData();
 			nodeWithData.node = Tree.Root;
-			nodeWithData.loadNodeFromDisc();
+			nodeWithData.LoadNodeFromDisc();
 			lock (VBOList)
 			{
 				VBOList.Add(nodeWithData);
@@ -64,47 +68,9 @@ namespace CG_2IV05.Visualize
 		{
 			while (running)
 			{
-				List<ReplaceNode<NodeWithData>> newLoadedList = loadListAlgorithm.DetermineCompleteLoadList(Tree, Position, VBOList);
-				foreach (ReplaceNode<NodeWithData> replaceNode in newLoadedList)
-				{
-					ErrorReporting.Instance.ReportDebugT(this,
-					                                     "Load nodes from disc " +
-					                                     replaceNode.ReplaceBy.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
-					foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
-					{
-						nodeWithData.loadNodeFromDisc();
-					}
-				}
-
-				foreach (ReplaceNode<NodeWithData> replaceNode in newLoadedList)
-				{
-					lock (VBOList)
-					{
-						foreach (NodeWithData nodeWithData in replaceNode.ReplaceBy)
-						{
-							VBOList.Add(nodeWithData);
-						}
-						foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
-						{
-							VBOList.Remove(originalNode);
-						}
-					}
-				}
-
-				foreach (ReplaceNode<NodeWithData> replaceNode in newLoadedList)
-				{
-					ErrorReporting.Instance.ReportDebugT(this,
-					                                     "Unload nodes " +
-					                                     replaceNode.OriginalNodes.Aggregate("", (s, data) => s + ", " + data.node.NodeDataFile));
-					lock (ReleaseNodes)
-					{
-						foreach (NodeWithData originalNode in replaceNode.OriginalNodes)
-						{
-							ReleaseNodes.Add(originalNode);
-						}
-					}
-				}
-				Thread.Sleep(1000/10);
+				List<ReplaceNode<NodeWithData>> replaceList = loadListAlgorithm.DetermineCompleteLoadList(Tree, Position, VBOList);
+				loadAlgorithm.LoadItems(VBOList, ReleaseNodes, replaceList, Position);
+				Thread.Sleep(1000 / 30);
 			}
 			threadFinished.Set();
 		}
