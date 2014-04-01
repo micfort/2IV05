@@ -29,11 +29,14 @@ namespace CG_2IV05.Visualize.Interface
 
         public void updateSettingsControl(Vector3 cameraPos)
         {
-            LocationX.Text = cameraPos.X.ToString();
-            LocationY.Text = cameraPos.Y.ToString();
+            LocationX.Text = (cameraPos.X + game.Tree.centerData.Value.X).ToString();
+            LocationY.Text = (cameraPos.Y + game.Tree.centerData.Value.Y).ToString();
             LocationZ.Text = cameraPos.Z.ToString();
-            
-            String nearestBorough = boroughs.findNearestBorough(cameraPos);
+
+	        String nearestBorough =
+		        boroughs.findNearestBorough(cameraPos +
+		                                    new Vector3(this.game.Tree.centerData.Value.X, this.game.Tree.centerData.Value.Y,
+		                                                0));
             currentLocationTB.Text = nearestBorough;
 
             Game.ViewMode curMode = game.getCurrentViewMode();

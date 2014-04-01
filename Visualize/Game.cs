@@ -35,7 +35,7 @@ namespace CG_2IV05.Visualize
         public enum ViewMode{ Roaming, Walking, TopDown };       
         private ViewMode viewMode = ViewMode.Roaming;
 
-		private Tree tree;
+	    public Tree Tree { get; private set; }
 		public NodeManager manager;
 		private Settings settingsForm;
 
@@ -64,7 +64,7 @@ namespace CG_2IV05.Visualize
 
 			using (FileStream file = File.OpenRead(VisualizeSettings.TreePath)) 
 			{
-				this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
+				this.Tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
 				TreeBuildingSettings.DirectoryOutput = Path.GetDirectoryName(VisualizeSettings.TreePath);
 			}
 
@@ -75,7 +75,7 @@ namespace CG_2IV05.Visualize
 			//}
 
 			manager = new NodeManager();
-			manager.Tree = tree;
+			manager.Tree = Tree;
 			manager.VBOList = vbos;
 			manager.ReleaseNodes = releaseNodes;
 			manager.Position = CameraPos.ToHyperPoint();
@@ -367,8 +367,8 @@ namespace CG_2IV05.Visualize
 
         public HyperPoint<float> getDataCenter()
         {
-            if(tree.centerData != null)
-                return tree.centerData;
+            if(Tree.centerData != null)
+                return Tree.centerData;
 
             return new HyperPoint<float>(0,0);
         } 
