@@ -70,7 +70,7 @@ namespace CG_2IV05.Visualize
 			{
 				List<ReplaceNode<NodeWithData>> replaceList = loadListAlgorithm.DetermineCompleteLoadList(Tree, Position, VBOList);
 				loadAlgorithm.LoadItems(VBOList, ReleaseNodes, replaceList, Position);
-				Thread.Sleep(1000 / 10);
+				Thread.Sleep(1000 / 30);
 			}
 			threadFinished.Set();
 		}
