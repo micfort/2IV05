@@ -25,12 +25,15 @@ namespace CG_2IV05.Visualize
 		public Vector3 CameraPos = Vector3.Zero;
 		private Vector2 Mouse;
 		private Vector2? LastMousePos;
-	    private Vector3 CurDirection = Vector3.UnitX;
+	    private Vector3 viewDirection = Vector3.UnitX;
 		private Matrix4 lookAtMatrix;
 		private int texture;
-		private float speed = 10f;
+		private float speed = 0.5f;
 		private List<NodeWithData> vbos;
 		private List<NodeWithData> releaseNodes; 
+        
+        public enum ViewMode{ Roaming, Walking, TopDown };       
+        private ViewMode viewMode = ViewMode.Roaming;
 
 		private Tree tree;
 		public NodeManager manager;
@@ -59,7 +62,7 @@ namespace CG_2IV05.Visualize
 			vbos = new List<NodeWithData>();
 			releaseNodes = new List<NodeWithData>();
 
-			string treePath = @"D:\S120397\School\2IV05 ACCG\2IV05\TreeBuilding\bin\Debug\output\tree";
+            string treePath = @"D:\Documents\CSE\Additional Computer Graphics Components\Visualizing the Netherlands\2IV05\data sets\tree\tree";
 			using (FileStream file = File.OpenRead(treePath))
 			{
 				this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);
@@ -190,41 +193,82 @@ namespace CG_2IV05.Visualize
 
         public Vector3 GetCurrentDirection()
         {
-            return CurDirection;
+            return viewDirection;
         }
 
 	    public void OnKeyDown(object sender, KeyEventArgs e)
 	    {
             if (!pressedKeys.Contains(e.KeyCode))
                 pressedKeys.Add(e.KeyCode);
+
 	        processPressedKeys();
 	    }
 
         public void OnKeyUp(object sender, KeyEventArgs e)
         {
             pressedKeys.Remove(e.KeyCode);
+            if(e.KeyCode == Keys.Space || e.KeyCode == Keys.NumPad0)
+            {
+                SetNextViewState();
+            }
             processPressedKeys();
         }
 
 	    public void processPressedKeys()
-        {
-            Vector3 SideStep = Vector3.Cross(CurDirection, Vector3.UnitZ);
+	    {
+	        Vector3 forwardDirection = viewDirection;
+            if(viewMode == ViewMode.Walking || viewMode == ViewMode.TopDown){
+                    forwardDirection.Z = 0;
+                    forwardDirection.Normalize();
+            }
+            Vector3 SideStep = Vector3.Cross(forwardDirection, Vector3.UnitZ);
+            SideStep.Normalize();
 
+            Vector3 moveDirection = Vector3.Zero;
             if (pressedKeys.Contains(Keys.Up) || pressedKeys.Contains(Keys.W))
             {
-                this.CameraPos = this.CameraPos + CurDirection * speed;
+                moveDirection += forwardDirection;
             }
             if (pressedKeys.Contains(Keys.Down) || pressedKeys.Contains(Keys.S))
             {
-                this.CameraPos = this.CameraPos - CurDirection * speed;
+                moveDirection -= forwardDirection;
             }
             if (pressedKeys.Contains(Keys.Left) || pressedKeys.Contains(Keys.A))
             {
-                this.CameraPos = this.CameraPos - SideStep * speed;
+                moveDirection -= SideStep;
             }
             if (pressedKeys.Contains(Keys.Right) || pressedKeys.Contains(Keys.D))
             {
-                this.CameraPos = this.CameraPos + SideStep * speed;
+                moveDirection += SideStep;
+            }
+            if (pressedKeys.Contains(Keys.E) || pressedKeys.Contains(Keys.PageUp))
+            {
+                switch (viewMode)
+                {
+                    case ViewMode.Roaming:
+                    case ViewMode.Walking:
+                        moveDirection = (forwardDirection + SideStep);
+                        moveDirection.Normalize();
+                        break;
+                    case ViewMode.TopDown:
+                        moveDirection += Vector3.UnitZ;
+                        break;
+                }
+            }
+            if (pressedKeys.Contains(Keys.Q) || pressedKeys.Contains(Keys.PageDown))
+            {
+                
+                switch (viewMode)
+                {
+                    case ViewMode.Roaming:
+                    case ViewMode.Walking:
+                        moveDirection = (forwardDirection - SideStep);
+                        moveDirection.Normalize();
+                        break;
+                    case ViewMode.TopDown:
+                        moveDirection -= Vector3.UnitZ;
+                        break;
+                }
             }
             if (pressedKeys.Contains(Keys.D1))
             {
@@ -266,8 +310,12 @@ namespace CG_2IV05.Visualize
             {
                 speed = 50.0f;
             }
+            if (CameraPos.Z < 1.75f)
+                CameraPos.Z = 1.75f;
+
+            this.CameraPos = this.CameraPos + moveDirection * speed;
             manager.Position = CameraPos.ToHyperPoint();
-            lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + CurDirection, Vector3.UnitZ);
+            lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
         }
 
 	    public void OnMouseDown(object sender, MouseEventArgs e)
@@ -281,7 +329,7 @@ namespace CG_2IV05.Visualize
             {
                 this.CameraPos.Z = 1.75f;
                 manager.Position = CameraPos.ToHyperPoint();
-                lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + CurDirection, Vector3.UnitZ);
+                lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
             }
 	    }
         
@@ -304,18 +352,18 @@ namespace CG_2IV05.Visualize
                 Vector2 mouseDiff = (new Vector2(e.Location.X, e.Location.Y) - LastMousePos.Value)*(1/50f);
                 Mouse = Mouse + mouseDiff;
 
-                Mouse.Y = MathHelper.Clamp(Mouse.Y, -MathHelper.PiOver2 + float.Epsilon,
-                                           MathHelper.PiOver2 - float.Epsilon);
+                Mouse.Y = MathHelper.Clamp(Mouse.Y, -MathHelper.PiOver2 + 0.01f,
+                                           MathHelper.PiOver2 - 0.01f);
                 LastMousePos = new Vector2(e.Location.X, e.Location.Y);
             }
 
-	        #region CurDirection calculation
+	        #region viewDirection calculation
             Matrix4 Rotation = Matrix4.CreateRotationY(Mouse.Y) * Matrix4.CreateRotationZ(-Mouse.X);
-            CurDirection = Vector3.Transform(Vector3.UnitX, Rotation);
+            viewDirection = Vector3.Transform(Vector3.UnitX, Rotation);
             #endregion
             
             manager.Position = CameraPos.ToHyperPoint();
-            lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + CurDirection, Vector3.UnitZ);
+            lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
 	    }
 
         public HyperPoint<float> getDataCenter()
@@ -325,5 +373,53 @@ namespace CG_2IV05.Visualize
 
             return new HyperPoint<float>(0,0);
         } 
+
+        public void SetNextViewState()
+        {
+            switch (viewMode)
+            {
+                case ViewMode.Roaming:
+                    SetViewMode(ViewMode.Walking);
+                    break;
+                case ViewMode.Walking:
+                    SetViewMode(ViewMode.TopDown);
+                    break;
+                case ViewMode.TopDown:
+                    SetViewMode(ViewMode.Roaming);
+                    break;
+            }
+        }
+
+        public void SetViewMode(ViewMode mode)
+        {
+            switch (mode)
+            {
+                case ViewMode.Roaming:
+                    break;
+                case ViewMode.Walking:
+                    viewDirection.Z = 0;
+                    viewDirection.Normalize();
+                    CameraPos.Z = 1.75f;
+                    Mouse.Y = 0;
+                    break;
+                case ViewMode.TopDown:
+                    viewDirection = -Vector3.UnitZ;
+                    CameraPos.Z = (CameraPos.Z < 500) ? 500 : CameraPos.Z;
+                    Mouse.Y = MathHelper.PiOver2 - 0.01f;
+                    break;
+            }
+
+            viewMode = mode;
+            Matrix4 Rotation = Matrix4.CreateRotationY(Mouse.Y) * Matrix4.CreateRotationZ(-Mouse.X);
+            viewDirection = Vector3.Transform(Vector3.UnitX, Rotation);
+            
+            manager.Position = CameraPos.ToHyperPoint();
+            lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
+        }
+
+        public ViewMode getCurrentViewMode()
+        {
+            return viewMode;
+        }
 	}
 }

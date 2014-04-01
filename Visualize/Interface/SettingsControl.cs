@@ -27,7 +27,7 @@ namespace CG_2IV05.Visualize.Interface
             this.provinceLB.SelectedIndex = 0;
         }
 
-        public void updatePosition(Vector3 cameraPos)
+        public void updateSettingsControl(Vector3 cameraPos)
         {
             LocationX.Text = cameraPos.X.ToString();
             LocationY.Text = cameraPos.Y.ToString();
@@ -35,6 +35,20 @@ namespace CG_2IV05.Visualize.Interface
             
             String nearestBorough = boroughs.findNearestBorough(cameraPos);
             currentLocationTB.Text = nearestBorough;
+
+            Game.ViewMode curMode = game.getCurrentViewMode();
+            switch (curMode)
+            {
+                case Game.ViewMode.Roaming:
+                    radioButtonRoaming.Checked = true;
+                    break;
+                case Game.ViewMode.Walking:
+                    radioButtonWalking.Checked = true;
+                    break;
+                case Game.ViewMode.TopDown:
+                    radioButtonTopDown.Checked = true;
+                    break;
+            }
         }
 
         private void ErrorControl_ValueChanged(object sender, EventArgs e)
@@ -102,6 +116,29 @@ namespace CG_2IV05.Visualize.Interface
             {
                 boroughLB.SelectedIndex = 0;
             }
+        }
+
+        private void radio_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton rb = sender as RadioButton;
+            if (rb != null)
+            {
+                if (rb.Checked)
+                {
+                    if (rb.Text.Equals(radioButtonRoaming.Text))
+                    {
+                        game.SetViewMode(Game.ViewMode.Roaming);
+                    }
+                    else if (rb.Text.Equals(radioButtonWalking.Text))
+                    {
+                        game.SetViewMode(Game.ViewMode.Walking);
+                    }
+                    else if (rb.Text.Equals(radioButtonTopDown.Text))
+                    {
+                        game.SetViewMode(Game.ViewMode.TopDown);
+                    }
+                }
+            }          
         }
     }
 }
