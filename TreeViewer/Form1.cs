@@ -33,7 +33,7 @@ namespace TreeViewer
 			//OpenFileDialog dialog = new OpenFileDialog();
 			//if(dialog.ShowDialog() == DialogResult.OK)
 			{
-				string treePath = @"D:\S120397\School\2IV05 ACCG\2IV05\TreeBuilding\bin\Debug\output\tree";
+                string treePath = @"D:\Documents\CSE\Additional Computer Graphics Components\Visualizing the Netherlands\2IV05\data sets\tree\tree";
 				using (FileStream file = File.OpenRead(treePath))
 				{
 					this.tree = SerializableType<Tree>.DeserializeFromStream(file, BinarySerializableTypeEngine.BinairSerializer);

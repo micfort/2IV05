@@ -35,7 +35,7 @@ namespace CG_2IV05.Common.BAG
         {
             String name = "";
             String province = "";
-            HyperPoint<float> location = new HyperPoint<float>(0,0,0);
+            HyperPoint<float> location = new HyperPoint<float>(0,0);
             while (reader.Read())
             {
                 if (reader.NodeType == XmlNodeType.Element)
@@ -70,7 +70,7 @@ namespace CG_2IV05.Common.BAG
 
         public void UpdateLocationByCenter(HyperPoint<float> center)
         {
-            this.location -= new HyperPoint<float>(center, 0);
+            this.location -= center;
         }
     }
 }

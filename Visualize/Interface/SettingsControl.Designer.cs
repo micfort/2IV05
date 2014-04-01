@@ -187,6 +187,7 @@ namespace CG_2IV05.Visualize.Interface
             this.locationButton.TabIndex = 13;
             this.locationButton.Text = "Go To Location";
             this.locationButton.UseVisualStyleBackColor = true;
+            this.locationButton.Click += new System.EventHandler(this.locationButton_Click);
             // 
             // boroughLB
             // 

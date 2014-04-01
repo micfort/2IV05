@@ -421,5 +421,12 @@ namespace CG_2IV05.Visualize
         {
             return viewMode;
         }
+
+        public void GoToPoint(HyperPoint<float> goToPoint)
+        {
+            this.CameraPos = new Vector3(goToPoint.X, goToPoint.Y, 300);
+            this.manager.Position = this.CameraPos.ToHyperPoint();
+            lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
+        }
 	}
 }

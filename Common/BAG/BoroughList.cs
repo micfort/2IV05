@@ -104,5 +104,11 @@ namespace CG_2IV05.Common.BAG
 
             return "";
         }
+
+        public HyperPoint<float> GoToLocation(string newLocation)
+        {
+            Borough borough = allBoroughs.Find(b => b.Name.Equals(newLocation));
+            return borough.Location;
+        }
     }
 }
