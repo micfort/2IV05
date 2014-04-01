@@ -97,6 +97,7 @@
     <Compile Include="SkyBox.cs" />
     <Compile Include="VBO.cs" />
     <Compile Include="VBOLoader.cs" />
+    <Compile Include="VisualizeSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

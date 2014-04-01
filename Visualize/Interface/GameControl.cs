@@ -40,7 +40,7 @@ namespace CG_2IV05.Visualize.Interface
         private void GameControl_Idle(object sender, EventArgs e)
         {
             game.processPressedKeys();
-            settings.updatePosition(game.CameraPos);
+            settings.updateSettingsControl(game.CameraPos);
             this.Invalidate();
         }
 
@@ -53,6 +53,14 @@ namespace CG_2IV05.Visualize.Interface
         private void GameControl_unload(object sender, EventArgs e)
         {
             game.game_Unload();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Escape)
+                Application.Exit();
+
+            base.OnKeyDown(e);
         }
     }
 }

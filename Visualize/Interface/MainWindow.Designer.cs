@@ -48,21 +48,22 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.settingsControl);
-            this.splitContainer1.Panel1MinSize = 290;
+            this.splitContainer1.Panel1MinSize = 310;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.gameControl);
-            this.splitContainer1.Size = new System.Drawing.Size(984, 561);
-            this.splitContainer1.SplitterDistance = 300;
+            this.splitContainer1.Size = new System.Drawing.Size(1003, 606);
+            this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 0;
             // 
             // settingsControl
             // 
+            this.settingsControl.AutoSize = true;
             this.settingsControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.settingsControl.Location = new System.Drawing.Point(0, 0);
             this.settingsControl.Name = "settingsControl";
-            this.settingsControl.Size = new System.Drawing.Size(300, 561);
+            this.settingsControl.Size = new System.Drawing.Size(310, 606);
             this.settingsControl.TabIndex = 0;
             // 
             // gameControl
@@ -72,7 +73,7 @@
             this.gameControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gameControl.Location = new System.Drawing.Point(0, 0);
             this.gameControl.Name = "gameControl";
-            this.gameControl.Size = new System.Drawing.Size(680, 561);
+            this.gameControl.Size = new System.Drawing.Size(689, 606);
             this.gameControl.TabIndex = 0;
             this.gameControl.VSync = false;
             // 
@@ -80,12 +81,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 561);
+            this.ClientSize = new System.Drawing.Size(1003, 606);
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainWindow";
             this.Text = "MainWindow";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
