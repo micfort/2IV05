@@ -129,6 +129,11 @@ namespace CG_2IV05.Common
 			}
 		}
 
+		private void RemoveFromList(List<TNodeWithData> loadedList, ReplaceNode<TNodeWithData> currentReleaseNode)
+		{
+			loadedList.RemoveAll(x => currentReleaseNode.OriginalNodes.Contains(x));
+		}
+
 		private void ReleaseNode(List<TNodeWithData> releaseNodes, ReplaceNode<TNodeWithData> currentReleaseNode)
 		{
 			ErrorReporting.Instance.ReportDebugT("ClosestLoadAlgorithm",
@@ -147,16 +152,21 @@ namespace CG_2IV05.Common
 
 		public void LoadItems(List<TNodeWithData> loadedList, List<TNodeWithData> releaseNodes, List<ReplaceNode<TNodeWithData>> replaceList, HyperPoint<float> position)
 		{
-			if(replaceList.Any())
+			List<ReplaceNode<TNodeWithData>> loadList = replaceList.FindAll(x => x.ReplaceBy.Any());
+			if (loadList.Any())
 			{
-				replaceList.Sort(new ReplaceNodeComparer(position));
-				ReplaceNode<TNodeWithData> currentReplaceNode = replaceList.First();
-				replaceList.Remove(currentReplaceNode);
+				loadList.Sort(new ReplaceNodeComparer(position));
+				ReplaceNode<TNodeWithData> currentReplaceNode = loadList.First();
+				loadList.Remove(currentReplaceNode);
 
 				LoadNode(loadedList, releaseNodes, currentReplaceNode);
 			}
-
-			replaceList.FindAll(x => x.ReplaceBy.Count == 0).ForEach(x => ReleaseNode(releaseNodes, x));
+			List<ReplaceNode<TNodeWithData>> unloadList = replaceList.FindAll(x => x.ReplaceBy.Count == 0);
+			lock (loadedList)
+			{
+				unloadList.ForEach(x => RemoveFromList(loadedList, x));	
+			}
+			unloadList.ForEach(x => ReleaseNode(releaseNodes, x));
 		}
 
 		#endregion
