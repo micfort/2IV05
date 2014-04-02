@@ -34,10 +34,7 @@ namespace CG_2IV05.Visualize.Interface
             LocationY.Text = (cameraPos.Y + game.Tree.centerData.Value.Y).ToString();
             LocationZ.Text = cameraPos.Z.ToString();
 
-	        String nearestBorough =
-		        boroughs.findNearestBorough(cameraPos +
-		                                    new Vector3(this.game.Tree.centerData.Value.X, this.game.Tree.centerData.Value.Y,
-		                                                0));
+	        String nearestBorough = boroughs.findNearestBorough(cameraPos);
             currentLocationTB.Text = nearestBorough;
 
             Game.ViewMode curMode = game.getCurrentViewMode();
