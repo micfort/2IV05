@@ -169,6 +169,7 @@ namespace CG_2IV05.Visualize.Interface
             this.boroughSearchField.Size = new System.Drawing.Size(127, 20);
             this.boroughSearchField.TabIndex = 10;
             this.boroughSearchField.TextChanged += new System.EventHandler(this.boroughSearchField_TextChanged);
+            this.boroughSearchField.KeyDown += new System.Windows.Forms.KeyEventHandler(this.boroughSearchField_KeyDown);
             // 
             // labelProvince
             // 
