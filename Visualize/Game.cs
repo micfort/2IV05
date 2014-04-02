@@ -324,12 +324,12 @@ namespace CG_2IV05.Visualize
             {
                 this.mouseControl = true;
             }
-            else if (e.Button == MouseButtons.Left)
-            {
-                this.CameraPos.Z = 1.75f;
-                manager.Position = CameraPos.ToHyperPoint();
-                lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
-            }
+//            else if (e.Button == MouseButtons.Left)
+//            {
+//                this.CameraPos.Z = 1.75f;
+//                manager.Position = CameraPos.ToHyperPoint();
+//                lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
+//            }
 	    }
         
         public void OnMouseUp(object sender, MouseEventArgs e)
@@ -419,6 +419,13 @@ namespace CG_2IV05.Visualize
         public ViewMode getCurrentViewMode()
         {
             return viewMode;
+        }
+
+        public void GoToPoint(HyperPoint<float> goToPoint)
+        {
+            this.CameraPos = new Vector3(goToPoint.X, goToPoint.Y, 300);
+            this.manager.Position = this.CameraPos.ToHyperPoint();
+            lookAtMatrix = Matrix4.LookAt(this.CameraPos, this.CameraPos + viewDirection, Vector3.UnitZ);
         }
 	}
 }

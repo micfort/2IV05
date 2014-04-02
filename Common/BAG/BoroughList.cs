@@ -47,7 +47,7 @@ namespace CG_2IV05.Common.BAG
                 }
             }
 
-            allBoroughs.OrderBy(b => b.Name);
+            allBoroughs = allBoroughs.OrderBy(b => b.Name).ToList();
             initBoroughKDTree();
         }
 
@@ -103,6 +103,12 @@ namespace CG_2IV05.Common.BAG
             }
 
             return "";
+        }
+
+        public HyperPoint<float> GoToLocation(string newLocation)
+        {
+            Borough borough = allBoroughs.Find(b => b.Name.Equals(newLocation));
+            return borough.Location;
         }
     }
 }

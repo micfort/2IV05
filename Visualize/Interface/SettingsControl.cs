@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CG_2IV05.Common.BAG;
 using OpenTK;
+using micfort.GHL.Math2;
 
 namespace CG_2IV05.Visualize.Interface
 {
@@ -142,6 +143,16 @@ namespace CG_2IV05.Visualize.Interface
                     }
                 }
             }          
+        }
+
+        private void locationButton_Click(object sender, EventArgs e)
+        {
+            if (boroughLB.SelectedItem != null)
+            {
+                String newLocation = ((Borough) boroughLB.SelectedItem).Name;
+                HyperPoint<float> goToPoint = boroughs.GoToLocation(newLocation);
+                game.GoToPoint(goToPoint);
+            }
         }
     }
 }
