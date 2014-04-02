@@ -10,14 +10,22 @@ namespace CG_2IV05.Common
 	public interface ILoadAlgorithm<TNodeWithData>
 		where TNodeWithData : class, INodeWithData, new()
 	{
-		void LoadItems(List<TNodeWithData> loadedList, List<TNodeWithData> releaseNodes, List<ReplaceNode<TNodeWithData>> replaceList, HyperPoint<float> position);
+		/// <summary>
+		/// Load items in to the loaded list, and add items to the release noded list for release
+		/// </summary>
+		/// <param name="loadedList"></param>
+		/// <param name="releaseNodes"></param>
+		/// <param name="replaceList"></param>
+		/// <param name="position"></param>
+		/// <returns>milliseconds for waiting to the next load</returns>
+		int LoadItems(List<TNodeWithData> loadedList, List<TNodeWithData> releaseNodes, List<ReplaceNode<TNodeWithData>> replaceList, HyperPoint<float> position);
 	}
 	public class AllLoadAlgorithm<TNodeWithData> : ILoadAlgorithm<TNodeWithData>
 		where TNodeWithData : class, INodeWithData, new()
 	{
 		#region Implementation of ILoadAlgorithm<TNodeWithData>
 
-		public void LoadItems(List<TNodeWithData> loadedList, List<TNodeWithData> releaseNodes, List<ReplaceNode<TNodeWithData>> replaceList, HyperPoint<float> position)
+		public int LoadItems(List<TNodeWithData> loadedList, List<TNodeWithData> releaseNodes, List<ReplaceNode<TNodeWithData>> replaceList, HyperPoint<float> position)
 		{
 			foreach (ReplaceNode<TNodeWithData> replaceNode in replaceList)
 			{
@@ -58,6 +66,7 @@ namespace CG_2IV05.Common
 					}
 				}
 			}
+			return 1000/30;
 		}
 
 		#endregion
@@ -150,8 +159,9 @@ namespace CG_2IV05.Common
 		
 		#region Implementation of ILoadAlgorithm<TNodeWithData>
 
-		public void LoadItems(List<TNodeWithData> loadedList, List<TNodeWithData> releaseNodes, List<ReplaceNode<TNodeWithData>> replaceList, HyperPoint<float> position)
+		public int LoadItems(List<TNodeWithData> loadedList, List<TNodeWithData> releaseNodes, List<ReplaceNode<TNodeWithData>> replaceList, HyperPoint<float> position)
 		{
+			int time = 1000/30;
 			List<ReplaceNode<TNodeWithData>> loadList = replaceList.FindAll(x => x.ReplaceBy.Any());
 			if (loadList.Any())
 			{
@@ -160,6 +170,7 @@ namespace CG_2IV05.Common
 				loadList.Remove(currentReplaceNode);
 
 				LoadNode(loadedList, releaseNodes, currentReplaceNode);
+				time = 0;
 			}
 			List<ReplaceNode<TNodeWithData>> unloadList = replaceList.FindAll(x => x.ReplaceBy.Count == 0);
 			lock (loadedList)
@@ -167,6 +178,8 @@ namespace CG_2IV05.Common
 				unloadList.ForEach(x => RemoveFromList(loadedList, x));	
 			}
 			unloadList.ForEach(x => ReleaseNode(releaseNodes, x));
+
+			return time;
 		}
 
 		#endregion
