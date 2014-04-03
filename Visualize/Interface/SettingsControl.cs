@@ -144,9 +144,22 @@ namespace CG_2IV05.Visualize.Interface
 
         private void locationButton_Click(object sender, EventArgs e)
         {
+            goToSelectedLocation();
+        }
+
+        private void boroughSearchField_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                goToSelectedLocation();
+            }
+        }
+
+        private void goToSelectedLocation()
+        {
             if (boroughLB.SelectedItem != null)
             {
-                String newLocation = ((Borough) boroughLB.SelectedItem).Name;
+                String newLocation = ((Borough)boroughLB.SelectedItem).Name;
                 HyperPoint<float> goToPoint = boroughs.GoToLocation(newLocation);
                 game.GoToPoint(goToPoint);
             }
