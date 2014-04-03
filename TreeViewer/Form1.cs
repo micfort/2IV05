@@ -133,7 +133,7 @@ namespace TreeViewer
 			pictureBox1.Image = img;
 		}
 
-		private Image GetImage()
+		private Image GetImage(bool fileOutput = false, string filename = "")
 		{
 			AdjacencyGraph<Node, Edge> adjacencyGraph = new AdjacencyGraph<Node, Edge>();
 			adjacencyGraph.AddVertex(this.tree.Root);
@@ -141,8 +141,9 @@ namespace TreeViewer
 
 			GraphVisualiser visualiser = new GraphVisualiser()
 			{
-				OutputType = "png",
-				RendererType = Renderer.Default
+				OutputType = fileOutput?"pdf":"png",
+				RendererType = Renderer.Default,
+				OutputFile = fileOutput
 			};
 
 			GraphvizAlgorithm<Node, Edge> graphviz = new GraphvizAlgorithm<Node, Edge>(adjacencyGraph);
@@ -152,9 +153,16 @@ namespace TreeViewer
 			graphviz.FormatVertex += graphviz_FormatVertex;
 
 			// render
-			graphviz.Generate(visualiser, "");
+			graphviz.Generate(visualiser, filename);
 
-			return visualiser.OutputImage;
+			if(fileOutput == false)
+			{
+				return visualiser.OutputImage;
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		private void btnUpdateLoadedItems_Click(object sender, EventArgs e)
@@ -203,10 +211,11 @@ namespace TreeViewer
 		private void btnSaveImage_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.Filter = "Image Files(*.png;*.bmp;*.jpg;*.gif)|*.png;*.bmp;*.jpg;*.gif|All files (*.*)|*.*";
+			//dialog.Filter = "Image Files(*.png;*.bmp;*.jpg;*.gif)|*.png;*.bmp;*.jpg;*.gif|All files (*.*)|*.*";
+			dialog.Filter = "*.pdf|*.pdf";
 			if(dialog.ShowDialog() == DialogResult.OK)
 			{
-				GetImage().Save(dialog.FileName);
+				GetImage(true, dialog.FileName);
 			}
 		}
 	}
