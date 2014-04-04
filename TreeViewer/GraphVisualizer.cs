@@ -44,6 +44,8 @@ namespace TreeViewer
 			set { _outputType = value; }
 		}
 
+		public bool OutputFile { get; set; }
+
 		public Image OutputImage { get; private set; }
 
 		#region Implementation of IDotEngine
@@ -54,6 +56,10 @@ namespace TreeViewer
 			string parameters = "";
 
 			parameters = string.Format("{0} -T{1}", parameters, _outputType);
+			if (OutputFile == true)
+			{
+				parameters = string.Format("{0} \"-o{1}\"", parameters, outputFileNameWithExt);
+			}
 			if (RendererType != Renderer.Default)
 			{
 				parameters = string.Format("{0} -K{1}", parameters, Enum.GetName(typeof(Renderer), RendererType).ToLower());
@@ -70,15 +76,15 @@ namespace TreeViewer
 			gvizProc.StandardInput.Write(dot);
 			gvizProc.StandardInput.Close();
 
-			Image image = Image.FromStream(gvizProc.StandardOutput.BaseStream);
-			OutputImage = image;
-			
+			if(OutputFile == false)
+			{
+				Image image = Image.FromStream(gvizProc.StandardOutput.BaseStream);
+				OutputImage = image;
+			}
 			string error = gvizProc.StandardError.ReadToEnd();
 			//if (!string.IsNullOrWhiteSpace(error))
 			//	throw new Exception(error);
-
 			gvizProc.WaitForExit();
-
 			return string.Empty;
 		}
 

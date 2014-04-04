@@ -115,13 +115,18 @@ namespace TreeViewer
 			FileInfo fileInfo = new FileInfo(FilenameGenerator.GetOutputPathToFile(CurrentNode.NodeDataFile));
 
 			StringBuilder sb = new StringBuilder();
+			sb.AppendFormat("=Tree information=\r\n");
+			sb.AppendFormat("Total tree size: {0}\r\n", GetNodeSize(tree.Root) / 1024 / 1024);
+			sb.AppendFormat("Total leaf size: {0}\r\n", GetLeafSize(tree.Root) / 1024 / 1024);
+			sb.AppendLine();
+			sb.AppendFormat("=Current node=\r\n");
 			sb.AppendFormat("Min: {0}; {1}\r\n", CurrentNode.Min.X, CurrentNode.Min.Y);
 			sb.AppendFormat("Max: {0}; {1}\r\n", CurrentNode.Max.X, CurrentNode.Max.Y);
 			sb.AppendFormat("Error: {0}\r\n", CurrentNode.Error);
 			sb.AppendFormat("Number of Childeren: {0}\r\n", CurrentNode.Children.Count);
 			sb.AppendFormat("Node data: {0}\r\n", CurrentNode.NodeDataFile);
 			sb.AppendLine();
-			sb.AppendFormat("=Node Data file=\r\n");
+			sb.AppendFormat("=Current Node Data file=\r\n");
 			sb.AppendFormat("Size: {0}\r\n", fileInfo.Length / 1024 / 1024);
 
 			tbInfo.Text = sb.ToString();
@@ -133,7 +138,7 @@ namespace TreeViewer
 			pictureBox1.Image = img;
 		}
 
-		private Image GetImage()
+		private Image GetImage(bool fileOutput = false, string filename = "")
 		{
 			AdjacencyGraph<Node, Edge> adjacencyGraph = new AdjacencyGraph<Node, Edge>();
 			adjacencyGraph.AddVertex(this.tree.Root);
@@ -141,8 +146,9 @@ namespace TreeViewer
 
 			GraphVisualiser visualiser = new GraphVisualiser()
 			{
-				OutputType = "png",
-				RendererType = Renderer.Default
+				OutputType = fileOutput?"pdf":"png",
+				RendererType = Renderer.Default,
+				OutputFile = fileOutput
 			};
 
 			GraphvizAlgorithm<Node, Edge> graphviz = new GraphvizAlgorithm<Node, Edge>(adjacencyGraph);
@@ -152,9 +158,16 @@ namespace TreeViewer
 			graphviz.FormatVertex += graphviz_FormatVertex;
 
 			// render
-			graphviz.Generate(visualiser, "");
+			graphviz.Generate(visualiser, filename);
 
-			return visualiser.OutputImage;
+			if(fileOutput == false)
+			{
+				return visualiser.OutputImage;
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		private void btnUpdateLoadedItems_Click(object sender, EventArgs e)
@@ -203,11 +216,33 @@ namespace TreeViewer
 		private void btnSaveImage_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.Filter = "Image Files(*.png;*.bmp;*.jpg;*.gif)|*.png;*.bmp;*.jpg;*.gif|All files (*.*)|*.*";
+			//dialog.Filter = "Image Files(*.png;*.bmp;*.jpg;*.gif)|*.png;*.bmp;*.jpg;*.gif|All files (*.*)|*.*";
+			dialog.Filter = "*.pdf|*.pdf";
 			if(dialog.ShowDialog() == DialogResult.OK)
 			{
-				GetImage().Save(dialog.FileName);
+				GetImage(true, dialog.FileName);
 			}
+		}
+
+		private long GetNodeSize(Node node)
+		{
+			long size = 0;
+			FileInfo fileInfo = new FileInfo(FilenameGenerator.GetOutputPathToFile(node.NodeDataFile));
+			size += fileInfo.Length;
+			size += node.Children.Aggregate(0l, (l, child) => l + GetNodeSize(child));
+			return size;
+		}
+
+		private long GetLeafSize(Node node)
+		{
+			long size = 0;
+			if(node.Children.Count == 0)
+			{
+				FileInfo fileInfo = new FileInfo(FilenameGenerator.GetOutputPathToFile(node.NodeDataFile));
+				size += fileInfo.Length;
+			}
+			size += node.Children.Aggregate(0l, (l, child) => l + GetLeafSize(child));
+			return size;
 		}
 	}
 
