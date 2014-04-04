@@ -41,7 +41,8 @@ namespace CG_2IV05.Visualize
 
 		private VBO vbo;
 	    private SkyBox skybox;
-	    private bool mouseControl = false;
+	    private bool rightMouseDown = false;
+        private bool leftMouseDown = false;
 
         private List<Keys> pressedKeys = new List<Keys>();
 
@@ -322,7 +323,11 @@ namespace CG_2IV05.Visualize
 	       
             if (e.Button == MouseButtons.Right)
             {
-                this.mouseControl = true;
+                this.rightMouseDown = true;
+            }
+            if(e.Button == MouseButtons.Left)
+            {
+                this.leftMouseDown = true;
             }
 //            else if (e.Button == MouseButtons.Left)
 //            {
@@ -336,17 +341,21 @@ namespace CG_2IV05.Visualize
         {
             if(e.Button == MouseButtons.Right)
             {
-                this.mouseControl = false;
+                this.rightMouseDown = false;
+            }
+            if (e.Button == MouseButtons.Left)
+            {
+                this.leftMouseDown = false;
             }
         }
 
 	    public void OnMouseMove(object sender, MouseEventArgs e)
 	    {
-            if (LastMousePos == null || !mouseControl)
+            if (LastMousePos == null || (!rightMouseDown && !leftMouseDown))
             {
             	LastMousePos = new Vector2(e.Location.X, e.Location.Y);
             }
-            if (mouseControl)
+            if (rightMouseDown || leftMouseDown)
             {
                 Vector2 mouseDiff = (new Vector2(e.Location.X, e.Location.Y) - LastMousePos.Value)*(1/50f);
                 Mouse = Mouse + mouseDiff;
