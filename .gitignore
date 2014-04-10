@@ -109,3 +109,11 @@ UpgradeLog*.XML
 .nuget/NuGet.Config
 .nuget/NuGet.exe
 .nuget/NuGet.targets
+/docs/*.toc
+/docs/*.aux
+/docs/*.bbl
+/docs/*.blg
+/docs/*.log
+/docs/*.pdf
+/docs/*.synctex
+/docs/*.bak
