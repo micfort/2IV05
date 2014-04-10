@@ -3,40 +3,82 @@
 0
 0
 1
-Report.tex
-8
+images\DiagramBAG.mp
+24
 5
 0
 
-Report.tex
-TeX
-403714043 4 -1 607 -1 608 100 100 1194 458 0 1 296 459 -1 -1 0 0 36 -1 -1 36 1 0 608 -1  0 -1 0
-DiscussionOfLiterature.tex
-TeX
-1060859 1 -1 592 -1 592 25 25 379 392 0 1 856 68 -1 -1 0 0 -1 -1 -1 -1 1 0 592 -1  0 -1 0
-ProblemDescription.tex
-TeX
-1060859 0 -1 654 -1 290 0 0 354 367 0 1 136 102 -1 -1 0 0 -1 -1 -1 -1 1 0 290 -1  0 -1 0
-Requirements.tex
-TeX
-1060859 1 -1 3723 -1 3162 100 100 1245 458 0 1 40 289 -1 -1 0 0 -1 -1 -1 -1 1 0 3162 -1  0 -1 0
-:\S120397\Dropbox\2IV05 ACCG\Poster\poster\poster.tex
+images\DiagramBAG.mp
+MetaPost
+269485042 0 45 53 45 53 25 25 1195 349 0 1 456 255 -1 -1 0 0 1 220 220 1 1 0 53 45  0 -1 0
+:\S120397\School\2IV05 ACCG\metauml_manual2\metauml_manual.tex
 TeX:UNIX
-17936379 1 -1 1197 -1 886 0 0 1044 490 0 1 40 187 -1 -1 0 0 38 -1 -1 38 1 0 886 -1  0 -1 0
+1159163 0 -1 750 -1 665 100 100 1270 419 0 1 232 272 -1 -1 0 0 -1 -1 -1 -1 1 0 665 -1  0 -1 0
+:\S120397\School\2IV05 ACCG\metauml_manual2\fig\class_diagrams.mp
+MetaPost:UNIX
+1147890 1 32 4 32 13 75 75 1320 248 0 1 136 34 -1 -1 0 0 -1 -1 -1 -1 1 0 13 32  0 -1 5 3 4 5 6 7
+:\S120397\School\2IV05 ACCG\metauml_manual2\fig\properties.mp
+MetaPost:UNIX
+1147890 0 0 1 0 1 25 25 1245 298 0 1 40 0 -1 -1 0 0 -1 -1 -1 -1 1 0 1 0  0 -1 0
+:\S120397\School\2IV05 ACCG\metauml_manual2\fig\appetizer.mp
+MetaPost:UNIX
+1147890 0 0 1 10 64 0 0 1220 273 0 1 544 -34 -1 -1 0 0 -1 -1 -1 -1 1 0 64 10  0 -1 0
+TestImage.tex
+TeX
+269496315 0 -1 164 -1 139 25 25 1220 348 0 1 288 68 -1 -1 0 0 37 -1 -1 37 1 0 139 -1  0 -1 0
+C:\Users\s120397\AppData\Roaming\WinEdt Team\WinEdt 8\ConfigEx\UserPreferences.ini
+DATA:INI:EDT
+269485050 0 0 1 20 30 25 25 1195 372 1 1 320 -17 -1 -1 0 0 -1 -1 -1 -1 1 0 30 20  0 0 0
+C:\Users\s120397\AppData\Roaming\WinEdt Team\WinEdt 8\ConfigEx\Input.ini
+DATA:INI:EDT
+269485050 0 0 1 0 1 0 0 1170 347 1 1 88 0 -1 -1 0 0 -1 -1 -1 -1 1 0 1 0  0 -1 0
+mpgraphics.sty
+TeX:STY:UNIX
+269594610 0 95 1304 98 29 50 50 1295 263 0 0 248 170 -1 -1 0 0 3 0 0 3 1 0 29 98  0 0 0
+:\S120397\School\2IV05 ACCG\MetaPreview\Install.edt
+ASCII:EDT
+269494138 0 0 1 0 1 75 75 1320 288 1 0 72 0 -1 -1 0 0 21 0 0 21 1 0 1 0  0 0 0
+Report.tex
+TeX:UTF-8
+420491259 0 -1 184 -1 249 100 100 1194 458 0 1 320 85 -1 -1 0 0 36 -1 -1 36 1 0 249 -1  0 -1 0
+bibliography.tex
+TeX
+269496315 0 -1 24 -1 309 125 125 1320 448 0 1 160 119 -1 -1 0 0 22 -1 -1 22 1 0 309 -1  0 -1 0
 Introduction.tex
 TeX
-269496315 1 -1 1492 -1 0 125 125 428 492 0 1 40 0 -1 -1 0 0 22 -1 -1 22 1 0 0 -1  0 -1 0
+269496315 2 -1 24 -1 0 125 125 428 492 0 1 40 0 -1 -1 0 0 24 -1 -1 24 1 0 0 -1  0 -1 0
 OpenDataSets.tex
 TeX
-1060859 7 -1 0 -1 8 150 150 1244 508 0 1 104 0 -1 -1 0 0 -1 -1 -1 -1 1 0 8 -1  0 -1 0
+269496315 0 -1 1384 -1 340 150 150 1244 508 0 1 40 68 -1 -1 0 0 26 -1 -1 26 1 0 340 -1  0 -1 0
+Requirements.tex
+TeX
+269496315 2 -1 24 -1 0 100 100 1245 458 0 1 40 0 -1 -1 0 0 24 -1 -1 24 1 0 0 -1  0 -1 0
+:\S120397\Dropbox\2IV05 ACCG\Poster\poster\poster.tex
+TeX:UNIX
+286371835 1 -1 190 -1 129 0 0 1044 490 0 1 40 136 -1 -1 0 0 38 -1 -1 38 1 0 129 -1  0 -1 0
+ProblemDescription.tex
+TeX
+1060859 2 -1 31 -1 0 0 0 354 367 0 1 40 0 -1 -1 0 0 31 -1 -1 31 1 0 0 -1  0 -1 0
+DiscussionOfLiterature.tex
+TeX
+1060859 2 -1 36 -1 0 25 25 379 392 0 1 40 0 -1 -1 0 0 36 -1 -1 36 1 0 0 -1  0 -1 0
+AnalysisAndSolution.tex
+TeX
+1060859 0 -1 5915 -1 0 125 125 1270 483 0 1 40 0 -1 -1 0 0 31 -1 -1 31 1 0 0 -1  0 -1 0
+ResultsEvaluation.tex
+TeX
+1060859 0 -1 34 -1 182 150 150 504 517 0 1 392 85 -1 -1 0 0 32 -1 -1 32 1 0 182 -1  0 -1 0
+ConclusionAndFutureWork.tex
+TeX
+1060859 0 -1 38 -1 468 0 0 354 367 0 1 352 102 -1 -1 0 0 36 -1 -1 36 1 0 468 -1  0 -1 0
+DiagramStructureBAG.tex
+TeX
+269496315 0 -1 246 -1 246 25 25 379 373 0 1 120 68 -1 -1 0 0 31 -1 -1 31 1 0 246 -1  0 -1 0
+Report.toc
+TeX:AUX
+269496306 0 20 1321 20 1 25 25 1170 383 0 0 24 340 -1 -1 0 0 -1 -1 -1 -1 1 0 1 20  0 0 0
 :\S120397\Dropbox\2IV05 ACCG\Poster\poster\mnseposter.cls
 TeX:STY:UNIX
-1159154 0 279 12 279 57 25 25 1119 383 0 0 472 255 -1 -1 0 0 37 0 0 37 1 0 57 279  0 0 0
+269594610 1 279 12 279 57 25 25 1119 383 0 0 472 289 -1 -1 0 0 37 0 0 37 1 0 57 279  0 0 0
 
-*Report.tex
->
-*Introduction
-*OpenDataSets
-*Requirements
-*ProblemDescription
-<
+*images\DiagramBAG.mp

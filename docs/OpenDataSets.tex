@@ -4,21 +4,22 @@ The data required to render the Netherlands have been retrieved from two open da
 
 The BAG (Basisadministratie Adressen en Gebouwen) is a data set which contains all kind of information on almost all the buildings and places in the Netherlands. The BAG is provided by Kadaster, but the content of the BAG is owned by the government of cities and they are also responsible to supply the information to Kadaster. A full extraction of the BAG data set called BAG-extract is freely available at various locations. We retrieved the dataset from the Nationaal georegister \cite{NG14}, a website which contains all kind of geographic open data sources. Our dataset contained a version from Januari 2014 and is 40 gB in total.
 
-All information in the BAG-extract is supplied within xml-files and these files are grouped in multiple categories. Each category contains information on a different object-type. The different object-types are presented in table \ref{Table:ObjectTypesBAG} and a full diagram containing all fields of the objects and connections between object types is presented in appendix 10.1. All geometric information in the BAG-extract is presented according to the Geography Markup Language (GML). GML is a standard format of providing geometric information with XML.
+All information in the BAG-extract is supplied within xml-files and these files are grouped in multiple categories. Each category contains information on a different object-type. The different object-types are presented in table \ref{Table:ObjectTypesBAG} and a full diagram containing all fields of the objects and connections between object types is presented in appendix \ref{chap:DiagramStructureBAG}. All geometric information in the BAG-extract is presented according to the Geography Markup Language (GML). GML is a standard format of providing geometric information with XML.
 
 \begin{table}
-    \begin{tabular}{l|l}
-      \textbf{Object type} & \textbf{Content}     \\ \hline
-      Towns & Name, boundaries and status  \\ \hline
-      Public spaces & Name of the place  \\ \hline
-      Numbering & Addresses of buildings and places  \\ \hline
-      Buildings & Building surface geometry, build year and status  \\ \hline
-      Residences & Geometric location, surface area and status  \\ \hline
-      Berths & Surface geometry and status  \\ \hline
-      Other areas & Surface geometry and status \\
-    \end{tabular}
-    \caption{Object-types of the BAG-extract}
-    \label{Table:ObjectTypesBAG}
+  \centering
+  \begin{tabular}{l|l}
+    \textbf{Object type} & \textbf{Content}     \\ \hline
+    Towns & Name, boundaries and status  \\ \hline
+    Public spaces & Name of the place  \\ \hline
+    Numbering & Addresses of buildings and places  \\ \hline
+    Buildings & Building surface geometry, build year and status  \\ \hline
+    Residences & Geometric location, surface area and status  \\ \hline
+    Berths & Surface geometry and status  \\ \hline
+    Other areas & Surface geometry and status \\
+  \end{tabular}
+  \caption{Object-types of the BAG-extract}
+  \label{Table:ObjectTypesBAG}
 \end{table}
 
 To be able to process all the data in the BAG, the project NLExtract [4] is used to process all data into a database. A script was created to pre-process the data from the database to simple xml-files, which are used to construct the buildings. The numberings object type are filtered to be able to create a small data set which can be used during development. This way only residences with an address in Eindhoven are selected for the construction of buildings. The surface geometry of buildings and the surface area of residences are used to approximate the height of a building.
