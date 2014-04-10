@@ -1,0 +1,23 @@
+\chapter{Open data sets}
+The data required to render the Netherlands have been retrieved from two open data sets. Firstly, the BAG dataset [1] was used to extract all necessary information on buildings and secondly OpenStreetMap (OSM) [2] was used to retrieve information about the landscape.
+
+The BAG (Basisadministratie Adressen en Gebouwen) is a data set which contains all kind of information on almost all the buildings and places in the Netherlands. The BAG is provided by Kadaster, but the content of the BAG is owned by the government of cities and they are also responsible to supply the information to Kadaster. A full extraction of the BAG data set called BAG-extract is freely available at various locations. We retrieved the dataset from the Nationaal georegister [3], a website which contains all kind of geographic open data sources. Our dataset contained a version from Januari 2014 and is 40 gB in total.
+
+All information in the BAG-extract is supplied within xml-files and these files are grouped in multiple categories. Each category contains information on a different object-type. The different object-types are presented in table 1 and a full diagram containing all fields of the objects and connections between object types is presented in appendix 10.1. All geometric information in the BAG-extract is presented according to the Geography Markup Language (GML). GML is a standard format of providing geometric information with XML.
+
+\begin{table}
+    \begin{tabular}{cc}
+      Object type & Content     \\
+      Towns & Name, boundaries and status  \\
+      Public spaces & Name of the place  \\
+      Numbering & Addresses of buildings and places  \\
+      Buildings & Building surface geometry, build year and status  \\
+      Residences & Geometric location, surface area and status  \\
+      Berths & Surface geometry and status  \\
+      Other areas & Surface geometry and status \\
+    \end{tabular}
+    \caption{Object-types of the BAG-extract}
+    \label{Table:ObjectTypesBAG}
+\end{table}
+
+
