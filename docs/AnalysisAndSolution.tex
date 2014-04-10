@@ -2,9 +2,11 @@
 \label{chap:AnalysisAndSolution}
 \section{Data analysis}
 \label{sec:DataAnalysis}
-For each residence the BAG-dataset contains the surface area. In combination with the total area of the surface geometry of a building, the application approximates the amount of floors of a building. To approximate the height of a building, each floor is given the height of 2.5 meters.
+\subsection{Constructing buildings}
+To construct the buildings, we would like to extract data for each building from the BAG data set. However, this data is incomplete. For each building, only a polygon is defined with geographical points. This polygon describes the contour and the exact position of a building. Thus the data contains no information on the height of the building or what kind of roof the building has. In order to determine the height of a building, we can however used the information stored in the residences of a building. For each residence the BAG-dataset contains the total surface area. Combining this with the total area of the surface geometry of a building, we are able to approximate the amount of floors of a building. To approximate the height of a building, we specify that each floor has a height of 2.5 meters.
 
-Ways in OpenStreetMap contain tags. These tags can be used to determine what kind of way it is, for example the type of land, water, type of road. This information can be used to determine the texture which has to be applied. Furthermore, ways can contain meta-information.  For example, roads may contain information about the number of lanes of that road. This information is used to guess the width of the road. For every lane 2.5 meter is used.
+\subsection{Constructing roads and surface areas}
+We like to use data from OpenStreetMap to construct models of roads, rivers, lakes and other types of surface area. Like described in chapter \ref{chap:OpenDataSets}, a Way in OpenStreetMap describes the position and area of a specific element. Most of Ways also contains a tag. We can use this tag to determine what kind of area the way describes, for example the type of land, water, type of road. If the type is defined in our system, then the system can take the appropriate measures to convert the way into the correct element and apply the corresponding texture. Furthermore, ways can contain meta-information. For example, roads may contain information about the number of lanes. We can use this to approximate the width of a road. For every lane 2.5 meter is used.
 
 \section{System Design}
 \label{sec:SystemDesign}
