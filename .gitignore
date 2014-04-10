@@ -117,3 +117,6 @@ UpgradeLog*.XML
 /docs/*.pdf
 /docs/*.synctex
 /docs/*.bak
+/docs/images/*.pdf
+/docs/images/*.mpt
+/docs/images/*.1
