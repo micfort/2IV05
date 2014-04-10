@@ -1,5 +1,13 @@
 \documentclass[11pt,a4paper]{report}
-\usepackage{graphicx,color}
+
+\ifx\pdftexversion\undefined
+  \usepackage[dvips]{graphicx}
+\else
+  \usepackage[pdftex]{graphicx}
+   \DeclareGraphicsRule{*}{mps}{*}{}
+\fi
+
+\usepackage{color}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage[english]{tuereport2008}
