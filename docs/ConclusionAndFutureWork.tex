@@ -1,4 +1,5 @@
 \chapter{Conclusion and future work}
+\label{chap:ConclusionAndFutureWork}
 Our application can successfully render every building from Eindhoven, every element with grass and water and the roads. The objects have textures drawn on them to look appealing. Also different kinds of roads have different textures. The Buildings are generated from the BAG dataset and the other elements are generated from OpenStreetMap data set.
 
 The data is rendered in real-time. Our tests show that a HLOD can make a big difference in rendering this kind of data. The GPU load is about 1.7 times lower with some error introduced, while the differences are not visible on the screen. The memory difference isn’t great. We assume that this is because the data set is relative small. Our single node data set is only 170MB. When the size increases, then the dataset does not fit in the GPU memory and then it will probably show that the memory usage is still very low.
