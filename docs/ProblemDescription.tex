@@ -1,13 +1,9 @@
 \chapter{Problem description}
 \label{chapter:ProblemDescription}
-The main problem with this project is that the amount of data from the BAG and OpenStreetMap that has to be rendered is larger than the amount of memory available. Also amount of processing power needed to render all the models and the terrain in real-time is too large and is not available in a consumer pc.
-
-\section{Sub problems}
-\label{chapter:SubProblems}
-This problem is can be divided in multiple sub problems.
+The main problem of this project is to build an interactive system that allows the real-time rendering of a large geographic data set in 3D. This goal gives rise to the following sub-problems:
 \begin{itemize}
-   \item Render less information, without a big concessions on the image quality
-   \item Determine what data has to be rendered and what not
-   \item Still render the image in real-time
+   \item Data from the geographic data set has to be processed and filtered
+   \item Geographic models have to be generated from the process data
+   \item The amount of memory and processing power available in common consumer computers is insufficient to hold and render all the models
 \end{itemize}
-Solutions to these problems are presented in section. 
+Solutions to these problems are presented in section \ref{chap:AnalysisAndSolution}. 
