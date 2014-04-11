@@ -1,0 +1,19 @@
+\subsection{HLOD}
+\label{subsec:HLOD}
+A way to render more data while still getting a good quality on screen, a quad tree data structure like the one used by Davis \cite{Davis} is used. The root of the tree is node that covers the complete dataset. A child of a node covers one quarter of the data set presented its parent.
+
+A child node is created by geometrically splitting up the parent in four parts. This process is executed recursively until the triangle count of the data within the child node is below a specified threshold. The triangle count is the total number triangles needed to render all the models which are present within the node. When all the data models for all the children of a node have been generated, then this node will contain simplified versions of all the data models of its children.
+
+Data models are simplified with the following algorithm. Of all the models within the node, the model which contains the two closest consecutive points is taken. These two closest consecutive points are average together to create one new point. This is done until the triangle count is below the specified threshold.
+
+To addresses the problem what has to be rendered, the node manager is used. The node manager determines which nodes have to be loaded and rendered on screen. This is done by replacing nodes which is currently being used by its children or by its parent. We devised an algorithm that determines which node has to replace which node. By using tree traversal it finds all the maximal nodes which need to be loaded into main memory. This is done by checking whether the error assigned to a node as metadata meets the current distance to that node. If this node has to be loaded, and it isn’t loaded yet, it checks for its entire sub-tree which nodes are currently loaded. For every loaded node in its sub-tree it unloads the nodes. If the current node does not need to be loaded, while it is loaded it will also be unloaded. This way the node manager makes sure all the models will be loaded with the appropriate level of detail.
+
+\begin{algorithmic}[1]
+\If {$i\geq maxval$}
+    \State $i\gets 0$
+\Else
+    \If {$i+k\leq maxval$}
+        \State $i\gets i+k$
+    \EndIf
+\EndIf
+\end{algorithmic}
