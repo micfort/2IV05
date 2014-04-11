@@ -1,0 +1,30 @@
+\subsection{HLOD}
+\label{subsec:HLOD}
+Davis \cite{Davis} used a quad tree data structure to check what information has to be rendered on the screen. The leaf nodes contains the most detailed models. The non-leafs contains the combined area of it's childeren, but have a simplified model of the data. With such a data structure it is possible to render further away with less detail. The following algorithm can generate such a tree.
+
+\begin{algorithm}
+\caption{Creating a node}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{CreateNode}{$E$}\Comment{E = List with elements (e.g. buildings, roads, etc}
+\If{$\Call{TriangleCount}{E} < MaxTriangleCount$}
+    \State $\Call{CreateModelData}{E}$
+    \State \Return $E$
+\Else
+    \State $E_{splits}\gets \Call{Split}{E}$ \Comment{Split list in 2 or 4 parts}
+    \For{$E_{subNode} in E_{splits}$}
+        \State $E_{subNode} \gets \Call{CreateNode}{E_{subNode}}$
+        \State $E_{compiledList}.\Call{Add}{E_{subNode}}$
+    \EndFor
+    \State $\Call{SimplifyData}{E_{compiledList}}$
+    \State $\Call{CreateModelData}{E_{compiledList}}$
+    \State $\Return E_{compiledList}$
+\EndIf
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+In this project we have used this method from Davis, with the only change that it is possible to use a binary tree. The main advantage over a binary tree is that it can be easily be made data dependent. It is difficult to determine where the split in a quad tree has to be made. In a binary tree it is a trivial choice, to balance the tree the median is used to split the data. For ever
+
+Data models are simplified with the following algorithm. Of all the models within the node, the model which contains the two closest consecutive points is taken. These two closest consecutive points are average together to create one new point. This is done until the triangle count is below the specified threshold.
+
+To addresses the problem what has to be rendered, the node manager is used. The node manager determines which nodes have to be loaded and rendered on screen. This is done by replacing nodes which is currently being used by its children or by its parent. We devised an algorithm that determines which node has to replace which node. By using tree traversal it finds all the maximal nodes which need to be loaded into main memory. This is done by checking whether the error assigned to a node as metadata meets the current distance to that node. If this node has to be loaded, and it isn’t loaded yet, it checks for its entire sub-tree which nodes are currently loaded. For every loaded node in its sub-tree it unloads the nodes. If the current node does not need to be loaded, while it is loaded it will also be unloaded. This way the node manager makes sure all the models will be loaded with the appropriate level of detail.

@@ -12,6 +12,8 @@
 \usepackage[english]{babel}
 \usepackage[english]{tuereport2008}
 \usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \graphicspath{{images/}}
 
@@ -31,16 +33,16 @@
 
 \tableofcontents
 
-\include{Introduction}
-\include{OpenDataSets}
-\include{Requirements}
-\include{ProblemDescription}
-\include{DiscussionOfLiterature}
-\include{AnalysisAndSolution}
-\include{ResultsEvaluation}
-\include{ConclusionAndFutureWork}
-\include{bibliography}
+\input{Introduction}
+\input{OpenDataSets}
+\input{Requirements}
+\input{ProblemDescription}
+\input{DiscussionOfLiterature}
+\input{AnalysisAndSolution}
+\input{ResultsEvaluation}
+\input{ConclusionAndFutureWork}
+\input{bibliography}
 \appendix
-\include{DiagramStructureBAG}
+\input{DiagramStructureBAG}
 
 \end{document} 
