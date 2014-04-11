@@ -28,6 +28,8 @@ Algorithm \ref{alg:CreatingANode} can generate a tree (Where an element is a Bui
 
 To simplify data the application merges the 2 elements together to get a more simplified version of the original. This merged version is then again added to the list to merge even further. This algorithm is described in \ref{alg:SimplifyData}. The skiplist used in this algorithm is an custom implementation, where deletes can be done in constant time when holding a reference to the specified item. Earlier version of algorithm \ref{alg:SimplifyData}, it was a simpler algorithm, but for every iteration of the while loop it took $O(n^2)$ time. The update function searched every time for the 2 closest elements. We improved this by keeping for every element the closest element and only searched for a new one if the combination between 2 elements is removed. Also in previous version of the algorithm it used when initializing the skiplist a simple linear search to find the closest element. Which makes the the function $InitilizeSkipList$ an $O(n^2)$ algorithm. Later we found a algorithm that can find the nearest neighbor in $O(\log{n})$ time, with an initialization of $O(n\log{n})$ time. So then the function can run in $O(n\log{n})$ time. The whole algorithm was improved from $O(n^2)$ initial and $O(n^2)$ for every iteration too $O(n\log{n})$ initial and $O(n)$ for every iteration.
 
+Only models of the same type are merged, so for example only buildings are merged with only buildings. The merge is dependent on the type of the element. Buildings are the only type that can be merged at the moment. They are merged with by taking the convex hull of both buildings.
+
 \begin{algorithm}
 \caption{Simplify data}\label{alg:SimplifyData}
 \begin{algorithmic}[1]
@@ -67,8 +69,6 @@ To simplify data the application merges the 2 elements together to get a more si
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
-
-Only models of the same type are merged, so for example only buildings are merged with only buildings. The merge is dependent on the type of the element. Buildings are the only type that can be merged at the moment. They are merged with by taking the convex hull of both buildings.
 
 \subsubsection{Rendering with HLOD}
 To addresses the problem what has to be rendered, the node manager is used. The node manager determines which nodes have to be loaded and rendered on screen. This is done by replacing nodes which is currently being used by its children or by its parent. We devised an algorithm that determines which node has to replace which node. By using tree traversal it finds all the maximal nodes which need to be loaded into main memory. This is done by checking whether the error assigned to a node as metadata meets the current distance to that node. If this node has to be loaded, and it isn’t loaded yet, it checks for its entire sub-tree which nodes are currently loaded. For every loaded node in its sub-tree it unloads the nodes. If the current node does not need to be loaded, while it is loaded it will also be unloaded. This way the node manager makes sure all the models will be loaded with the appropriate level of detail. 
