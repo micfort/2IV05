@@ -4,46 +4,64 @@
 0
 1
 Report.tex
-23
-12
+27
+4
 1
 
-images\DiagramBAG.mp
-MetaPost
-1049586 0 41 42 41 42 25 25 1195 349 0 1 368 85 -1 -1 0 0 1 246 246 1 1 0 42 41  0 -1 0
 Report.tex
 TeX:UTF-8
-420491259 0 -1 187 -1 140 100 100 1194 458 0 1 288 85 -1 -1 0 0 180 -1 -1 180 1 0 140 -1  0 -1 0
-AnalysisAndSolution.tex
-TeX
-1060859 0 -1 2633 -1 2529 125 125 1270 483 0 1 168 170 -1 -1 0 0 31 -1 -1 31 1 0 2529 -1  0 -1 0
-ResultsEvaluation.tex
-TeX
-1060859 0 -1 34 -1 182 150 150 504 517 0 1 392 85 -1 -1 0 0 32 -1 -1 32 1 0 182 -1  0 -1 0
-ConclusionAndFutureWork.tex
-TeX
-1060859 0 -1 38 -1 468 0 0 354 367 0 1 352 102 -1 -1 0 0 36 -1 -1 36 1 0 468 -1  0 -1 0
-bibliography.tex
-TeX
-1060859 0 -1 24 -1 771 125 125 1320 448 0 1 296 238 -1 -1 0 0 22 -1 -1 22 1 0 771 -1  0 -1 0
-Requirements.tex
-TeX
-1060859 0 -1 24 -1 371 100 100 1245 458 0 1 160 68 -1 -1 0 0 24 -1 -1 24 1 0 371 -1  0 -1 0
-OpenDataSets.tex
-TeX
-1060859 0 -1 3530 -1 2070 150 150 1244 508 0 1 224 442 -1 -1 0 0 26 -1 -1 26 1 0 2070 -1  0 -1 0
-ProblemDescription.tex
-TeX
-1060859 2 -1 31 -1 0 0 0 354 367 0 1 40 0 -1 -1 0 0 31 -1 -1 31 1 0 0 -1  0 -1 0
-DiscussionOfLiterature.tex
-TeX
-1060859 2 -1 36 -1 0 25 25 379 392 0 1 40 0 -1 -1 0 0 36 -1 -1 36 1 0 0 -1  0 -1 0
-:\S120397\School\2IV05 ACCG\metauml_manual2\fig\appetizer.mp
-MetaPost:UNIX
-1147890 0 0 1 10 64 0 0 1220 273 0 1 544 170 -1 -1 0 0 26 0 0 26 1 0 64 10  0 -1 0
+152055803 0 -1 177 -1 242 100 100 1194 458 0 1 72 204 -1 -1 0 0 180 -1 -1 180 1 0 242 -1  0 -1 0
 DiagramStructureBAG.tex
 TeX
-1060859 1 -1 251 -1 254 25 25 379 373 0 1 184 68 -1 -1 0 0 31 -1 -1 31 1 0 254 -1  0 -1 0
+269496315 7 -1 293 -1 318 25 25 379 373 0 1 424 102 -1 -1 0 0 31 -1 -1 31 1 0 318 -1  0 -1 0
+:\S120397\School\2IV05 ACCG\LaTeXify\Install.edt
+ASCII:EDT
+1058682 0 0 1 11 60 50 50 1220 393 1 0 544 187 -1 -1 0 0 -1 -1 -1 -1 1 0 60 11  0 0 0
+AnalysisAndSolution.tex
+TeX
+1060859 0 -1 1253 -1 1390 125 125 1270 483 0 1 576 187 -1 -1 0 0 31 -1 -1 31 1 0 1390 -1  0 -1 0
+C:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def
+TeX:STY:UNIX
+269594610 7 432 4 432 9 25 25 1195 368 0 0 88 238 -1 -1 0 0 -1 -1 -1 -1 1 0 9 432  0 0 0
+C:\Program Files\MiKTeX 2.9\metapost\generic\metauml\metauml_class.mp
+MetaPost
+269485042 0 0 1 13 55 125 125 1320 448 0 1 472 221 -1 -1 0 0 70 0 0 70 1 0 55 13  0 0 0
+ResultsEvaluation.tex
+TeX
+269496315 0 -1 835 -1 833 150 150 504 517 0 1 304 289 -1 -1 0 0 32 -1 -1 32 1 0 833 -1  0 -1 0
+ConclusionAndFutureWork.tex
+TeX
+269496315 2 -1 38 -1 0 0 0 354 367 0 1 40 0 -1 -1 0 0 1863 -1 -1 1863 1 0 0 -1  0 -1 0
+bibliography.tex
+TeX
+269496315 0 -1 24 -1 771 125 125 1320 448 0 1 296 238 -1 -1 0 0 22 -1 -1 22 1 0 771 -1  0 -1 0
+Requirements.tex
+TeX
+269496315 0 -1 24 -1 371 100 100 1245 458 0 1 160 68 -1 -1 0 0 24 -1 -1 24 1 0 371 -1  0 -1 0
+OpenDataSets.tex
+TeX
+269496315 0 -1 3530 -1 2070 150 150 1244 508 0 1 224 425 -1 -1 0 0 26 -1 -1 26 1 0 2070 -1  0 -1 0
+ProblemDescription.tex
+TeX
+269496315 2 -1 31 -1 0 0 0 354 367 0 1 40 0 -1 -1 0 0 31 -1 -1 31 1 0 0 -1  0 -1 0
+DiscussionOfLiterature.tex
+TeX
+269496315 2 -1 36 -1 0 25 25 379 392 0 1 40 0 -1 -1 0 0 36 -1 -1 36 1 0 0 -1  0 -1 0
+:\S120397\School\2IV05 ACCG\metauml_manual2\fig\appetizer.mp
+MetaPost:UNIX
+269583346 0 0 1 10 64 0 0 1220 273 0 1 544 170 -1 -1 0 0 26 0 0 26 1 0 64 10  0 -1 0
+Report.aux
+TeX:AUX
+269496306 1 12 1 12 10 50 50 1245 373 0 0 96 -1074 -1 -1 0 0 -1 -1 -1 -1 1 0 10 12  0 0 0
+HLOD.tex
+TeX
+286273531 0 84 128 -1 3243 36 31 1231 354 0 1 1056 255 -1 -1 0 0 -1 -1 -1 -1 1 0 3243 -1  0 -1 0
+images\DiagramBAG.mp
+MetaPost
+269485042 1 17 1 17 6 25 25 1195 349 0 1 80 68 -1 -1 0 0 1 250 250 1 1 0 6 17  0 -1 0
+C:\Program Files\MiKTeX 2.9\metapost\generic\metauml\metauml.mp
+MetaPost
+269485042 1 44 6 44 1 100 100 1295 423 0 1 40 748 -1 -1 0 0 -1 -1 -1 -1 1 0 1 44  0 0 0
 :\S120397\School\2IV05 ACCG\metauml_manual2\fig\properties.mp
 MetaPost:UNIX
 269583346 0 0 1 0 1 25 25 1245 298 0 1 40 0 -1 -1 0 0 26 0 0 26 1 0 1 0  0 -1 0
@@ -56,12 +74,6 @@ MetaPost:UNIX
 :\S120397\School\2IV05 ACCG\metauml_manual2\metauml_manual.tex
 TeX:UNIX
 269594619 0 -1 750 -1 665 100 100 1270 419 0 1 232 68 -1 -1 0 0 48 -1 -1 48 1 0 665 -1  0 -1 0
-C:\Users\s120397\AppData\Roaming\WinEdt Team\WinEdt 8\ConfigEx\UserPreferences.ini
-DATA:INI:EDT
-269485050 0 0 1 20 30 25 25 1195 372 1 1 320 -17 -1 -1 0 0 -1 -1 -1 -1 1 0 30 20  0 0 0
-C:\Users\s120397\AppData\Roaming\WinEdt Team\WinEdt 8\ConfigEx\Input.ini
-DATA:INI:EDT
-269485050 0 0 1 0 1 0 0 1170 347 1 1 88 0 -1 -1 0 0 -1 -1 -1 -1 1 0 1 0  0 -1 0
 :\S120397\School\2IV05 ACCG\MetaPreview\Install.edt
 ASCII:EDT
 269494138 0 0 1 0 1 75 75 1320 288 1 0 72 0 -1 -1 0 0 21 0 0 21 1 0 1 0  0 0 0
@@ -86,6 +98,9 @@ TeX:STY:UNIX
 *ProblemDescription
 *DiscussionOfLiterature
 *AnalysisAndSolution
+>
+*HLOD
+<
 *ResultsEvaluation
 *ConclusionAndFutureWork
 *bibliography
