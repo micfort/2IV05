@@ -3,9 +3,23 @@
 \section{Image results}
 \label{sec:ImageResults}
 %todo add images
-Figure 1 shows the centre of Eindhoven. This is a basic view of the city of Eindhoven. In the distance there is also water, this river is called the Dommel. This picture is taken on the 18 September plein.
+Figure \ref{fig:UniversityCampus} shows an overview of the TU/e campus. This is a basic view of the campus. The river dommel is also shown through the campus. This picture is taken above the train tracks.
 
-The error that is introduced when rendering from a distance is visible in figure 2 and figure 3. Figure 2 is rendered with an error rate of 100 per meter. Figure 3 is rendered without any error. There are small differences between the images. When looking at the buildings in the bottom and the right of the image, it can be seen that some buildings have been simplified.
+\begin{figure}[htb!]
+\centering
+\includegraphics[width=\textwidth]{TUe}
+\caption{University campus}
+\label{fig:UniversityCampus}
+\end{figure} 
+
+The error that is introduced when rendering from a distance is visible in figure \ref{fig:Simplification}. The top image is rendered with less error than the bottom version. In the simplified version, it is possible to see that the building is only a convex hull of its original. Also the roads that are besides the building are removed.
+
+\begin{figure}[htb!]
+\centering
+\includegraphics[width=\textwidth]{Simplification}
+\caption{Top: detailed version, Bottom: Simplified version}
+\label{fig:Simplification}
+\end{figure}
 
 \section{GPU usage}
 \label{sec:GPUUsage}

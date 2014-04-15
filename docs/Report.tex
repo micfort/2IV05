@@ -7,13 +7,17 @@
    \DeclareGraphicsRule{*}{mps}{*}{}
 \fi
 
+\usepackage{iftex}
 \usepackage{color}
-\usepackage[utf8]{inputenc}
+\ifPDFTeX
+    \usepackage[utf8]{inputenc}
+\fi
 \usepackage[english]{babel}
 \usepackage[english]{tuereport2008}
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage[T1]{fontenc}
 
 \graphicspath{{images/}}
 
@@ -31,6 +35,7 @@
 \begin{document}
 \maketitle
 
+\setcounter{tocdepth}{1}
 \tableofcontents
 
 \input{Introduction}
