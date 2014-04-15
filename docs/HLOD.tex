@@ -3,9 +3,9 @@
 Davis \cite{Davis} used a quad tree data structure to check what information has to be rendered on the screen. The leaf nodes contains the most detailed models. The non-leafs contains the combined area of it's childeren, but have a simplified model of the data. With such a data structure it is possible to render further away with less detail.
 
 \subsubsection{Generating HLOD}
-Algorithm \ref{alg:CreatingANode} can generate a tree (Where an element is a Building, Road, Grass or Water). In this project we have used this method from Davis, with a single modification that it is possible to use a binary tree. The main advantage over a binary tree is that it can be easily be made data dependent. It is difficult to determine where the split in a quad tree has to be made. In a binary tree it is a trivial choice, to balance the tree the median is used to split the data.
+Algorithm \ref{alg:CreatingANode} can generate a tree (Where an element is a Building, Road, Grass or Water). In this project we have used this method from Davis, with a single modification that it is possible to use a binary tree. The main advantage over a binary tree is that the split in data can be easily be made data dependent. It is difficult to determine where the split in a quad tree has to be made. In a binary tree it is a trivial choice, to balance the tree the median is used to split the data.
 
-\begin{algorithm}
+\begin{algorithm}[h]
 \caption{Creating a node}\label{alg:CreatingANode}
 \begin{algorithmic}[1]
 \Procedure{CreateNode}{$E$}\Comment{E = List with elements}
@@ -28,9 +28,9 @@ Algorithm \ref{alg:CreatingANode} can generate a tree (Where an element is a Bui
 
 To simplify data the application merges the 2 elements together to get a more simplified version of the original. This merged version is then again added to the list to merge even further. This algorithm is described in \ref{alg:SimplifyData}. The skiplist used in this algorithm is an custom implementation, where deletes can be done in constant time when holding a reference to the specified item. Earlier version of algorithm \ref{alg:SimplifyData}, it was a simpler algorithm, but for every iteration of the while loop it took $O(n^2)$ time. The update function searched every time for the 2 closest elements. We improved this by keeping for every element the closest element and only searched for a new one if the combination between 2 elements is removed. Also in previous version of the algorithm it used when initializing the skiplist a simple linear search to find the closest element. Which makes the the function $InitilizeSkipList$ an $O(n^2)$ algorithm. Later we found a algorithm that can find the nearest neighbor in $O(\log{n})$ time, with an initialization of $O(n\log{n})$ time. So then the function can run in $O(n\log{n})$ time. The whole algorithm was improved from $O(n^2)$ initial and $O(n^2)$ for every iteration too $O(n\log{n})$ initial and $O(n)$ for every iteration.
 
-Only models of the same type are merged, so for example only buildings are merged with only buildings. The merge is dependent on the type of the element. Buildings are the only type that can be merged at the moment. They are merged with by taking the convex hull of both buildings.
+Only models of the same type are merged, so for example only buildings are merged with only buildings. The merge is dependent on the type of the element. Buildings are the only type that can be merged at the moment. They are merged with by taking the convex hull of both buildings. Besides the merging of elements, elements are also removed to speed up the process. Small elements like residential roads besides houses are removed low in the tree and large roads like the highways are only removed high up in the tree. This removal is also element dependent. In the current implementation only roads are removed at certain heights of the tree.
 
-\begin{algorithm}
+\begin{algorithm}[h]
 \caption{Simplify data}\label{alg:SimplifyData}
 \begin{algorithmic}[1]
 \Procedure{SimplifyData}{$E$} \Comment{E = List with elements}
@@ -71,4 +71,96 @@ Only models of the same type are merged, so for example only buildings are merge
 \end{algorithm}
 
 \subsubsection{Rendering with HLOD}
-To addresses the problem what has to be rendered, the node manager is used. The node manager determines which nodes have to be loaded and rendered on screen. This is done by replacing nodes which is currently being used by its children or by its parent. We devised an algorithm that determines which node has to replace which node. By using tree traversal it finds all the maximal nodes which need to be loaded into main memory. This is done by checking whether the error assigned to a node as metadata meets the current distance to that node. If this node has to be loaded, and it isn’t loaded yet, it checks for its entire sub-tree which nodes are currently loaded. For every loaded node in its sub-tree it unloads the nodes. If the current node does not need to be loaded, while it is loaded it will also be unloaded. This way the node manager makes sure all the models will be loaded with the appropriate level of detail. 
+We used algorithm \ref{alg:DeterminLoadList} to determine what nodes has to be loaded and unloaded. The decisions are base on a function named CalculateDistanceError. This function is a simple linear function based on the distance to a specified node. The algorithm only returns the differences from the original loaded list and the new loaded list. Most of the time nodes have to be replaced by another single node (when getting farther from the nodes) or a single node needs to be replaced by multiple nodes (when getting closer to the nodes).
+
+\begin{algorithm}[h]
+\caption{Determine replace list - Part 1}\label{alg:DeterminLoadList}
+\begin{algorithmic}[1]
+\Procedure{DetermineReplaceList}{$S, P$}\Comment{$S$ = Current node, $P$ = Position viewer}
+    \State $P_{error} \gets \Call{CalculateDistanceError}{S, P}$
+    \If{$P_{error} > MaxDistanceError$} \Comment{Too far from the viewer}
+        \State $UnloadList \gets newList$
+        \State $\Call{DetermineUnloadList}{S, UnloadList}$
+        \If{$n_{UnloadList} > 0$}
+            \State $ReplaceList.\Call{Add}{EmptyList, UnloadList}$
+        \EndIf
+    \ElsIf{$P_{error} < S_{error} \And n_{childeren} > 0$} \Comment{$S_{error}$ is too high, descend to childeren}
+        \If{$\Call{IsLoaded}{S}$}
+            \State $LoadList \gets newList$
+            \For{$i \gets 1,n_{children}$}
+                \State $\Call{DetermineLoadListForUnloadingParent}{S_{children}[i], UnloadList}$
+            \EndFor
+            \State $ReplaceList.\Call{Add}{LoadList, S}$
+        \Else
+            \For{$i \gets 1,n_{children}$}
+                \State $\Call{DetermineReplaceList}{S_{children}[i], P}$
+            \EndFor
+        \EndIf
+    \Else \Comment{Load S}
+        \If{$\neg \Call{IsLoaded}{S}$}
+            \State $UnloadList \gets newList$
+            \For{$i \gets 1,n_{children}$}
+                \State $\Call{DetermineUnloadList}{S_{children}[i], UnloadList}$
+            \EndFor
+            \State $ReplaceList.\Call{Add}{S, UnloadList}$
+        \EndIf
+    \EndIf
+\EndProcedure
+\algstore{DeterminLoadList}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h]
+\caption{Determine load list - Part 2}
+\begin{algorithmic}[1]
+\algrestore{DeterminLoadList}
+\Function{DetermineUnloadList}{$S, UnloadList$}
+    \If{$\Call{IsLoaded}{S}$}
+        \State $UnloadList.\Call{Add}{S}$
+    \EndIf
+    \For{$i \gets 1,n_{children}$}
+        \State $\Call{DetermineUnloadList}{S_{children}[i], UnloadList}$
+    \EndFor
+\EndFunction
+\Function{DetermineLoadListForUnloadingParent}{$S, P, LoadList, UnloadList$}
+    \State $P_{error} \gets \Call{CalculateDistanceError}{S, P}$
+    \If{$P_{error} > MaxDistanceError$} \Comment{Too far from the viewer}
+        \State \Call{DetermineUnloadListForError}{S, UnloadList}
+    \ElsIf{$P_{error} < S_{error} \And n_{childeren} > 0$} \Comment{$S_{error}$ is too high, descend to childeren}
+        \For{$i \gets 1,n_{children}$}
+            \State $\Call{DetermineLoadListForUnloadingParent}{S_{children}[i], P, LoadList, UnloadList}$
+        \EndFor
+    \Else
+        \State $LoadList.\Call{Add}{S}$
+    \EndIf
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Besides the algorithm to determine what has to be loaded, a second algorithm is added that loads the specific nodes. Our fist implementation was a simple version that loads everything in the diff lists, then replaces it with its unloading counterparts, and after that unloads the nodes. This became a problem because, when the list is very long it took a while to load everything. Our second implementation is described in \ref{alg:LoadNode}. This algorithm is run until it doesn't doesn't change the loaded list. In this algorithm we check what has to be loaded and then load only the closest element. This way if loading takes a bit longer than expected, the position is updated while loading the element. For instance if the application is loading Amsterdam, and the user wants to jump to Eindhoven, it isn't still loading Amsterdam, but starts immediately loading Eindhoven. If nodes are only unloaded and not replaced by anything, this can happen if the node is to far from the viewpoint, then it unloads immediately. Unloading can almost be done instantly, so this isn't really a performance issue. We have added that part, berceuse the application has a lower memory footprint.
+
+\begin{algorithm}[h]
+\caption{Loading closest node}\label{alg:LoadNode}
+\begin{algorithmic}[1]
+\Procedure{CreateNode}{$root, P$} \Comment{$root$ = root node, $P$ = Position viewer}
+    \State $replaceList \gets DetermineReplaceList(root, P)$
+    \If{$n_{replaceList} \> 0$}
+        \State $replace \gets \Call{FindClosest}{replaceList, P}$
+        \For{$i \gets 1,n_{replace.LoadNodes}$}
+            \State $\Call{Load}{replace.LoadNodes[i]}$
+        \EndFor
+        \For{$i \gets 1,n_{replace.UnloadNodes}$}
+            \State $\Call{Unload}{replace.UnloadNodes[i]}$
+        \EndFor
+        
+        \For{$i \gets 1,n_{replaceList}$}
+            \If{$n_{replaceList.LoadNodes} = 0 \And \neg (replace = replaceList[i])$}
+                \For{$j \gets 1,n_{replaceList[i].UnloadNodes}$}
+                    \State $\Call{Unload}{replaceList[i].UnloadNodes[j]}$
+                \EndFor
+            \EndIf
+        \EndFor
+    \EndIf
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
