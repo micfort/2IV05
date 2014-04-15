@@ -20,7 +20,15 @@ We like to use data from OpenStreetMap to construct models of roads, rivers, lak
 
 \section{System Design}
 \label{sec:SystemDesign}
-The system is divided in three parts. The first part pre-processes all the data, to filter only data that is needed. For example it can filter only data that is in Eindhoven and remove any unneeded metadata. The second step is the Tree building application. The tree-builder uses the pre-processed data and generates the complete tree with all the models. The final part of the application uses the tree and the models to give visualization to the user.
+The system is divided in three parts. A global overview of the total system is given in figure \ref{fig:sys_overview}. The first part pre-processes all the data, to filter only data that is needed. For example it can filter only data that is in Eindhoven and remove any unneeded metadata. The second step is the Tree building application. The tree-builder uses the pre-processed data and generates the complete tree with all the models. The final part of the application uses the tree and the models to give visualization to the user.
+\begin{figure}[htb!]
+    \centering
+    \ifPDFTeX
+        \includegraphics[width=.4\textwidth]{SystemDesign.1}
+    \fi
+    \caption{System overview}
+    \label{fig:sys_overview}
+\end{figure}
 
 \section{Algorithms}
 \label{sec:Algorithms}
