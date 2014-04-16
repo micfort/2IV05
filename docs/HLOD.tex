@@ -1,9 +1,9 @@
 \subsection{HLOD}
 \label{subsec:HLOD}
-Davis \cite{Davis} used a quad tree data structure to check what information has to be rendered on the screen. The leaf nodes contains the most detailed models. The non-leafs contains the combined area of it's childeren, but have a simplified model of the data. With such a data structure it is possible to render further away with less detail.
+To solve the sub problem that the GPU only has a limited amount of memory we took inspiration from Davis \cite{Davis}. Davis used a quad tree data structure to check what information has to be rendered on the screen. The leaf nodes contains the most detailed models. The non-leafs contains the combined area of it's childeren, but have a simplified model of the data. With such a data structure it is possible to render further away with less detail.
 
 \subsubsection{Generating HLOD}
-Algorithm \ref{alg:CreatingANode} can generate a tree (Where an element is a Building, Road, Grass or Water). In this project we have used this method from Davis, with a single modification that it is possible to use a binary tree. The main advantage over a binary tree is that the split in data can be easily be made data dependent. It is difficult to determine where the split in a quad tree has to be made. In a binary tree it is a trivial choice, to balance the tree the median is used to split the data.
+Algorithm \ref{alg:CreatingANode} can generate a tree (Where an element is a Building, Road, Grass or Water). In this project we have used this method from Davis, with a single modification that it is possible to use a binary tree. The main advantage over a binary tree is that the split in data can be easily be made data dependent. It is difficult to determine where the split in a quad tree has to be made. In a binary tree it is a trivial choice, we have chosen the median, so that the tree is balanced. For every node is also an error calculated. This is the number of less triangles that the original model. This means that the leafs have a error of 0 and higher up the tree the error becomes only larger.
 
 \begin{algorithm}[h]
 \caption{Creating a node}\label{alg:CreatingANode}
@@ -71,7 +71,7 @@ Only models of the same type are merged, so for example only buildings are merge
 \end{algorithm}
 
 \subsubsection{Rendering with HLOD}
-We used algorithm \ref{alg:DeterminLoadList} to determine what nodes has to be loaded and unloaded. The decisions are base on a function named CalculateDistanceError. This function is a simple linear function based on the distance to a specified node. The algorithm only returns the differences from the original loaded list and the new loaded list. Most of the time nodes have to be replaced by another single node (when getting farther from the nodes) or a single node needs to be replaced by multiple nodes (when getting closer to the nodes).
+We used algorithm \ref{alg:DeterminLoadList} to determine what nodes has to be loaded and unloaded. The decisions are base on a function named CalculateDistanceError. This function is a simple linear function based on the distance in meter to a specified node. The error settings, means the error per meter. An artificial limit to the error is added to make sure that the node far in the distance aren't loaded. The algorithm only returns the differences from the original loaded list and the new loaded list. Most of the time nodes have to be replaced by another single node (when getting farther from the nodes) or a single node needs to be replaced by multiple nodes (when getting closer to the nodes).
 
 \begin{algorithm}[h]
 \caption{Determine replace list - Part 1}\label{alg:DeterminLoadList}
@@ -152,7 +152,7 @@ Besides the algorithm to determine what has to be loaded, a second algorithm is 
         \For{$i \gets 1,n_{replace.UnloadNodes}$}
             \State $\Call{Unload}{replace.UnloadNodes[i]}$
         \EndFor
-        
+
         \For{$i \gets 1,n_{replaceList}$}
             \If{$n_{replaceList.LoadNodes} = 0 \And \neg (replace = replaceList[i])$}
                 \For{$j \gets 1,n_{replaceList[i].UnloadNodes}$}
@@ -163,4 +163,4 @@ Besides the algorithm to determine what has to be loaded, a second algorithm is 
     \EndIf
 \EndProcedure
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm} 
