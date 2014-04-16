@@ -87,8 +87,8 @@ beginfig(1);
   item(iAssoc)("+gerelateerdeWoonplaats")(obj.ne = Woonplaats.s);
   item(iAssoc)("0..1")(obj.nw = Woonplaats.s);
 
-  item(iAssoc)("+gerelateerdeWoonplaats")(obj.sw = Woonplaats.e);
-  item(iAssoc)("1")(obj.nw = Woonplaats.e);
+  item(iAssoc)("+gerelateerdeWoonplaats")(obj.se = Woonplaats.w);
+  item(iAssoc)("1")(obj.ne = Woonplaats.w);
   item(iAssoc)("1..*")(obj.sw = OpenbareRuimte.n);
 
   item(iAssoc)("+gerelateerdeOpenbareRuimte") (obj.ne = OpenbareRuimte.s);
