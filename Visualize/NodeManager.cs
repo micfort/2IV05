@@ -49,13 +49,13 @@ namespace CG_2IV05.Visualize
 
 		public void Start()
 		{
-			NodeWithData nodeWithData = new NodeWithData();
-			nodeWithData.node = Tree.Root;
-			nodeWithData.LoadNodeFromDisc();
-			lock (VBOList)
-			{
-				VBOList.Add(nodeWithData);
-			}
+			//NodeWithData nodeWithData = new NodeWithData();
+			//nodeWithData.node = Tree.Root;
+			//nodeWithData.LoadNodeFromDisc();
+			//lock (VBOList)
+			//{
+			//	VBOList.Add(nodeWithData);
+			//}
 
 			running = true;
 			thread = new Thread(threadMethod);
@@ -72,6 +72,12 @@ namespace CG_2IV05.Visualize
 				{
 					List<ReplaceNode<NodeWithData>> replaceList = loadListAlgorithm.DetermineCompleteLoadList(Tree, Position, VBOList);
 					int time = loadAlgorithm.LoadItems(VBOList, ReleaseNodes, replaceList, Position);
+					if (replaceList.Count > 0)
+					{
+						ErrorReporting.Instance.ReportInfoT("Node manager",
+						                                    string.Format("Max distance node: {0}",
+						                                                  VBOList.Max(x => x.node.DistanceToNode(Position))));
+					}
 					if(time > 0)
 					{
 						Thread.Sleep(time);

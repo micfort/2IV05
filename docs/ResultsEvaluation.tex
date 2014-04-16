@@ -1,8 +1,9 @@
 \chapter{Results and evaluation}
 \label{chap:ResultsAndEvaluation}
+The results are created with the Netherlands data set. A detailed model of the Netherlands would be around 24.1 GB. This is too large to load in too GPU memory. The whole tree is around 55 GB in size. This tree consist about 2200 nodes of different sizes and has a depth around 12.
+
 \section{Image results}
 \label{sec:ImageResults}
-%todo add images
 Figure \ref{fig:UniversityCampus} shows an overview of the TU/e campus. This is a basic view of the campus. The river dommel is also shown through the campus. This picture is taken above the train tracks.
 
 \begin{figure}[htb!]
@@ -10,7 +11,7 @@ Figure \ref{fig:UniversityCampus} shows an overview of the TU/e campus. This is 
 \includegraphics[width=\textwidth]{TUe}
 \caption{University campus}
 \label{fig:UniversityCampus}
-\end{figure} 
+\end{figure}
 
 The error that is introduced when rendering from a distance is visible in figure \ref{fig:Simplification}. The top image is rendered with less error than the bottom version. In the simplified version, it is possible to see that the building is only a convex hull of its original. Also the roads that are besides the building are removed.
 
@@ -23,11 +24,72 @@ The error that is introduced when rendering from a distance is visible in figure
 
 \section{GPU usage}
 \label{sec:GPUUsage}
-We have tested our system with 2 versions of the data set. The first data set is a single node tree with whole Eindhoven in this single node, thus only the highest level of detail is used. So the visualize application can only render the single node. The second version was a set where Eindhoven was divided in the tree, so the visualize application could choose which nodes it can render. Also in the second version, the error per meter was set on 500.
+We have tested the system with 2 different error settings. The blue is with a 10 000 error per meter and a maximum error of 10 000 000. This means the largest distance loaded is 1 KM. The red is with a 100 000 error per meter and a maximum error of 1 000 000 000. This means the largest distance loaded is 10 KM.
 
-figure 4 shows the GPU (Graphics Processing Unit) load for the 2 tests and also what the GPU load is when the application isn’t running. When running the test with a single node the GPU load is a lot higher than for the multi node test.
+In graph \ref{graph:MemoryUsage} we see that the memory usage for the blue error setting is far lower and not really dependent on the position. When red error setting is used the system is a bit more position dependent and uses a lot more memory, but can still be hold in the GPU memory. In graph \ref{graph:DistanceGraph} the distance is lower than the maximum distances for the specified setting. Notice that the distance is almost 10 folded for both city's, while only doubling the memory usage.
 
-figure 5 presents the memory usage on the GPU for the 2 tests and also shows the memory usage when the application isn’t running. The single node dataset uses a bit more memory than the multi node dataset. Also when the application doesn’t run, the system also uses video memory.
+\begin{figure}[htb!]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xtick={1,2}, 
+    xticklabels={Amsterdam,
+                Eindhoven},
+    ybar=0pt,
+    ymin=0,
+    samples=2,
+    domain=1:2,
+    xtick=data,
+    bar width=40,
+    enlarge x limits={abs=0.5},
+    ylabel={Memory (GB)}
+]
+        \addplot coordinates {
+            (1,   0.6)
+            (2,  0.6)
+        };
+        \addplot coordinates {
+            (1,   1.2)
+            (2,  0.9)
+        };
+        \legend{Error setting 1,Error setting 2}
+\end{axis}
+\end{tikzpicture}
+\caption{Memory usage}
+\label{graph:MemoryUsage}
+\end{figure}
+
+\begin{figure}[htb!]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xtick={1,2},
+    xticklabels={Amsterdam,
+                Eindhoven},
+    ybar=0pt,
+    ymin=0,
+    samples=2,
+    domain=1:2,
+    xtick=data,
+    bar width=40,
+    enlarge x limits={abs=0.5},
+    ylabel={Distance (Meter)},
+    legend pos=north west
+]
+        \addplot coordinates {
+            (1,   407.557)
+            (2,  797.977)
+        };
+        \addplot coordinates {
+            (1,   7780.801)
+            (2,  9786.661)
+        };
+        \legend{Error setting 1,Error setting 2}
+\end{axis}
+\end{tikzpicture}
+\caption{Distance to furthest node}
+\label{graph:DistanceGraph}
+\end{figure}
 
 \section{Limitations}
 \label{sec:Limitations}
