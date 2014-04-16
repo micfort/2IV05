@@ -85,8 +85,8 @@ beginfig(1);
     drawObject(Treebuilder);
     drawObject(Visualize);
 
-    link(associationUni)(Preprocessor.s -- Treebuilder.n + (0,15));
-    link(associationUni)(Treebuilder.s -- Visualize.n);
+    link(association)(Preprocessor.s -- Treebuilder.n + (0,15));
+    link(association)(Treebuilder.s -- Visualize.n);
     link(associationUni)(Tree.s -- Node.n);
     link(associationUni)(Node.nw .. Node.w+(-20, 15) .. Node.sw+(-20, -15) .. Node.sw);
     link(associationUni)(Node.s -- Building.n);

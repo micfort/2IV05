@@ -20,7 +20,7 @@ We like to use data from OpenStreetMap to construct models of roads, rivers, lak
 
 \section{System Design}
 \label{sec:SystemDesign}
-The system is divided in three parts. A global overview of the total system is given in figure \ref{fig:sys_overview}. The first part pre-processes all the data, to filter only data that is needed. For example it can filter only data that is in Eindhoven and remove any unneeded metadata. The second step is the Tree building application. The tree-builder uses the pre-processed data and generates the complete tree with all the models. The final part of the application uses the tree and the models to give visualization to the user.
+The system is divided in three parts. A global overview of the total system is given in figure \ref{fig:sys_overview}. The first part pre-processes all the data, such that the required data from the BAG and OSM data set is processed to application specific objects, which then are collected in a single data set. For example, the system can process only the data from Eindhoven and remove any unneeded metadata. The second step is the Tree building application. The tree-builder uses the pre-processed data to generate a hierarchy binary tree in which multiple levels of details of all the models is stored. Details of building and using the tree is given in section \ref{subsec:HLOD}. The final part of the application visualises the world. A node manager is used to determine which nodes in the tree needs the loaded into memory and rendered.
 \begin{figure}[htb!]
     \centering
     \ifPDFTeX
@@ -37,7 +37,7 @@ The system is divided in three parts. A global overview of the total system is g
 
 \subsection{Complex polygons}
 \label{subsec:ComplexPolygons}
-The OSM data is built out of GPS recordings and these recordings have a lot of noise. The noise has the possibility of creating complex polygons in the OSM data. A complex polygon is polygon that contains an self-intersecting edge. In our OSM data set we have detected multiple complex polygons. This is a problem because the ear-clipping algorithm can only be used for simple polygons. A simple polygon is a polygon that does not contain any self-intersecting edges. The detection for complex polygons is a naïve algorithm. If two non-consecutive line-segments intersect, then the polygon is complex.
+The OSM data is built out of GPS recordings and these recordings have a lot of noise. The noise has the possibility of creating complex polygons in the OSM data. A complex polygon is a self-intersecting polygon. In our OSM data set we have detected multiple complex polygons. This is a problem because the ear-clipping algorithm can only be used for simple polygons. A simple polygon is a polygon that does not contain intersecting edges and does not contain any holes. OSM does not contain any polygons with holes. The detection for a self-intersecting polygons is a naïve algorithm. If two non-consecutive line-segments of a polygon intersect, then the polygon is complex.
 
 To generate a set of simple polygons from a complex polygon, the algorithm has to find two line-segments that intersect. The point at which two edges intersect, two new polygons can be generated. These two new polygons can still be a complex polygon, so the algorithm has to be recursively called on these new polygons. If the input polygon is already simple, then it simply returns the input polygon.
 
