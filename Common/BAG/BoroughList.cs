@@ -83,11 +83,11 @@ namespace CG_2IV05.Common.BAG
         {
             if(province.Equals(""))
             {
-                return allBoroughs.Where(b => b.Name.ToLower().Contains(filter));
+                return allBoroughs.Where(b => b.Name.ToLower().Contains(filter.ToLower()));
             }
             else
             {
-                return boroughs[province].Where(b => b.Name.ToLower().Contains(filter));
+                return boroughs[province].Where(b => b.Name.ToLower().Contains(filter.ToLower()));
             }
         }
 
