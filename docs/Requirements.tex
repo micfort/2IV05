@@ -1,7 +1,7 @@
 \chapter{Requirements}
 \label{chap:Requirements}
 The application visualizes the Netherlands on the screen in 3D. All the buildings that are in the data set are being rendered. There are datasets for the whole of the Netherlands. It is possible to fly over an area of the Netherlands and walk through cities. Besides buildings, also roads and ground type (grass, farm land, water and industrial terrain) are rendered.
-Because of the immensely huge data set of buildings in the Netherlands, this data set is filtered, preprocessed and saved in an efficient format, so that it can be used by the algorithms to construct the world. OpenStreetMap has data about the streets, ground type and trees. That data set is also used to render the world.
+Because of the immensely huge data set of buildings in the BAG data set of the Netherlands, this data set has to be filtered, preprocessed and saved in an efficient format, so that it can be used by the algorithms to construct the world. OpenStreetMap has data about the streets, ground type and trees. That data set is also used to render the world.
 
 \section{Specification of functionality}
 \label{sec:SpecificationOfFunctionality}
@@ -10,11 +10,11 @@ The following functionality is implemented in the system.
   \item Read data from the BAG data set.\\
     The BAG data set is quite large. The system needs to be able to read and filter the data from the BAG such that the required data can be retrieved.
   \item Construct buildings from geographic data. \\
-    Models of buildings need to be constructed from the data read from the BAG. The model of a building has to be modeled to look like the corresponding real building.
+    Models of buildings need to be constructed from the data read from the BAG. The model of a building has to be constructed to look like the corresponding real building.
   \item Construct roads and surface area.\\
     To make cities and other areas look like the real world, also roads and surface areas like grass, rivers and lakes can be constructed. These elements can contribute highly to make areas recognizable.
   \item Display the constructed world in 3D in real time.\\
-    Since rendering a whole area, like Noord Brabant, can be quite large, an efficient rendering algorithm has to be designed or used so that the application can be rendered in real time.
+    Since rendering a whole area, like Noord Brabant, can be quite large, an efficient rendering algorithm has to be designed and used so that the application can be rendered in real time.
 \end{itemize}
 \section{Specification of interaction}
 \label{sec:SpecificationOfInteraction}
@@ -22,4 +22,4 @@ The user is able to use 3 different view modes. In the first view, the user is a
 
 \section{Specification of presentation}
 \label{sec:SpecificationOfPresentation}
-In the world, buildings, roads, rivers, lakes and other types of surface areas are presented. For each type a different and appropriate texture is used, such that world is presented in such a way that it gives an impression of what the real world should look like. Also a sky is presented, such that the world gives even more an impression of a real world.
+In the world, buildings, roads, rivers, lakes and other types of surface areas are presented. For each type a different and appropriate texture is used, such that world is presented in such a way that it gives an impression of what the real world should look like. Also a sky is presented, such that the world gives even more an impression of a real world. 
