@@ -71,7 +71,7 @@ Only models of the same type are merged, so for example buildings are only merge
 \end{algorithm}
 
 \subsubsection{Rendering with HLOD}
-We used algorithm \ref{alg:DeterminLoadList} to determine what nodes has to be loaded and unloaded. The decisions are base on a function named CalculateDistanceError. This function is a simple linear function based on the distance in meter to a specified node. The error settings, means the error per meter. An artificial limit to the error is added to make sure that the node far in the distance aren't loaded. The algorithm only returns the differences from the original loaded list and the new loaded list. Most of the time nodes have to be replaced by another single node (when getting farther from the nodes) or a single node needs to be replaced by multiple nodes (when getting closer to the nodes).
+We used algorithm \ref{alg:DeterminLoadList} to determine what nodes has to be loaded and unloaded. The decisions are based on a function named CalculateDistanceError. This function calculates the error and is a simple linear function based on the distance in meter to a specified node. The error is the number of triangles that can be removed in a node per meter. An artificial limit to the error is added to make sure that the nodes far in the distance aren't loaded. The algorithm only returns the differences from the original loaded list and the new loaded list. Most of the time nodes have to be replaced by another single node (when getting farther from the nodes) or a single node needs to be replaced by multiple nodes (when getting closer to the nodes).
 
 \begin{algorithm}[h]
 \caption{Determine replace list - Part 1}\label{alg:DeterminLoadList}
