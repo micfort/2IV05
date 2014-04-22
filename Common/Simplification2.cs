@@ -102,8 +102,7 @@ namespace CG_2IV05.Common
 					}
 					else
 					{
-						//calculate original triangle count
-						int triangleCount = children.Aggregate(0, (i, list) => i + list.TriangleCount);
+						
 						//Read all elements into memory
 						List<ElementList> lists = children.ConvertAll(x => x.ToElementList());
 						//create 1 big list
@@ -126,6 +125,11 @@ namespace CG_2IV05.Common
 
 						//remove elements
 						RemoveElements(itemLists, factorys, heights.Max() + 1);
+
+						//calculate original triangle count
+						int triangleCount = itemLists.Aggregate(0,
+						                                        (i, pair) =>
+						                                        i + pair.Value.Aggregate(0, (j, item) => j + item.element.TriangleCount));
 
 						//simplifyData
 						SimplifyData(itemLists, factorys, triangleCount, TreeBuildingSettings.MaxTriangleCount);
