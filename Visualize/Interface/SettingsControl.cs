@@ -10,7 +10,7 @@ namespace CG_2IV05.Visualize.Interface
 {
     public partial class SettingsControl : UserControl
     {
-        private Game game;
+        public Game game { get; set; }
         private BoroughList boroughs;
        
 
@@ -19,9 +19,8 @@ namespace CG_2IV05.Visualize.Interface
             InitializeComponent();
         }
 
-        public void InitLocations(Game game)
+        public void InitLocations()
         {
-            this.game = game;
             boroughs = new BoroughList();
             boroughs.loadBoroughLocations(game.getDataCenter());
             boroughs.getProvinces().ForEach(x => this.provinceLB.Items.Add(x));

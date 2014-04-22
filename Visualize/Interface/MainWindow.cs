@@ -21,11 +21,23 @@ namespace CG_2IV05.Visualize.Interface
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            this.game = new Game();
-            if (Site == null || !Site.DesignMode)
+            try
             {
-                this.gameControl.initGame(game, settingsControl);
-                this.settingsControl.InitLocations(game);
+                ErrorReporting.Instance.ReportInfo(this, "starting game");
+                this.game = new Game();
+                if (Site == null || !Site.DesignMode)
+                {
+                    this.settingsControl.game = game;
+                    ErrorReporting.Instance.ReportInfo(this, "init game control");
+                    this.gameControl.initGame(game, settingsControl);
+                    ErrorReporting.Instance.ReportInfo(this, "init settings control");
+                    this.settingsControl.InitLocations();
+                    ErrorReporting.Instance.ReportInfo(this, "finished init controls");
+                }
+            }
+            catch (Exception exception)
+            {
+                ErrorReporting.Instance.ReportFatalT(this, "oeps", exception);
             }
         }
     }

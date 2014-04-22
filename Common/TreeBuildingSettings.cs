@@ -23,7 +23,7 @@ namespace CG_2IV05.Common
 		public static HyperPoint<float> CenterDataSet;
 		public static bool FindCenterDataSet = true;
 		public static int MinCurrentDepthForData = 0;
-		public static int CreateThreadDepth = 0;
+		public static int CreateThreadDepth = 2;
 		public static bool SimplifySingleElements = true;
 
 		public static string TmpDirectory = "tmp";
